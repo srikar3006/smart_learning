@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Add Learner — Smart Learning{% endblock %}
+{% block content %}
+<div class="form-shell">
+    <div class="form-intro">
+        <span class="eyebrow">Family learning space</span>
+        <h1>Add a learner</h1>
+        <p>Create a child account that can sign in independently. You can monitor progress from your parent dashboard.</p>
+    </div>
+    <form method="post" class="glass-form">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div class="form-field full"><label for="{{ form.first_name.id_for_label }}">Learner name</label>{{ form.first_name }}{{ form.first_name.errors }}</div>
+            <div class="form-field"><label for="{{ form.username.id_for_label }}">Username</label>{{ form.username }}{{ form.username.errors }}</div>
+            <div class="form-field"><label for="{{ form.age_group.id_for_label }}">Age group</label>{{ form.age_group }}{{ form.age_group.errors }}</div>
+            <div class="form-field full"><label>Choose an avatar</label><div class="radio-row avatar-row">{{ form.avatar }}</div>{{ form.avatar.errors }}</div>
+            <div class="form-field full"><label for="{{ form.parent_email.id_for_label }}">Parent email</label>{{ form.parent_email }}{{ form.parent_email.errors }}</div>
+            <div class="form-field"><label for="{{ form.password1.id_for_label }}">Temporary password</label>{{ form.password1 }}{{ form.password1.errors }}</div>
+            <div class="form-field"><label for="{{ form.password2.id_for_label }}">Confirm password</label>{{ form.password2 }}{{ form.password2.errors }}</div>
+        </div>
+        <div class="form-actions"><a href="{% url 'parent:dashboard' %}" class="btn btn-ghost">Cancel</a><button class="btn btn-primary" type="submit">Create learner <span>→</span></button></div>
+    </form>
+</div>
+{% endblock %}

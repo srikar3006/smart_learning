@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Create account — Smart Learning{% endblock %}
+{% block content %}
+<div class="auth-layout register-layout">
+    <div class="auth-art">
+        <span class="eyebrow">Your learning space</span>
+        <h1>Pick the right space for your family.</h1>
+        <p>Learners get the child-friendly learning experience. Parents get a separate progress dashboard.</p>
+        <div class="role-preview"><div><span>🧒</span><strong>Learner</strong><small>Rhymes • Quizzes • Badges</small></div><div><span>🧑‍🍼</span><strong>Parent</strong><small>Monitor • Add learners</small></div></div>
+    </div>
+    <div class="auth-card wide">
+        <div class="auth-heading"><span class="eyebrow">Create account</span><h2>Let's get started.</h2></div>
+        <div class="account-switcher" role="tablist">
+            <button type="button" class="account-tab active" data-account-tab="learner">🧒 Learner</button>
+            <button type="button" class="account-tab" data-account-tab="parent">🧑‍🍼 Parent</button>
+        </div>
+
+        <form method="post" id="learner-form" class="register-form" data-account-form="learner">
+            {% csrf_token %}<input type="hidden" name="account_type" value="learner">
+            {% with form=learner_form %}
+            <div class="form-grid">
+                <div class="form-field full"><label>{{ form.first_name.label }}</label>{{ form.first_name }}{{ form.first_name.errors }}</div>
+                <div class="form-field"><label>{{ form.username.label }}</label>{{ form.username }}{{ form.username.errors }}<small>{{ form.username.help_text }}</small></div>
+                <div class="form-field"><label>{{ form.email.label }}</label>{{ form.email }}{{ form.email.errors }}</div>
+                <div class="form-field full"><label>{{ form.avatar.label }}</label><div class="radio-row avatar-row">{{ form.avatar }}</div>{{ form.avatar.errors }}</div>
+                <div class="form-field full"><label>{{ form.age_group.label }}</label><div class="radio-row">{{ form.age_group }}</div>{{ form.age_group.errors }}</div>
+                <div class="form-field full"><label>{{ form.parent_email.label }}</label>{{ form.parent_email }}{{ form.parent_email.errors }}<small>{{ form.parent_email.help_text }}</small></div>
+                <div class="form-field"><label>{{ form.password1.label }}</label>{{ form.password1 }}{{ form.password1.errors }}</div>
+                <div class="form-field"><label>{{ form.password2.label }}</label>{{ form.password2 }}{{ form.password2.errors }}</div>
+            </div>
+            {% endwith %}
+            <button type="submit" class="btn btn-primary btn-block">Create learner account <span>→</span></button>
+        </form>
+
+        <form method="post" id="parent-form" class="register-form hidden" data-account-form="parent">
+            {% csrf_token %}<input type="hidden" name="account_type" value="parent">
+            {% with form=parent_form %}
+            <div class="form-grid">
+                <div class="form-field full"><label>{{ form.first_name.label }}</label>{{ form.first_name }}{{ form.first_name.errors }}</div>
+                <div class="form-field"><label>{{ form.username.label }}</label>{{ form.username }}{{ form.username.errors }}</div>
+                <div class="form-field"><label>{{ form.email.label }}</label>{{ form.email }}{{ form.email.errors }}</div>
+                <div class="form-field"><label>{{ form.password1.label }}</label>{{ form.password1 }}{{ form.password1.errors }}</div>
+                <div class="form-field"><label>{{ form.password2.label }}</label>{{ form.password2 }}{{ form.password2.errors }}</div>
+            </div>
+            {% endwith %}
+            <button type="submit" class="btn btn-primary btn-block">Create parent account <span>→</span></button>
+        </form>
+
+        <p class="form-footer">Already have an account? <a href="{% url 'accounts:login' %}">Log in</a></p>
+    </div>
+</div>
+{% endblock %}

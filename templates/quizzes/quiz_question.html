@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ quiz.title }} — Question {{ order }}{% endblock %}
+{% block content %}
+<div class="quiz-shell">
+    <div class="quiz-top">
+        <a href="{% url 'rhymes:detail' rhyme.slug %}" class="back-link">← Back to lesson</a>
+        <span class="quiz-counter">Question <strong>{{ order }}</strong> of {{ total }}</span>
+    </div>
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width: {% widthratio order total 100 %}%;"></div></div>
+
+    <section class="quiz-card">
+        <div class="quiz-intro"><span class="eyebrow">🧩 {{ quiz.title }}</span><h1>Choose the best answer.</h1><p>Take your time. You'll get instant feedback.</p></div>
+
+        {% if question.image_prompt %}<img class="q-image" src="{{ question.image_prompt.url }}" alt="Question visual">{% endif %}
+        <div class="question-prompt">
+            <h2>{{ question.text }}</h2>
+            {% if question.audio_prompt %}
+            <audio id="question-audio" preload="metadata" src="{{ question.audio_prompt.url }}"></audio>
+            <button type="button" id="prompt-audio-btn" class="voice-prompt">▶ Hear the question</button>
+            {% endif %}
+        </div>
+
+        <div class="choices-grid" id="choices-grid">
+            {% for choice in question.choices.all %}
+            <button type="button" class="choice-btn" data-choice-id="{{ choice.id }}">
+                {% if choice.image %}<img src="{{ choice.image.url }}" alt="" class="choice-image">{% endif %}
+                {% if choice.emoji %}<span class="choice-emoji">{{ choice.emoji }}</span>{% endif %}
+                {% if choice.text %}<span>{{ choice.text }}</span>{% endif %}
+            </button>
+            {% endfor %}
+        </div>
+
+        <div id="feedback-banner" class="feedback-banner" role="status" aria-live="polite"></div>
+        <div class="quiz-footer"><span class="quiz-tip">Tip: pick one answer to continue.</span><button id="next-btn" class="btn btn-primary" type="button" disabled>{% if is_last %}See my result →{% else %}Next question →{% endif %}</button></div>
+    </section>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+window.QUIZ_CONFIG = {
+    answerUrl: "{% url 'quizzes:api_submit_answer' rhyme.slug %}",
+    questionId: {{ question.id }},
+    nextUrl: "{% if is_last %}{% url 'quizzes:result' rhyme.slug %}{% else %}{% url 'quizzes:question' rhyme.slug order|add:1 %}{% endif %}"
+};
+</script>
+<script src="{% static 'js/quiz.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Quiz unavailable — Smart Learning{% endblock %}
+{% block content %}
+<div class="empty-panel"><div class="empty-illustration">🧩</div><span class="eyebrow">Quiz module</span><h2>Quiz not ready yet.</h2><p>{{ reason }}</p><a href="{% url 'rhymes:detail' rhyme.slug %}" class="btn btn-primary">Back to rhyme</a></div>
+{% endblock %}

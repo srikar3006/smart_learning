@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}My Progress — Smart Learning{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div><span class="eyebrow">Progress tracking module</span><h1>Your learning journey.</h1><p>Every play, repeat and quiz builds your record.</p></div>
+    <div class="progress-ring" style="--progress: {{ avg_score_pct }}%"><div><strong>{{ avg_score_pct }}%</strong><span>quiz average</span></div></div>
+</section>
+
+<section class="stats-grid stats-five">
+    <div class="stat-card"><span class="stat-icon">✓</span><div><strong>{{ completed_count }}</strong><small>Rhymes completed</small></div></div>
+    <div class="stat-card"><span class="stat-icon">↻</span><div><strong>{{ total_repeats }}</strong><small>Smart repeats</small></div></div>
+    <div class="stat-card"><span class="stat-icon">◎</span><div><strong>{{ quizzes_taken }}</strong><small>Quizzes taken</small></div></div>
+    <div class="stat-card"><span class="stat-icon">★</span><div><strong>{{ total_stars }}</strong><small>Stars earned</small></div></div>
+    <div class="stat-card"><span class="stat-icon">✦</span><div><strong>{{ perfect_scores }}</strong><small>Perfect scores</small></div></div>
+</section>
+
+<div class="two-column">
+    <section class="panel">
+        <div class="panel-heading"><div><span class="eyebrow">Gamification</span><h3>Your badges</h3></div><span class="panel-count">{{ badges|length }}</span></div>
+        {% if badges %}
+        <div class="badge-grid">{% for user_badge in badges %}<div class="badge-card"><span>{{ user_badge.badge.icon_emoji }}</span><div><strong>{{ user_badge.badge.name }}</strong><small>{{ user_badge.badge.description }}</small></div></div>{% endfor %}</div>
+        {% else %}<div class="empty-state small">Your first badge is waiting. Complete a rhyme to get started.</div>{% endif %}
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading"><div><span class="eyebrow">Learning activity</span><h3>Rhyme progress</h3></div></div>
+        {% if rhyme_progress %}
+        <div class="activity-list">
+            {% for p in rhyme_progress %}
+            <a href="{% url 'rhymes:detail' p.rhyme.slug %}" class="activity-row">
+                <span class="activity-icon">{{ p.rhyme.category.icon_emoji }}</span>
+                <div><strong>{{ p.rhyme.title }}</strong><small>{{ p.times_played }} play{{ p.times_played|pluralize }} • {{ p.repeat_count }} repeat{{ p.repeat_count|pluralize }}</small></div>
+                <span class="status-dot {% if p.completed %}done{% endif %}">{% if p.completed %}✓{% else %}•{% endif %}</span>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}<div class="empty-state small">No lessons started yet. <a href="{% url 'rhymes:list' %}">Explore rhymes →</a></div>{% endif %}
+    </section>
+</div>
+
+<section class="panel full-panel">
+    <div class="panel-heading"><div><span class="eyebrow">Assessment history</span><h3>Recent quiz attempts</h3></div></div>
+    {% if quiz_attempts %}
+    <div class="responsive-table">
+        <table class="progress-table">
+            <thead><tr><th>Quiz</th><th>Score</th><th>Stars</th><th>Completed</th></tr></thead>
+            <tbody>
+            {% for a in quiz_attempts %}
+            <tr><td><strong>{{ a.quiz.title }}</strong><small>{{ a.quiz.rhyme.title }}</small></td><td><strong>{{ a.score }}/{{ a.total_questions }}</strong><span class="table-muted"> {{ a.score_pct }}%</span></td><td>{% for i in "123" %}<span class="{% if forloop.counter <= a.stars %}star-on{% endif %}">★</span>{% endfor %}</td><td>{{ a.completed_at|date:"d M Y, H:i" }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}<div class="empty-state small">No quizzes completed yet.</div>{% endif %}
+</section>
+{% endblock %}

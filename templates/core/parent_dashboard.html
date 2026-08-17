@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Parent Dashboard — Smart Learning{% endblock %}
+{% block content %}
+<section class="dashboard-hero parent-hero">
+    <div>
+        <span class="eyebrow">Parent / guardian space</span>
+        <h1>See how your learners are growing.</h1>
+        <p>Monitor completed rhymes, repetition practice, quiz results and earned badges without interrupting the child's learning flow.</p>
+        <div class="hero-actions compact"><a href="{% url 'parent:add_child' %}" class="btn btn-primary">+ Add learner</a></div>
+    </div>
+    <div class="dashboard-orb parent-orb"><div class="orb-core">◌</div><span>TRACK</span><span>SUPPORT</span></div>
+</section>
+
+{% if children %}
+<div class="child-switcher">
+    <div><span class="eyebrow">Learners</span><h2>Family learning space</h2></div>
+    <div class="child-tabs">
+        {% for child in children %}
+        <a href="?child={{ child.id }}" class="child-tab {% if selected_child.id == child.id %}active{% endif %}">
+            <span>{{ child.avatar_emoji }}</span><div><strong>{{ child.first_name|default:child.username }}</strong><small>{{ child.age_group|default:"Learner" }}</small></div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+{% if selected_child and child_summary %}
+<section class="profile-banner">
+    <div class="profile-avatar">{{ selected_child.avatar_emoji }}</div>
+    <div><span class="eyebrow">Selected learner</span><h2>{{ selected_child.first_name|default:selected_child.username }}</h2><p>Joined {{ selected_child.created_at|date:"d M Y" }}</p></div>
+    <div class="profile-chip">{{ selected_child.get_age_group_display }}</div>
+</section>
+
+<section class="stats-grid stats-four">
+    <div class="stat-card"><span class="stat-icon">✓</span><div><strong>{{ child_summary.completed_count }}</strong><small>Rhymes completed</small></div></div>
+    <div class="stat-card"><span class="stat-icon">↻</span><div><strong>{{ child_summary.total_repeats }}</strong><small>Smart repeats</small></div></div>
+    <div class="stat-card"><span class="stat-icon">★</span><div><strong>{{ child_summary.total_stars }}</strong><small>Stars earned</small></div></div>
+    <div class="stat-card"><span class="stat-icon">%</span><div><strong>{{ child_summary.avg_score_pct }}%</strong><small>Average quiz score</small></div></div>
+</section>
+
+<div class="two-column">
+    <section class="panel">
+        <div class="panel-heading"><div><span class="eyebrow">Achievements</span><h3>Badges</h3></div></div>
+        {% if child_summary.badges %}
+        <div class="badge-list modern-badges">{% for user_badge in child_summary.badges %}<span class="badge-pill">{{ user_badge.badge.icon_emoji }} {{ user_badge.badge.name }}</span>{% endfor %}</div>
+        {% else %}<div class="empty-state small">No badges yet. Keep encouraging {{ selected_child.first_name|default:selected_child.username }}.</div>{% endif %}
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading"><div><span class="eyebrow">Recent assessments</span><h3>Quiz results</h3></div></div>
+        {% if child_summary.quiz_attempts %}
+        <div class="result-list">
+            {% for attempt in child_summary.quiz_attempts %}
+            <div class="result-row"><span class="result-badge">★{{ attempt.stars }}</span><div><strong>{{ attempt.quiz.title }}</strong><small>{{ attempt.completed_at|date:"d M Y, H:i" }}</small></div><b>{{ attempt.score }}/{{ attempt.total_questions }}</b></div>
+            {% endfor %}
+        </div>
+        {% else %}<div class="empty-state small">No completed quizzes yet.</div>{% endif %}
+    </section>
+</div>
+{% endif %}
+{% else %}
+<div class="empty-panel">
+    <div class="empty-illustration">🧑‍🤝‍🧑</div>
+    <span class="eyebrow">Start your family space</span>
+    <h2>Add your first learner</h2>
+    <p>Create a learner profile with a simple login, then use this dashboard to monitor their progress.</p>
+    <a href="{% url 'parent:add_child' %}" class="btn btn-primary">Add learner</a>
+</div>
+{% endif %}
+
+<section class="section-block compact-section">
+    <div class="section-heading"><div><span class="eyebrow">Across your family</span><h2>Recent quiz activity</h2></div></div>
+    <div class="panel">
+        {% if recent_attempts %}
+        <div class="result-list">
+            {% for attempt in recent_attempts %}
+            <div class="result-row"><span class="result-badge">{{ attempt.user.avatar_emoji }}</span><div><strong>{{ attempt.user.first_name|default:attempt.user.username }}</strong><small>{{ attempt.quiz.title }} • {{ attempt.completed_at|date:"d M Y, H:i" }}</small></div><b>{{ attempt.score }}/{{ attempt.total_questions }}</b></div>
+            {% endfor %}
+        </div>
+        {% else %}<div class="empty-state small">No family quiz activity yet.</div>{% endif %}
+    </div>
+</section>
+{% endblock %}

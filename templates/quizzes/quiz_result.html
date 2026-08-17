@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Quiz Result — {{ rhyme.title }}{% endblock %}
+{% block content %}
+<div class="result-shell">
+    <section class="result-card">
+        <div class="result-glow"></div>
+        {% if passed %}
+        <div class="result-icon success">✓</div><span class="eyebrow">Quiz complete</span><h1>Fantastic work!</h1><p>You passed {{ quiz.title }}. Keep practising and your stars will keep growing.</p>
+        {% else %}
+        <div class="result-icon retry">↻</div><span class="eyebrow">Quiz complete</span><h1>Good effort!</h1><p>You're learning. Try the rhyme again, use Smart Repeat, and have another go.</p>
+        {% endif %}
+        <div class="result-stars">{% for i in "123" %}<span class="{% if forloop.counter <= attempt.stars %}earned{% endif %}">★</span>{% endfor %}</div>
+        <div class="score-card"><strong>{{ attempt.score }}/{{ attempt.total_questions }}</strong><span>{{ attempt.score_pct }}% score</span></div>
+        <div class="result-actions">
+            <a href="{% url 'quizzes:start' rhyme.slug %}" class="btn btn-primary">↻ Try again</a>
+            <a href="{% url 'rhymes:detail' rhyme.slug %}" class="btn btn-soft">Back to rhyme</a>
+            <a href="{% url 'progress:dashboard' %}" class="btn btn-ghost">My progress</a>
+        </div>
+        {% if new_badges %}
+        <div class="new-badges"><span class="eyebrow">New achievement</span><div class="badge-list">{% for badge in new_badges %}<span class="badge-pill">{{ badge.icon_emoji }} {{ badge.name }}</span>{% endfor %}</div></div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

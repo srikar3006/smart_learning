@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ rhyme.title }} — Smart Learning{% endblock %}
+{% block content %}
+<div class="lesson-header">
+    <a href="{% url 'rhymes:list' %}" class="back-link">← Back to rhymes</a>
+    <div class="lesson-title-row">
+        <div><span class="eyebrow">{{ rhyme.category.icon_emoji }} {{ rhyme.category.name }} • {{ rhyme.get_difficulty_display }}</span><h1>{{ rhyme.title }}</h1><p>{{ rhyme.description }}</p></div>
+        <div class="lesson-progress-chip"><span>✓</span><strong id="complete-status">{% if progress.completed %}Completed{% else %}In progress{% endif %}</strong></div>
+    </div>
+</div>
+
+<section class="player-layout">
+    <div class="player-panel">
+        {% if rhyme.video_file %}
+        <div class="media-frame"><video id="rhyme-media" class="player-media" controls playsinline preload="metadata" src="{{ rhyme.video_file.url }}"></video></div>
+        {% elif embed_url %}
+        <div class="media-frame"><iframe id="rhyme-media-frame" class="player-media iframe-player" src="{{ embed_url }}" title="{{ rhyme.title }} video" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+        {% elif rhyme.audio_file %}
+        <div class="media-frame audio-stage" id="audio-stage"><div class="audio-visual"><div class="audio-core">♫</div><span>Sing along</span></div><audio id="rhyme-media" class="native-audio" controls preload="metadata" src="{{ rhyme.audio_file.url }}"></audio></div>
+        {% else %}
+        <div class="media-frame fallback-stage" id="fallback-stage" data-lyrics="{{ rhyme.lyrics|escapejs }}">
+            <div class="fallback-scene">
+                <div class="fallback-sun"></div><div class="fallback-cloud c1"></div><div class="fallback-cloud c2"></div>
+                <div class="fallback-character">{{ rhyme.category.icon_emoji }}</div>
+                <div class="fallback-ground"></div>
+            </div>
+            <div class="fallback-copy"><span class="eyebrow">Interactive lesson mode</span><h2>Listen, watch and practice.</h2><p>No media file has been uploaded for this lesson yet. Use the built-in voice mode for a functional preview, or add the real cartoon video/audio from the admin area.</p></div>
+        </div>
+        {% endif %}
+
+        <div class="player-toolbar">
+            {% if rhyme.video_file or rhyme.audio_file or embed_url %}
+            <button id="repeat-btn" class="btn btn-accent">↻ Smart Repeat <span id="repeat-count">{{ progress.repeat_count }}</span></button>
+            {% elif not embed_url %}
+            <button id="voice-btn" class="btn btn-accent">▶ Listen to rhyme</button>
+            {% endif %}
+            {% if rhyme.has_quiz %}<a href="{% url 'quizzes:start' rhyme.slug %}" class="btn btn-primary">Take the quiz <span>→</span></a>{% endif %}
+            <button id="complete-btn" class="btn btn-soft" type="button" {% if progress.completed %}disabled{% endif %}>{% if progress.completed %}✓ Completed{% else %}Mark as learned{% endif %}</button>
+        </div>
+        <div class="player-note"><span>↻</span> Smart Repeat records practice in your progress dashboard.</div>
+    </div>
+
+    <aside class="lesson-side">
+        <div class="side-card stats-mini">
+            <div><span>▶</span><strong>{{ progress.times_played }}</strong><small>completed plays</small></div>
+            <div><span>↻</span><strong id="side-repeat">{{ progress.repeat_count }}</strong><small>smart repeats</small></div>
+        </div>
+        <div class="side-card">
+            <div class="side-heading"><span class="eyebrow">Lyrics</span><span class="tiny-badge">Read • Listen</span></div>
+            <div class="lyrics-box" id="lyrics-box">{{ rhyme.lyrics }}</div>
+        </div>
+    </aside>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+window.RHYME_CONFIG = {
+    logPlayUrl: "{% url 'rhymes:api_log_play' rhyme.slug %}",
+    logRepeatUrl: "{% url 'rhymes:api_log_repeat' rhyme.slug %}",
+    markCompleteUrl: "{% url 'rhymes:api_mark_complete' rhyme.slug %}",
+    completed: {{ progress.completed|yesno:"true,false" }}
+};
+</script>
+<script src="{% static 'js/player.js' %}"></script>
+{% endblock %}

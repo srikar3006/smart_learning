@@ -1,0 +1,412 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Learning</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(48, 91, 255, 0.25), transparent 28%),
+                radial-gradient(circle at 85% 30%, rgba(180, 60, 255, 0.20), transparent 25%),
+                linear-gradient(135deg, #05083b 0%, #07135c 45%, #071b72 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Hide the old navigation from base layout */
+        header,
+        nav,
+        .site-header,
+        .main-header,
+        .top-nav {
+            display: none !important;
+        }
+
+        .smart-page {
+            min-height: 100vh;
+            position: relative;
+            padding: 35px 7% 45px;
+            overflow: hidden;
+        }
+
+        /* Background decorations */
+        .music {
+            position: absolute;
+            font-size: 42px;
+            opacity: 0.8;
+            animation: floatMusic 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .m1 { left: 8%; top: 12%; color: #22aaff; }
+        .m2 { left: 15%; top: 28%; color: #d15cff; animation-delay: 1s; }
+        .m3 { right: 14%; top: 16%; color: #ffd12e; animation-delay: 1.5s; }
+        .m4 { right: 6%; top: 35%; color: #b83dff; animation-delay: 2s; }
+        .m5 { left: 7%; bottom: 28%; color: #7e7cff; animation-delay: .5s; }
+
+        @keyframes floatMusic {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        .stars {
+            position: absolute;
+            color: #fff;
+            opacity: .8;
+            pointer-events: none;
+        }
+
+        .s1 { left: 15%; top: 9%; }
+        .s2 { left: 25%; top: 18%; }
+        .s3 { right: 23%; top: 10%; }
+        .s4 { right: 10%; top: 24%; }
+        .s5 { left: 4%; bottom: 35%; }
+
+        /* Main content */
+        .landing-content {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .brand-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            background: linear-gradient(135deg, #4c18ff, #00aaff);
+            box-shadow: 0 0 35px rgba(50, 100, 255, .65);
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: clamp(38px, 5vw, 62px);
+            font-weight: 800;
+            letter-spacing: -2px;
+        }
+
+        .brand h1 span {
+            background: linear-gradient(90deg, #12baff, #ff5be8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .brand p {
+            margin: 10px 0 0;
+            font-size: 18px;
+            color: #c9d5ff;
+        }
+
+        .tagline {
+            margin-top: 8px;
+            font-size: 15px;
+            color: #9daeff;
+        }
+
+        /* Cards */
+        .auth-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 30px;
+            max-width: 1050px;
+            margin: 35px auto 30px;
+        }
+
+        .auth-card {
+            min-height: 440px;
+            padding: 35px;
+            border: 1px solid rgba(75, 150, 255, .65);
+            border-radius: 25px;
+            background: linear-gradient(
+                145deg,
+                rgba(12, 25, 105, .92),
+                rgba(7, 19, 82, .82)
+            );
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, .28),
+                inset 0 0 40px rgba(70, 100, 255, .06);
+            backdrop-filter: blur(12px);
+        }
+
+        .auth-icon {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 8px;
+        }
+
+        .auth-card h2 {
+            text-align: center;
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .auth-card > p {
+            text-align: center;
+            color: #bdcaff;
+            margin: 10px 0 28px;
+        }
+
+        .auth-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 58px;
+            border-radius: 14px;
+            text-decoration: none;
+            color: white;
+            font-size: 19px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #721cff, #155dff, #00a8ff);
+            box-shadow: 0 10px 30px rgba(50, 80, 255, .35);
+            transition: .2s ease;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(50, 100, 255, .55);
+        }
+
+        .auth-button.secondary {
+            background: linear-gradient(90deg, #7a19ff, #314eff, #00a8ff);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 22px;
+            color: #c0cbef;
+            font-size: 15px;
+        }
+
+        .auth-footer a {
+            color: #18baff;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Bottom features */
+        .features {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 70px;
+            margin-top: 35px;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 190px;
+        }
+
+        .feature-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            background: linear-gradient(135deg, #167dff, #5a1cff);
+            box-shadow: 0 0 20px rgba(50, 100, 255, .4);
+        }
+
+        .feature strong {
+            display: block;
+            font-size: 17px;
+        }
+
+        .feature small {
+            display: block;
+            margin-top: 3px;
+            color: #aab7df;
+        }
+
+        @media (max-width: 800px) {
+            .smart-page {
+                padding: 25px 18px 35px;
+            }
+
+            .auth-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features {
+                gap: 25px;
+            }
+
+            .auth-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="smart-page">
+
+    <!-- Decorative music -->
+    <div class="music m1">♪</div>
+    <div class="music m2">♫</div>
+    <div class="music m3">♪</div>
+    <div class="music m4">♫</div>
+    <div class="music m5">♪</div>
+
+    <div class="stars s1">✦</div>
+    <div class="stars s2">✧</div>
+    <div class="stars s3">✦</div>
+    <div class="stars s4">✧</div>
+    <div class="stars s5">✦</div>
+
+    <main class="landing-content">
+
+        <!-- Brand -->
+        <section class="brand">
+            <div class="brand-icon">📖</div>
+
+            <h1>
+                Smart Learning
+                <span>Through Tunes &amp; Cartoons</span>
+            </h1>
+
+            <p>Learn, Sing, Enjoy! – Interactive learning for kids</p>
+            <div class="tagline">
+                Fun learning through rhymes, quizzes and playful activities
+            </div>
+        </section>
+
+        <!-- Login + Register -->
+        <section class="auth-grid">
+
+            <!-- LOGIN -->
+            <div class="auth-card">
+
+                <div class="auth-icon">✨</div>
+
+                <h2>Welcome Back!</h2>
+
+                <p>
+                    Login to continue your learning journey
+                </p>
+
+                <a
+                    href="{% url 'accounts:login' %}"
+                    class="auth-button"
+                >
+                    Login
+                </a>
+
+                <div class="auth-footer">
+                    Don't have an account?
+                    <a href="{% url 'accounts:register' %}">
+                        Register Now
+                    </a>
+                </div>
+
+            </div>
+
+
+            <!-- REGISTER -->
+            <div class="auth-card">
+
+                <div class="auth-icon">🚀</div>
+
+                <h2>Create Account</h2>
+
+                <p>
+                    Join and start your learning adventure!
+                </p>
+
+                <a
+                    href="{% url 'accounts:register' %}"
+                    class="auth-button secondary"
+                >
+                    Register
+                </a>
+
+                <div class="auth-footer">
+                    Already have an account?
+                    <a href="{% url 'accounts:login' %}">
+                        Login
+                    </a>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Features -->
+        <section class="features">
+
+            <div class="feature">
+                <div class="feature-icon">🛡️</div>
+                <div>
+                    <strong>Safe &amp; Secure</strong>
+                    <small>Your data is protected</small>
+                </div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">👧</div>
+                <div>
+                    <strong>Kid-Friendly</strong>
+                    <small>Designed for children</small>
+                </div>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🏆</div>
+                <div>
+                    <strong>Quality Learning</strong>
+                    <small>Curated educational content</small>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+</body>
+</html>

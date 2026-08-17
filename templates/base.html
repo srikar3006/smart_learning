@@ -1,0 +1,98 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Smart Learning{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+         ========================= -->
+    <header class="site-header">
+        <div class="container nav-inner">
+
+            <!-- Logo -->
+            <a href="{% url 'core:landing' %}" class="brand">
+                <span class="brand-mark">♪</span>
+
+                <span class="brand-text">
+                    <strong>Smart Learning</strong>
+                    <small>Tunes &amp; Cartoons</small>
+                </span>
+            </a>
+
+            <!--
+                Login and Get Started buttons intentionally removed.
+                Authentication buttons are shown only inside the landing page.
+            -->
+
+        </div>
+    </header>
+
+
+    <!-- =========================
+         FLASH MESSAGES
+         ========================= -->
+    {% if messages %}
+        <div class="container">
+            <div class="messages">
+
+                {% for message in messages %}
+                    <div class="message message-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    {% endif %}
+
+
+    <!-- =========================
+         MAIN CONTENT
+         ========================= -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+         ========================= -->
+    <footer class="site-footer">
+        <div class="container footer-inner">
+
+            <div>
+                <strong>Smart Learning</strong>
+                <p>Learn, Sing, Enjoy!</p>
+            </div>
+
+            <div>
+                <small>
+                    Interactive learning for kids
+                </small>
+            </div>
+
+        </div>
+    </footer>
+
+
+    <!-- =========================
+         JAVASCRIPT
+         ========================= -->
+    <script src="{% static 'js/app.js' %}"></script>
+
+    {% block extra_js %}
+    {% endblock %}
+
+</body>
+</html>
