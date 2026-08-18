@@ -5,277 +5,653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Learning</title>
 
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Smart Learning | Welcome</title>
 
     <style>
         * {
             box-sizing: border-box;
-        }
-
-        html, body {
             margin: 0;
             padding: 0;
-            min-height: 100%;
         }
 
         body {
+            min-height: 100vh;
             font-family: Arial, Helvetica, sans-serif;
-            background:
-                radial-gradient(circle at 15% 20%, rgba(48, 91, 255, 0.25), transparent 28%),
-                radial-gradient(circle at 85% 30%, rgba(180, 60, 255, 0.20), transparent 25%),
-                linear-gradient(135deg, #05083b 0%, #07135c 45%, #071b72 100%);
             color: white;
+
+            background:
+                radial-gradient(
+                    circle at 15% 20%,
+                    #1736a8 0%,
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 85% 80%,
+                    #34119c 0%,
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #02052d,
+                    #07156c 50%,
+                    #05012c
+                );
+
             overflow-x: hidden;
         }
 
-        /* Hide the old navigation from base layout */
-        header,
-        nav,
-        .site-header,
-        .main-header,
-        .top-nav {
-            display: none !important;
-        }
+        /* =====================================================
+           PAGE
+        ===================================================== */
 
-        .smart-page {
+        .page {
             min-height: 100vh;
-            position: relative;
-            padding: 35px 7% 45px;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 28px 6%;
         }
 
-        /* Background decorations */
-        .music {
-            position: absolute;
-            font-size: 42px;
-            opacity: 0.8;
-            animation: floatMusic 4s ease-in-out infinite;
-            pointer-events: none;
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
         }
 
-        .m1 { left: 8%; top: 12%; color: #22aaff; }
-        .m2 { left: 15%; top: 28%; color: #d15cff; animation-delay: 1s; }
-        .m3 { right: 14%; top: 16%; color: #ffd12e; animation-delay: 1.5s; }
-        .m4 { right: 6%; top: 35%; color: #b83dff; animation-delay: 2s; }
-        .m5 { left: 7%; bottom: 28%; color: #7e7cff; animation-delay: .5s; }
-
-        @keyframes floatMusic {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-12px);
-            }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
-        .stars {
-            position: absolute;
-            color: #fff;
-            opacity: .8;
-            pointer-events: none;
+        .logo-icon {
+            width: 62px;
+            height: 62px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 18px;
+
+            font-size: 35px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #20aaff,
+                    #673dff
+                );
+
+            box-shadow:
+                0 0 30px rgba(35, 125, 255, .75);
         }
 
-        .s1 { left: 15%; top: 9%; }
-        .s2 { left: 25%; top: 18%; }
-        .s3 { right: 23%; top: 10%; }
-        .s4 { right: 10%; top: 24%; }
-        .s5 { left: 4%; bottom: 35%; }
-
-        /* Main content */
-        .landing-content {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 5;
+        .logo-title {
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: .3px;
         }
 
-        .brand {
-            text-align: center;
+        .logo-subtitle {
+            color: #42bfff;
+            font-size: 17px;
+            margin-top: 3px;
+        }
+
+        .help {
+            border: 1px solid #3154a8;
+
+            padding: 13px 24px;
+
+            border-radius: 30px;
+
+            background: rgba(10, 25, 90, .7);
+
+            font-size: 15px;
+
+            color: #dbe5ff;
+
+            box-shadow:
+                0 0 20px rgba(20, 100, 255, .12);
+        }
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            flex: 1;
+
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            gap: 28px;
+
+            align-items: center;
+
+            margin-top: 35px;
             margin-bottom: 30px;
         }
 
-        .brand-icon {
-            width: 72px;
-            height: 72px;
-            margin: 0 auto 12px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 38px;
-            background: linear-gradient(135deg, #4c18ff, #00aaff);
-            box-shadow: 0 0 35px rgba(50, 100, 255, .65);
-        }
+        .hero-left,
+        .hero-right {
+            border: 1px solid #285bd0;
 
-        .brand h1 {
-            margin: 0;
-            font-size: clamp(38px, 5vw, 62px);
-            font-weight: 800;
-            letter-spacing: -2px;
-        }
-
-        .brand h1 span {
-            background: linear-gradient(90deg, #12baff, #ff5be8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .brand p {
-            margin: 10px 0 0;
-            font-size: 18px;
-            color: #c9d5ff;
-        }
-
-        .tagline {
-            margin-top: 8px;
-            font-size: 15px;
-            color: #9daeff;
-        }
-
-        /* Cards */
-        .auth-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 30px;
-            max-width: 1050px;
-            margin: 35px auto 30px;
-        }
-
-        .auth-card {
-            min-height: 440px;
-            padding: 35px;
-            border: 1px solid rgba(75, 150, 255, .65);
             border-radius: 25px;
-            background: linear-gradient(
-                145deg,
-                rgba(12, 25, 105, .92),
-                rgba(7, 19, 82, .82)
-            );
+
+            background:
+                rgba(5, 17, 76, .72);
+
             box-shadow:
-                0 20px 60px rgba(0, 0, 0, .28),
-                inset 0 0 40px rgba(70, 100, 255, .06);
-            backdrop-filter: blur(12px);
+                0 0 35px rgba(0, 111, 255, .16);
         }
 
-        .auth-icon {
-            text-align: center;
-            font-size: 42px;
-            margin-bottom: 8px;
-        }
+        /* =====================================================
+           LEFT HERO
+        ===================================================== */
 
-        .auth-card h2 {
-            text-align: center;
-            margin: 0;
-            font-size: 32px;
-        }
+        .hero-left {
+            min-height: 520px;
 
-        .auth-card > p {
-            text-align: center;
-            color: #bdcaff;
-            margin: 10px 0 28px;
-        }
+            padding: 65px 50px;
 
-        .auth-button {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
-            width: 100%;
-            min-height: 58px;
-            border-radius: 14px;
-            text-decoration: none;
-            color: white;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .hero-left:after {
+            content: "🎵  ♪  🎶  ✨  🎵";
+
+            position: absolute;
+
+            right: 30px;
+            top: 30px;
+
+            color: #35bfff;
+
+            font-size: 24px;
+
+            letter-spacing: 15px;
+
+            opacity: .8;
+        }
+
+        .small-title {
+            color: #00b9ff;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+
+            font-size: clamp(
+                42px,
+                5vw,
+                70px
+            );
+
+            line-height: 1.05;
+        }
+
+        h1 span {
+            background:
+                linear-gradient(
+                    90deg,
+                    #00bfff,
+                    #9d54ff,
+                    #ff65c8
+                );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .description {
+            margin-top: 25px;
+
+            max-width: 600px;
+
             font-size: 19px;
-            font-weight: 700;
-            background: linear-gradient(90deg, #721cff, #155dff, #00a8ff);
-            box-shadow: 0 10px 30px rgba(50, 80, 255, .35);
-            transition: .2s ease;
+
+            line-height: 1.6;
+
+            color: #d5dcff;
         }
 
-        .auth-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(50, 100, 255, .55);
-        }
+        /* =====================================================
+           FEATURES
+        ===================================================== */
 
-        .auth-button.secondary {
-            background: linear-gradient(90deg, #7a19ff, #314eff, #00a8ff);
-        }
-
-        .auth-footer {
-            text-align: center;
-            margin-top: 22px;
-            color: #c0cbef;
-            font-size: 15px;
-        }
-
-        .auth-footer a {
-            color: #18baff;
-            font-weight: 700;
-            text-decoration: none;
-        }
-
-        .auth-footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Bottom features */
         .features {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 70px;
+
+            gap: 15px;
+
             margin-top: 35px;
-            flex-wrap: wrap;
         }
 
         .feature {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 190px;
+            padding: 18px 20px;
+
+            border: 1px solid #244ca9;
+
+            border-radius: 18px;
+
+            background:
+                rgba(12, 31, 108, .8);
+
+            flex: 1;
+
+            transition: .25s;
         }
 
-        .feature-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            background: linear-gradient(135deg, #167dff, #5a1cff);
-            box-shadow: 0 0 20px rgba(50, 100, 255, .4);
+        .feature:hover {
+            transform: translateY(-5px);
+
+            border-color: #3b8dff;
+
+            box-shadow:
+                0 0 25px rgba(0, 145, 255, .25);
         }
 
         .feature strong {
             display: block;
+
             font-size: 17px;
+
+            margin-top: 7px;
+
+            margin-bottom: 5px;
         }
 
         .feature small {
-            display: block;
-            margin-top: 3px;
-            color: #aab7df;
+            color: #aab9ec;
+
+            font-size: 13px;
         }
 
-        @media (max-width: 800px) {
-            .smart-page {
-                padding: 25px 18px 35px;
+        /* =====================================================
+           RIGHT AUTH CARD
+        ===================================================== */
+
+        .hero-right {
+            padding: 45px;
+        }
+
+        .card-title {
+            color: #09baff;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 8px;
+        }
+
+        .hero-right h2 {
+            font-size: 40px;
+
+            margin: 12px 0 10px;
+        }
+
+        .auth-description {
+            color: #b9c8f7;
+
+            font-size: 15px;
+
+            line-height: 1.6;
+
+            margin-bottom: 28px;
+        }
+
+        /* =====================================================
+           AUTH STATUS
+        ===================================================== */
+
+        .auth-status {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 12px 15px;
+
+            margin-bottom: 20px;
+
+            border-radius: 14px;
+
+            border: 1px solid rgba(
+                47,
+                137,
+                255,
+                .35
+            );
+
+            background:
+                rgba(15, 40, 120, .45);
+
+            color: #dce7ff;
+
+            font-size: 13px;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+
+            border-radius: 50%;
+
+            background: #20e6a2;
+
+            box-shadow:
+                0 0 12px #20e6a2;
+        }
+
+        /* =====================================================
+           CHOICE BUTTONS
+        ===================================================== */
+
+        .choice-buttons {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 18px;
+        }
+
+        .choice {
+            text-decoration: none;
+
+            color: white;
+
+            padding: 28px 20px;
+
+            border-radius: 18px;
+
+            border: 1px solid #3159b5;
+
+            text-align: center;
+
+            background:
+                rgba(15, 30, 100, .7);
+
+            transition: .25s;
+
+            cursor: pointer;
+        }
+
+        .choice:hover {
+            transform: translateY(-5px);
+
+            border-color: #a447ff;
+
+            box-shadow:
+                0 0 25px rgba(
+                    139,
+                    55,
+                    255,
+                    .6
+                );
+        }
+
+        .choice.login {
+            border-color: #168dff;
+        }
+
+        .choice.login:hover {
+            border-color: #00c8ff;
+
+            box-shadow:
+                0 0 28px rgba(
+                    0,
+                    200,
+                    255,
+                    .45
+                );
+        }
+
+        .choice.register {
+            border-color: #7b42ff;
+        }
+
+        .choice.register:hover {
+            border-color: #d45aff;
+
+            box-shadow:
+                0 0 28px rgba(
+                    180,
+                    70,
+                    255,
+                    .45
+                );
+        }
+
+        .choice-icon {
+            font-size: 45px;
+
+            margin-bottom: 12px;
+        }
+
+        .choice-title {
+            font-size: 23px;
+
+            font-weight: bold;
+        }
+
+        .choice-text {
+            color: #b8c6f3;
+
+            margin-top: 8px;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+        /* =====================================================
+           LOGIN NOTE
+        ===================================================== */
+
+        .login-note {
+            margin-top: 22px;
+
+            padding: 14px 16px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(3, 10, 55, .55);
+
+            border: 1px solid
+                rgba(80, 110, 200, .25);
+
+            color: #aebde9;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+
+            text-align: center;
+        }
+
+        .login-note strong {
+            color: #53c9ff;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer {
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 55px;
+
+            padding-top: 20px;
+
+            color: #c3cdf4;
+
+            font-size: 13px;
+        }
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media(max-width: 1000px) {
+
+            .hero {
+                grid-template-columns: 1fr;
+
+                margin-top: 30px;
             }
 
-            .auth-grid {
-                grid-template-columns: 1fr;
+            .hero-left {
+                min-height: auto;
+
+                padding: 55px 45px;
+            }
+
+            .hero-right {
+                padding: 40px;
+            }
+
+            h1 {
+                font-size: 52px;
             }
 
             .features {
-                gap: 25px;
+                flex-direction: row;
+            }
+        }
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media(max-width: 650px) {
+
+            .page {
+                padding: 20px;
             }
 
-            .auth-card {
-                padding: 25px;
+            .header {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 20px;
+            }
+
+            .logo-icon {
+                width: 55px;
+                height: 55px;
+
+                font-size: 30px;
+            }
+
+            .logo-title {
+                font-size: 25px;
+            }
+
+            .logo-subtitle {
+                font-size: 14px;
+            }
+
+            .help {
+                width: 100%;
+
+                text-align: center;
+            }
+
+            .hero {
+                margin-top: 25px;
+
+                gap: 20px;
+            }
+
+            .hero-left {
+                padding: 40px 25px;
+
+                min-height: auto;
+            }
+
+            .hero-left:after {
+                font-size: 18px;
+
+                right: 15px;
+                top: 15px;
+
+                letter-spacing: 7px;
+            }
+
+            .small-title {
+                font-size: 12px;
+            }
+
+            h1 {
+                font-size: 40px;
+            }
+
+            .description {
+                font-size: 16px;
+            }
+
+            .features {
+                flex-direction: column;
+
+                gap: 10px;
+            }
+
+            .hero-right {
+                padding: 30px 20px;
+            }
+
+            .hero-right h2 {
+                font-size: 32px;
+            }
+
+            .choice-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .choice {
+                padding: 24px 18px;
+            }
+
+            .footer {
+                flex-direction: column;
+
+                gap: 10px;
+
+                padding-bottom: 20px;
             }
         }
     </style>
@@ -283,129 +659,253 @@
 
 <body>
 
-<div class="smart-page">
+<div class="page">
 
-    <!-- Decorative music -->
-    <div class="music m1">♪</div>
-    <div class="music m2">♫</div>
-    <div class="music m3">♪</div>
-    <div class="music m4">♫</div>
-    <div class="music m5">♪</div>
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
-    <div class="stars s1">✦</div>
-    <div class="stars s2">✧</div>
-    <div class="stars s3">✦</div>
-    <div class="stars s4">✧</div>
-    <div class="stars s5">✦</div>
+    <header class="header">
 
-    <main class="landing-content">
+        <div class="logo">
 
-        <!-- Brand -->
-        <section class="brand">
-            <div class="brand-icon">📖</div>
+            <div class="logo-icon">
+                📖
+            </div>
+
+            <div>
+
+                <div class="logo-title">
+                    Smart Learning
+                </div>
+
+                <div class="logo-subtitle">
+                    Through Tunes & Cartoons
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="help">
+            ❔ Need Help?
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN HERO
+    ====================================================== -->
+
+    <main class="hero">
+
+        <!-- =================================================
+             LEFT SIDE
+        ================================================== -->
+
+        <section class="hero-left">
+
+            <div class="small-title">
+                ✨ WELCOME TO YOUR LEARNING SPACE
+            </div>
 
             <h1>
-                Smart Learning
-                <span>Through Tunes &amp; Cartoons</span>
+                Smart Learning<br>
+                Through
+                <span>Tunes & Cartoons</span>
             </h1>
 
-            <p>Learn, Sing, Enjoy! – Interactive learning for kids</p>
-            <div class="tagline">
-                Fun learning through rhymes, quizzes and playful activities
+            <p class="description">
+                Learn, Sing, Enjoy! Interactive nursery rhymes,
+                fun quizzes and playful activities designed
+                especially for children.
+            </p>
+
+
+            <!-- FEATURES -->
+
+            <div class="features">
+
+                <div class="feature">
+
+                    🎵
+
+                    <strong>
+                        Fun Learning
+                    </strong>
+
+                    <small>
+                        Learn through rhymes
+                    </small>
+
+                </div>
+
+
+                <div class="feature">
+
+                    🎮
+
+                    <strong>
+                        Interactive
+                    </strong>
+
+                    <small>
+                        Quizzes & activities
+                    </small>
+
+                </div>
+
+
+                <div class="feature">
+
+                    🏆
+
+                    <strong>
+                        Track Progress
+                    </strong>
+
+                    <small>
+                        Earn badges
+                    </small>
+
+                </div>
+
             </div>
+
         </section>
 
-        <!-- Login + Register -->
-        <section class="auth-grid">
 
-            <!-- LOGIN -->
-            <div class="auth-card">
+        <!-- =================================================
+             RIGHT SIDE - AUTHENTICATION
+        ================================================== -->
 
-                <div class="auth-icon">✨</div>
+        <section class="hero-right">
 
-                <h2>Welcome Back!</h2>
+            <div class="card-title">
+                GET STARTED
+            </div>
 
-                <p>
-                    Login to continue your learning journey
-                </p>
+            <h2>
+                Welcome! 👋
+            </h2>
+
+            <p class="auth-description">
+                Please choose an option below to continue.
+                You must login with valid credentials before
+                accessing your Smart Learning dashboard.
+            </p>
+
+
+            <!-- AUTH STATUS -->
+
+            <div class="auth-status">
+
+                <span class="status-dot"></span>
+
+                <span>
+                    Secure Login Required
+                </span>
+
+            </div>
+
+
+            <!-- LOGIN / REGISTER -->
+
+            <div class="choice-buttons">
+
+                <!-- ================= LOGIN ================= -->
 
                 <a
                     href="{% url 'accounts:login' %}"
-                    class="auth-button"
+                    class="choice login"
                 >
-                    Login
+
+                    <div class="choice-icon">
+                        🔐
+                    </div>
+
+                    <div class="choice-title">
+                        Login
+                    </div>
+
+                    <div class="choice-text">
+                        Already have an account?
+                        Login to continue learning.
+                    </div>
+
                 </a>
 
-                <div class="auth-footer">
-                    Don't have an account?
-                    <a href="{% url 'accounts:register' %}">
-                        Register Now
-                    </a>
-                </div>
 
-            </div>
-
-
-            <!-- REGISTER -->
-            <div class="auth-card">
-
-                <div class="auth-icon">🚀</div>
-
-                <h2>Create Account</h2>
-
-                <p>
-                    Join and start your learning adventure!
-                </p>
+                <!-- ================= REGISTER ================= -->
 
                 <a
                     href="{% url 'accounts:register' %}"
-                    class="auth-button secondary"
+                    class="choice register"
                 >
-                    Register
+
+                    <div class="choice-icon">
+                        🚀
+                    </div>
+
+                    <div class="choice-title">
+                        Register
+                    </div>
+
+                    <div class="choice-text">
+                        Create a new account and
+                        start your learning journey.
+                    </div>
+
                 </a>
 
-                <div class="auth-footer">
-                    Already have an account?
-                    <a href="{% url 'accounts:login' %}">
-                        Login
-                    </a>
-                </div>
-
             </div>
 
-        </section>
 
+            <!-- SECURITY NOTE -->
 
-        <!-- Features -->
-        <section class="features">
+            <div class="login-note">
 
-            <div class="feature">
-                <div class="feature-icon">🛡️</div>
-                <div>
-                    <strong>Safe &amp; Secure</strong>
-                    <small>Your data is protected</small>
-                </div>
-            </div>
+                🛡️
+                <strong>
+                    Secure Access:
+                </strong>
 
-            <div class="feature">
-                <div class="feature-icon">👧</div>
-                <div>
-                    <strong>Kid-Friendly</strong>
-                    <small>Designed for children</small>
-                </div>
-            </div>
+                Your dashboard is protected.
+                Login verification is required before
+                entering the Home page.
 
-            <div class="feature">
-                <div class="feature-icon">🏆</div>
-                <div>
-                    <strong>Quality Learning</strong>
-                    <small>Curated educational content</small>
-                </div>
             </div>
 
         </section>
 
     </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <span>
+            🛡️ Safe & Secure
+        </span>
+
+        <span>
+            😊 Kid-Friendly
+        </span>
+
+        <span>
+            ⭐ Quality Learning
+        </span>
+
+        <span>
+            © 2026 Smart Learning
+        </span>
+
+    </footer>
+
 </div>
 
 </body>

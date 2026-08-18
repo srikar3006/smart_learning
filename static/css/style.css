@@ -501,3 +501,18 @@ table.progress-table { width:100%; border-collapse:collapse; }
     .profile-banner { align-items:flex-start; flex-wrap:wrap; }
     .profile-chip { margin-left:0; }
 }
+
+
+
+/* Smart Learning authentication page polish.
+   Login/register pages contain their own scoped UI CSS, so this block only
+   guarantees the shared document background and form controls remain compatible. */
+body:has(.auth-page), body:has(.reg-page){
+    background:#02052b;
+}
+body:has(.auth-page) main, body:has(.reg-page) main{
+    min-height:0;
+}
+body:has(.auth-page) .messages, body:has(.reg-page) .messages{
+    display:none;
+}

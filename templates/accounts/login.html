@@ -5,340 +5,572 @@
 {% block content %}
 
 <style>
-    .login-page {
-        min-height: calc(100vh - 90px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 40px 20px 60px;
+.auth-page,
+.auth-page * {
+    box-sizing: border-box;
+}
+
+.auth-page {
+    min-height: calc(100vh - 90px);
+    padding: 28px 28px 48px;
+    background:
+        radial-gradient(circle at 15% 45%, rgba(31,82,255,.20), transparent 32%),
+        radial-gradient(circle at 85% 70%, rgba(122,26,255,.20), transparent 30%),
+        linear-gradient(135deg, #02052b, #060b49 55%, #08032f);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-page:before,
+.auth-page:after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(2px);
+    opacity: .7;
+}
+
+.auth-page:before {
+    width: 420px;
+    height: 420px;
+    left: -230px;
+    bottom: -220px;
+    background: #2415c7;
+    box-shadow: 0 0 120px #2d27ff;
+}
+
+.auth-page:after {
+    width: 360px;
+    height: 360px;
+    right: -180px;
+    top: 120px;
+    background: #171fc2;
+    box-shadow: 0 0 120px #9d24ff;
+}
+
+.auth-top {
+    width: min(1320px, 100%);
+    margin: 0 auto 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #fff;
+}
+
+.auth-brand-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    font-size: 29px;
+    background: linear-gradient(135deg, #16c7ff, #624cff);
+    box-shadow: 0 0 28px rgba(30,151,255,.45);
+}
+
+.auth-brand strong {
+    display: block;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.auth-brand small {
+    display: block;
+    color: #aebcff;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.help-pill {
+    border: 1px solid rgba(70,130,255,.5);
+    border-radius: 999px;
+    padding: 11px 18px;
+    color: #eaf1ff;
+    background: rgba(5,13,75,.55);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.auth-grid {
+    width: min(1320px, 100%);
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1.55fr .85fr;
+    gap: 18px;
+    position: relative;
+    z-index: 1;
+}
+
+.auth-hero,
+.auth-card {
+    border: 1px solid rgba(62,119,255,.55);
+    border-radius: 28px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(7,19,92,.82),
+            rgba(3,7,55,.94)
+        );
+    box-shadow: 0 25px 80px rgba(0,0,0,.34);
+    overflow: hidden;
+}
+
+.auth-hero {
+    min-height: 690px;
+    padding: 54px 48px;
+    position: relative;
+}
+
+.auth-hero:before {
+    content: "✦   ♪        ♫";
+    position: absolute;
+    right: 65px;
+    top: 70px;
+    color: #18cfff;
+    font-size: 32px;
+    letter-spacing: 30px;
+    opacity: .75;
+}
+
+.auth-hero:after {
+    content: "♪      ♫";
+    position: absolute;
+    right: 120px;
+    bottom: 220px;
+    color: #ff54df;
+    font-size: 30px;
+    letter-spacing: 35px;
+    opacity: .65;
+}
+
+.auth-kicker {
+    color: #17bfff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.auth-hero h1 {
+    font-size: clamp(42px, 4.5vw, 70px);
+    line-height: 1.02;
+    letter-spacing: -.05em;
+    margin: 18px 0 18px;
+    max-width: 760px;
+}
+
+.auth-hero h1 span {
+    color: #ef62db;
+}
+
+.auth-hero p {
+    font-size: 17px;
+    line-height: 1.65;
+    color: #ccd8ff;
+    max-width: 720px;
+}
+
+.learning-orbit {
+    position: absolute;
+    left: 54px;
+    top: 315px;
+    width: 205px;
+    height: 205px;
+    border: 1px solid rgba(70,109,255,.65);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    box-shadow:
+        0 0 35px rgba(25,75,255,.25),
+        inset 0 0 40px rgba(40,45,255,.18);
+}
+
+.learning-orbit:before {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border: 2px solid #159dff;
+    border-radius: 50%;
+    box-shadow: 0 0 35px rgba(0,170,255,.5);
+}
+
+.learning-orbit b {
+    position: absolute;
+    top: 25px;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.learning-orbit span {
+    font-size: 54px;
+    z-index: 1;
+}
+
+.learning-orbit small {
+    position: absolute;
+    bottom: 25px;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.hero-character {
+    position: absolute;
+    right: 90px;
+    bottom: 75px;
+    font-size: 155px;
+    filter: drop-shadow(0 22px 18px rgba(0,0,0,.35));
+    animation: authFloat 3.5s ease-in-out infinite;
+}
+
+.hero-book {
+    position: absolute;
+    right: 185px;
+    bottom: 54px;
+    font-size: 105px;
+    filter: drop-shadow(0 0 25px rgba(255,200,80,.4));
+    transform: rotate(-4deg);
+}
+
+.hero-castle {
+    position: absolute;
+    right: 35px;
+    bottom: 115px;
+    font-size: 115px;
+    opacity: .9;
+    filter: drop-shadow(0 0 24px rgba(123,87,255,.6));
+}
+
+.smart-strip {
+    position: absolute;
+    left: 42px;
+    right: 42px;
+    bottom: 28px;
+    border: 1px solid rgba(75,121,255,.35);
+    border-radius: 18px;
+    background: rgba(4,12,70,.6);
+    padding: 15px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+
+.smart-strip .icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg,#8320ff,#147fff);
+    font-size: 22px;
+}
+
+.smart-strip strong {
+    display: block;
+}
+
+.smart-strip small {
+    color: #aebcff;
+}
+
+.auth-card {
+    padding: 38px 34px;
+    align-self: center;
+}
+
+.auth-card .secure {
+    color: #16bfff;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.auth-card h2 {
+    font-size: 38px;
+    margin: 10px 0 7px;
+    color: #fff;
+}
+
+.auth-card .desc {
+    color: #bdc9ef;
+    line-height: 1.55;
+    margin-bottom: 24px;
+}
+
+.auth-field {
+    margin-bottom: 18px;
+}
+
+.auth-field label {
+    display: block;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.auth-field input {
+    width: 100%;
+    height: 54px;
+    border-radius: 13px;
+    border: 1px solid #2767db;
+    background: rgba(1,9,54,.9);
+    color: #fff;
+    padding: 0 15px;
+    font-size: 15px;
+    outline: none;
+}
+
+.auth-field input:focus {
+    border-color: #1fc7ff;
+    box-shadow: 0 0 0 3px rgba(31,199,255,.12);
+}
+
+.auth-field input::placeholder {
+    color: #8f9bc5;
+}
+
+.auth-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0 22px;
+}
+
+.auth-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #dce5ff;
+    font-size: 14px;
+}
+
+.auth-check input {
+    width: 18px;
+    height: 18px;
+    accent-color: #8128ff;
+}
+
+.auth-link {
+    color: #14bfff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.auth-submit {
+    width: 100%;
+    height: 56px;
+    border: 0;
+    border-radius: 14px;
+    background: linear-gradient(90deg,#7b18ff,#1689ff);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 14px 35px rgba(45,67,255,.3);
+    transition: .2s;
+}
+
+.auth-submit:hover {
+    transform: translateY(-1px);
+}
+
+.auth-error {
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    background: rgba(255,55,90,.12);
+    border: 1px solid rgba(255,80,110,.35);
+    color: #ffb9c5;
+    font-size: 13px;
+}
+
+.auth-bottom {
+    text-align: center;
+    color: #aeb9dd;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+.auth-bottom a {
+    color: #16bfff;
+    text-decoration: none;
+    font-weight: 800;
+}
+
+.auth-trust {
+    width: min(1050px,100%);
+    margin: 25px auto 0;
+    display: flex;
+    justify-content: center;
+    gap: 70px;
+    position: relative;
+    z-index: 2;
+}
+
+.trust-item {
+    display: flex;
+    gap: 11px;
+    align-items: center;
+    color: #eef2ff;
+}
+
+.trust-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg,#153ea9,#7224df);
+    font-size: 20px;
+}
+
+.trust-item small {
+    display: block;
+    color: #91a0c9;
+    margin-top: 3px;
+}
+
+.site-header,
+.site-footer {
+    display: none !important;
+}
+
+@keyframes authFloat {
+    50% {
+        transform: translateY(-10px) rotate(2deg);
+    }
+}
+
+@media(max-width:1000px) {
+
+    .auth-grid {
+        grid-template-columns: 1fr;
     }
 
-    .login-shell {
-        width: min(1180px, 100%);
-        display: grid;
-        grid-template-columns: 1.25fr 0.75fr;
-        gap: 35px;
-        align-items: center;
-        padding: 20px;
+    .auth-hero {
+        min-height: 580px;
     }
 
-    .login-left {
-        min-height: 650px;
-        border: 1px solid rgba(70, 120, 255, 0.45);
-        border-radius: 28px;
-        padding: 55px 45px;
-        position: relative;
-        overflow: hidden;
-        background:
-            radial-gradient(circle at 70% 65%, rgba(115, 45, 255, .35), transparent 35%),
-            radial-gradient(circle at 30% 30%, rgba(0, 140, 255, .20), transparent 35%),
-            linear-gradient(145deg, #070d4d, #05083a 65%, #080d55);
-        box-shadow: 0 20px 70px rgba(0, 0, 0, .35);
+    .auth-card {
+        max-width: 600px;
+        width: 100%;
+        margin: auto;
     }
 
-    .login-left::before {
-        content: "♪";
-        position: absolute;
-        right: 120px;
-        top: 80px;
+    .auth-trust {
+        gap: 25px;
+        flex-wrap: wrap;
+    }
+}
+
+@media(max-width:650px) {
+
+    .auth-page {
+        padding: 16px;
+    }
+
+    .auth-hero {
+        padding: 35px 25px;
+        min-height: 560px;
+    }
+
+    .auth-hero h1 {
+        font-size: 40px;
+    }
+
+    .learning-orbit {
+        left: 25px;
+        top: 300px;
+        width: 150px;
+        height: 150px;
+    }
+
+    .learning-orbit:before {
+        width: 90px;
+        height: 90px;
+    }
+
+    .hero-character {
+        right: 35px;
+        bottom: 90px;
+        font-size: 105px;
+    }
+
+    .hero-book {
+        right: 95px;
+        bottom: 55px;
         font-size: 70px;
-        color: #22c8ff;
-        opacity: .8;
     }
 
-    .login-left::after {
-        content: "♫";
-        position: absolute;
-        right: 230px;
-        top: 180px;
-        font-size: 55px;
-        color: #ff66dc;
-        opacity: .7;
+    .hero-castle {
+        right: 0;
+        bottom: 125px;
+        font-size: 75px;
     }
 
-    .welcome-label {
-        color: #19baff;
-        font-weight: 800;
-        letter-spacing: 2px;
-        font-size: 15px;
-        text-transform: uppercase;
+    .smart-strip {
+        left: 20px;
+        right: 20px;
     }
 
-    .login-left h1 {
-        color: white;
-        font-size: clamp(42px, 5vw, 68px);
-        line-height: 1.05;
-        margin: 20px 0;
-        max-width: 650px;
+    .auth-top {
+        margin-bottom: 12px;
     }
 
-    .login-left h1 span {
-        color: #ff65dc;
+    .auth-brand strong {
+        font-size: 19px;
     }
 
-    .login-left p {
-        color: #d4ddff;
-        font-size: 18px;
-        line-height: 1.7;
-        max-width: 650px;
+    .help-pill {
+        padding: 9px 12px;
     }
 
-    .learning-circle {
-        width: 205px;
-        height: 205px;
-        border-radius: 50%;
-        margin-top: 40px;
-        border: 2px solid rgba(90, 100, 255, .6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        box-shadow:
-            0 0 30px rgba(50, 80, 255, .35),
-            inset 0 0 35px rgba(70, 50, 255, .25);
+    .auth-trust {
+        display: none;
     }
-
-    .learning-circle::before {
-        content: "";
-        position: absolute;
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        border: 2px solid #168fff;
-        box-shadow: 0 0 30px rgba(0, 150, 255, .55);
-    }
-
-    .music-note {
-        position: relative;
-        z-index: 2;
-        font-size: 52px;
-        color: white;
-    }
-
-    .learn-text {
-        position: absolute;
-        top: 27px;
-        color: white;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 2px;
-    }
-
-    .play-text {
-        position: absolute;
-        bottom: 27px;
-        color: white;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 2px;
-    }
-
-    .smart-card {
-        margin-top: 45px;
-        border: 1px solid rgba(70, 120, 255, .35);
-        border-radius: 20px;
-        padding: 18px 22px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        background: rgba(5, 15, 80, .55);
-    }
-
-    .smart-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 27px;
-        background: linear-gradient(135deg, #7b21ff, #226dff);
-        color: white;
-    }
-
-    .smart-card strong {
-        display: block;
-        color: white;
-        font-size: 18px;
-    }
-
-    .smart-card small {
-        color: #aebcff;
-        font-size: 14px;
-    }
-
-    .login-card {
-        border: 1px solid rgba(70, 120, 255, .55);
-        border-radius: 28px;
-        padding: 42px 34px;
-        background: rgba(5, 12, 65, .92);
-        box-shadow: 0 20px 70px rgba(0, 0, 0, .4);
-    }
-
-    .secure-label {
-        color: #1dbbff;
-        font-size: 14px;
-        font-weight: 800;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-    }
-
-    .login-card h2 {
-        color: white;
-        font-size: 38px;
-        margin: 12px 0 8px;
-    }
-
-    .login-description {
-        color: #c3cdf7;
-        line-height: 1.6;
-        margin-bottom: 28px;
-    }
-
-    .login-field {
-        margin-bottom: 20px;
-    }
-
-    .login-field label {
-        display: block;
-        color: white;
-        font-weight: 700;
-        margin-bottom: 9px;
-    }
-
-    .login-field input {
-        width: 100%;
-        box-sizing: border-box;
-        height: 56px;
-        padding: 0 18px;
-        border-radius: 13px;
-        border: 1px solid #2467d9;
-        background: rgba(3, 13, 65, .9);
-        color: white;
-        font-size: 16px;
-        outline: none;
-    }
-
-    .login-field input:focus {
-        border-color: #20bfff;
-        box-shadow: 0 0 0 3px rgba(20, 170, 255, .12);
-    }
-
-    .login-field input::placeholder {
-        color: #9ca9d5;
-    }
-
-    .remember-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 10px 0 25px;
-        gap: 10px;
-    }
-
-    .remember-label {
-        color: #e2e8ff;
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        font-size: 15px;
-    }
-
-    .remember-label input {
-        width: 22px;
-        height: 22px;
-        accent-color: #7b21ff;
-    }
-
-    .forgot-link {
-        color: #1dbbff;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    .forgot-link:hover {
-        text-decoration: underline;
-    }
-
-    .login-submit {
-        width: 100%;
-        height: 58px;
-        border: 0;
-        border-radius: 14px;
-        color: white;
-        font-size: 18px;
-        font-weight: 800;
-        cursor: pointer;
-        background: linear-gradient(90deg, #7a19ff, #137eff);
-        box-shadow: 0 12px 30px rgba(55, 70, 255, .3);
-    }
-
-    .login-submit:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 15px 35px rgba(55, 70, 255, .42);
-    }
-
-    .login-error {
-        padding: 12px 14px;
-        border-radius: 10px;
-        margin-bottom: 18px;
-        background: rgba(255, 70, 100, .12);
-        border: 1px solid rgba(255, 70, 100, .4);
-        color: #ffb5c0;
-    }
-
-    .login-footer {
-        text-align: center;
-        margin-top: 25px;
-        color: #b6c1e8;
-        font-size: 14px;
-    }
-
-    .login-footer a {
-        color: #1dbbff;
-        text-decoration: none;
-        font-weight: 700;
-    }
-
-    @media (max-width: 900px) {
-        .login-shell {
-            grid-template-columns: 1fr;
-        }
-
-        .login-left {
-            min-height: auto;
-        }
-    }
-
-    @media (max-width: 600px) {
-        .login-page {
-            padding: 20px 10px 40px;
-        }
-
-        .login-left,
-        .login-card {
-            padding: 30px 22px;
-        }
-
-        .login-left h1 {
-            font-size: 42px;
-        }
-
-        .login-left p {
-            font-size: 16px;
-        }
-    }
+}
 </style>
 
-<section class="login-page">
+<section class="auth-page">
 
-    <div class="login-shell">
+    <div class="auth-top">
+
+        <a class="auth-brand" href="{% url 'core:landing' %}">
+            <span class="auth-brand-icon">📖</span>
+
+            <span>
+                <strong>Smart Learning</strong>
+                <small>Through Tunes &amp; Cartoons</small>
+            </span>
+        </a>
+
+        <a class="help-pill" href="#">
+            ? &nbsp; Need Help?
+        </a>
+
+    </div>
+
+
+    <div class="auth-grid">
 
         <!-- LEFT SIDE -->
-        <div class="login-left">
+        <div class="auth-hero">
 
-            <div class="welcome-label">Welcome Back</div>
+            <div class="auth-kicker">
+                Welcome Back
+            </div>
 
             <h1>
                 Ready for the next little
@@ -347,52 +579,82 @@
 
             <p>
                 Sign in to continue your
-                <strong style="color:#18bfff;">rhymes</strong>,
-                <strong style="color:#b34cff;">Smart Repeat</strong>
-                practice,
-                <strong style="color:#ffd21c;">quizzes</strong>
+                <b style="color:#18bfff">rhymes</b>,
+                <b style="color:#c25cff">Smart Repeat</b> practice,
+                <b style="color:#ffd52c">quizzes</b>
                 and
-                <strong style="color:#18e6d0;">progress.</strong>
+                <b style="color:#1de5d2">progress.</b>
             </p>
 
-            <div class="learning-circle">
-                <span class="learn-text">LEARN</span>
-                <span class="music-note">♫</span>
-                <span class="play-text">PLAY</span>
+            <div class="learning-orbit">
+                <b>LEARN</b>
+                <span>♫</span>
+                <small>PLAY</small>
             </div>
 
-            <div class="smart-card">
-                <div class="smart-icon">♫</div>
+            <div class="hero-castle">
+                🏰
+            </div>
+
+            <div class="hero-character">
+                🧒
+            </div>
+
+            <div class="hero-book">
+                📖
+            </div>
+
+            <div class="smart-strip">
+
+                <div class="icon">
+                    ♫
+                </div>
+
                 <div>
                     <strong>Smart Learning</strong>
                     <small>Learn. Sing. Enjoy!</small>
                 </div>
+
             </div>
 
         </div>
 
-        <!-- RIGHT SIDE -->
-        <div class="login-card">
 
-            <div class="secure-label">Secure Sign In</div>
+        <!-- RIGHT SIDE LOGIN -->
+        <div class="auth-card">
 
-            <h2>Log in</h2>
+            <div class="secure">
+                Secure Sign In
+            </div>
 
-            <p class="login-description">
+            <h2>
+                Log in
+            </h2>
+
+            <p class="desc">
                 Use the username and password for your learner or parent account.
             </p>
 
+
             {% if form.non_field_errors %}
-                <div class="login-error">
+                <div class="auth-error">
                     {{ form.non_field_errors }}
                 </div>
             {% endif %}
 
+
             <form method="post" action="{% url 'accounts:login' %}">
+
                 {% csrf_token %}
 
-                <div class="login-field">
-                    <label for="{{ form.username.id_for_label }}">Username</label>
+
+                <!-- USERNAME -->
+                <div class="auth-field">
+
+                    <label for="{{ form.username.id_for_label }}">
+                        Username
+                    </label>
+
                     <input
                         type="text"
                         name="username"
@@ -402,15 +664,23 @@
                         autocomplete="username"
                         required
                     >
+
                     {% if form.username.errors %}
-                        <div class="login-error">
+                        <div class="auth-error">
                             {{ form.username.errors }}
                         </div>
                     {% endif %}
+
                 </div>
 
-                <div class="login-field">
-                    <label for="{{ form.password.id_for_label }}">Password</label>
+
+                <!-- PASSWORD -->
+                <div class="auth-field">
+
+                    <label for="{{ form.password.id_for_label }}">
+                        Password
+                    </label>
+
                     <input
                         type="password"
                         name="password"
@@ -419,36 +689,110 @@
                         autocomplete="current-password"
                         required
                     >
+
                     {% if form.password.errors %}
-                        <div class="login-error">
+                        <div class="auth-error">
                             {{ form.password.errors }}
                         </div>
                     {% endif %}
+
                 </div>
 
-                <div class="remember-row">
-                    <label class="remember-label">
-                        <input type="checkbox" name="remember_me">
-                        <span>Remember Me</span>
+
+                <!-- REMEMBER + FORGOT -->
+                <div class="auth-row">
+
+                    <label class="auth-check">
+
+                        <input
+                            type="checkbox"
+                            name="remember_me"
+                        >
+
+                        <span>
+                            Remember Me
+                        </span>
+
                     </label>
 
-                    <a href="#" class="forgot-link"
-                       onclick="return false;">
+
+                    <a
+                        class="auth-link"
+                        href="{% url 'accounts:password_reset' %}"
+                    >
                         Forgot Password?
                     </a>
+
                 </div>
 
-                <button type="submit" class="login-submit">
-                    Continue →
+
+                <!-- LOGIN BUTTON -->
+                <button
+                    class="auth-submit"
+                    type="submit"
+                >
+                    Continue &nbsp;→
                 </button>
 
             </form>
 
-            <div class="login-footer">
+
+            <!-- REGISTER -->
+            <div class="auth-bottom">
+
                 New here?
+
                 <a href="{% url 'accounts:register' %}">
                     Create an account
                 </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TRUST SECTION -->
+    <div class="auth-trust">
+
+        <div class="trust-item">
+
+            <div class="trust-icon">
+                🛡️
+            </div>
+
+            <div>
+                <b>Safe &amp; Secure</b>
+                <small>Your data is protected</small>
+            </div>
+
+        </div>
+
+
+        <div class="trust-item">
+
+            <div class="trust-icon">
+                😊
+            </div>
+
+            <div>
+                <b>Kid-Friendly</b>
+                <small>Designed for children</small>
+            </div>
+
+        </div>
+
+
+        <div class="trust-item">
+
+            <div class="trust-icon">
+                ⭐
+            </div>
+
+            <div>
+                <b>Quality Learning</b>
+                <small>Curated educational content</small>
             </div>
 
         </div>
