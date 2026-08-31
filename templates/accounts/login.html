@@ -1,804 +1,397 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Log in — Smart Learning{% endblock %}
 
 {% block content %}
-
 <style>
-.auth-page,
-.auth-page * {
-    box-sizing: border-box;
-}
+    .login-page,
+    .login-page * { box-sizing: border-box; }
 
-.auth-page {
-    min-height: calc(100vh - 90px);
-    padding: 28px 28px 48px;
-    background:
-        radial-gradient(circle at 15% 45%, rgba(31,82,255,.20), transparent 32%),
-        radial-gradient(circle at 85% 70%, rgba(122,26,255,.20), transparent 30%),
-        linear-gradient(135deg, #02052b, #060b49 55%, #08032f);
-    color: #fff;
-    position: relative;
-    overflow: hidden;
-}
-
-.auth-page:before,
-.auth-page:after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(2px);
-    opacity: .7;
-}
-
-.auth-page:before {
-    width: 420px;
-    height: 420px;
-    left: -230px;
-    bottom: -220px;
-    background: #2415c7;
-    box-shadow: 0 0 120px #2d27ff;
-}
-
-.auth-page:after {
-    width: 360px;
-    height: 360px;
-    right: -180px;
-    top: 120px;
-    background: #171fc2;
-    box-shadow: 0 0 120px #9d24ff;
-}
-
-.auth-top {
-    width: min(1320px, 100%);
-    margin: 0 auto 22px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    z-index: 2;
-}
-
-.auth-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-    color: #fff;
-}
-
-.auth-brand-icon {
-    width: 54px;
-    height: 54px;
-    border-radius: 16px;
-    display: grid;
-    place-items: center;
-    font-size: 29px;
-    background: linear-gradient(135deg, #16c7ff, #624cff);
-    box-shadow: 0 0 28px rgba(30,151,255,.45);
-}
-
-.auth-brand strong {
-    display: block;
-    font-size: 24px;
-    line-height: 1;
-}
-
-.auth-brand small {
-    display: block;
-    color: #aebcff;
-    font-size: 12px;
-    margin-top: 6px;
-}
-
-.help-pill {
-    border: 1px solid rgba(70,130,255,.5);
-    border-radius: 999px;
-    padding: 11px 18px;
-    color: #eaf1ff;
-    background: rgba(5,13,75,.55);
-    text-decoration: none;
-    font-weight: 700;
-}
-
-.auth-grid {
-    width: min(1320px, 100%);
-    margin: auto;
-    display: grid;
-    grid-template-columns: 1.55fr .85fr;
-    gap: 18px;
-    position: relative;
-    z-index: 1;
-}
-
-.auth-hero,
-.auth-card {
-    border: 1px solid rgba(62,119,255,.55);
-    border-radius: 28px;
-    background:
-        linear-gradient(
-            145deg,
-            rgba(7,19,92,.82),
-            rgba(3,7,55,.94)
-        );
-    box-shadow: 0 25px 80px rgba(0,0,0,.34);
-    overflow: hidden;
-}
-
-.auth-hero {
-    min-height: 690px;
-    padding: 54px 48px;
-    position: relative;
-}
-
-.auth-hero:before {
-    content: "✦   ♪        ♫";
-    position: absolute;
-    right: 65px;
-    top: 70px;
-    color: #18cfff;
-    font-size: 32px;
-    letter-spacing: 30px;
-    opacity: .75;
-}
-
-.auth-hero:after {
-    content: "♪      ♫";
-    position: absolute;
-    right: 120px;
-    bottom: 220px;
-    color: #ff54df;
-    font-size: 30px;
-    letter-spacing: 35px;
-    opacity: .65;
-}
-
-.auth-kicker {
-    color: #17bfff;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 13px;
-    font-weight: 900;
-}
-
-.auth-hero h1 {
-    font-size: clamp(42px, 4.5vw, 70px);
-    line-height: 1.02;
-    letter-spacing: -.05em;
-    margin: 18px 0 18px;
-    max-width: 760px;
-}
-
-.auth-hero h1 span {
-    color: #ef62db;
-}
-
-.auth-hero p {
-    font-size: 17px;
-    line-height: 1.65;
-    color: #ccd8ff;
-    max-width: 720px;
-}
-
-.learning-orbit {
-    position: absolute;
-    left: 54px;
-    top: 315px;
-    width: 205px;
-    height: 205px;
-    border: 1px solid rgba(70,109,255,.65);
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    box-shadow:
-        0 0 35px rgba(25,75,255,.25),
-        inset 0 0 40px rgba(40,45,255,.18);
-}
-
-.learning-orbit:before {
-    content: "";
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    border: 2px solid #159dff;
-    border-radius: 50%;
-    box-shadow: 0 0 35px rgba(0,170,255,.5);
-}
-
-.learning-orbit b {
-    position: absolute;
-    top: 25px;
-    font-size: 11px;
-    letter-spacing: 2px;
-}
-
-.learning-orbit span {
-    font-size: 54px;
-    z-index: 1;
-}
-
-.learning-orbit small {
-    position: absolute;
-    bottom: 25px;
-    font-size: 11px;
-    letter-spacing: 2px;
-}
-
-.hero-character {
-    position: absolute;
-    right: 90px;
-    bottom: 75px;
-    font-size: 155px;
-    filter: drop-shadow(0 22px 18px rgba(0,0,0,.35));
-    animation: authFloat 3.5s ease-in-out infinite;
-}
-
-.hero-book {
-    position: absolute;
-    right: 185px;
-    bottom: 54px;
-    font-size: 105px;
-    filter: drop-shadow(0 0 25px rgba(255,200,80,.4));
-    transform: rotate(-4deg);
-}
-
-.hero-castle {
-    position: absolute;
-    right: 35px;
-    bottom: 115px;
-    font-size: 115px;
-    opacity: .9;
-    filter: drop-shadow(0 0 24px rgba(123,87,255,.6));
-}
-
-.smart-strip {
-    position: absolute;
-    left: 42px;
-    right: 42px;
-    bottom: 28px;
-    border: 1px solid rgba(75,121,255,.35);
-    border-radius: 18px;
-    background: rgba(4,12,70,.6);
-    padding: 15px 20px;
-    display: flex;
-    gap: 14px;
-    align-items: center;
-}
-
-.smart-strip .icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 13px;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(135deg,#8320ff,#147fff);
-    font-size: 22px;
-}
-
-.smart-strip strong {
-    display: block;
-}
-
-.smart-strip small {
-    color: #aebcff;
-}
-
-.auth-card {
-    padding: 38px 34px;
-    align-self: center;
-}
-
-.auth-card .secure {
-    color: #16bfff;
-    font-size: 13px;
-    font-weight: 900;
-    letter-spacing: 1.6px;
-    text-transform: uppercase;
-}
-
-.auth-card h2 {
-    font-size: 38px;
-    margin: 10px 0 7px;
-    color: #fff;
-}
-
-.auth-card .desc {
-    color: #bdc9ef;
-    line-height: 1.55;
-    margin-bottom: 24px;
-}
-
-.auth-field {
-    margin-bottom: 18px;
-}
-
-.auth-field label {
-    display: block;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
-
-.auth-field input {
-    width: 100%;
-    height: 54px;
-    border-radius: 13px;
-    border: 1px solid #2767db;
-    background: rgba(1,9,54,.9);
-    color: #fff;
-    padding: 0 15px;
-    font-size: 15px;
-    outline: none;
-}
-
-.auth-field input:focus {
-    border-color: #1fc7ff;
-    box-shadow: 0 0 0 3px rgba(31,199,255,.12);
-}
-
-.auth-field input::placeholder {
-    color: #8f9bc5;
-}
-
-.auth-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin: 8px 0 22px;
-}
-
-.auth-check {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #dce5ff;
-    font-size: 14px;
-}
-
-.auth-check input {
-    width: 18px;
-    height: 18px;
-    accent-color: #8128ff;
-}
-
-.auth-link {
-    color: #14bfff;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 14px;
-}
-
-.auth-submit {
-    width: 100%;
-    height: 56px;
-    border: 0;
-    border-radius: 14px;
-    background: linear-gradient(90deg,#7b18ff,#1689ff);
-    color: #fff;
-    font-size: 17px;
-    font-weight: 900;
-    cursor: pointer;
-    box-shadow: 0 14px 35px rgba(45,67,255,.3);
-    transition: .2s;
-}
-
-.auth-submit:hover {
-    transform: translateY(-1px);
-}
-
-.auth-error {
-    padding: 10px 12px;
-    border-radius: 10px;
-    margin-bottom: 14px;
-    background: rgba(255,55,90,.12);
-    border: 1px solid rgba(255,80,110,.35);
-    color: #ffb9c5;
-    font-size: 13px;
-}
-
-.auth-bottom {
-    text-align: center;
-    color: #aeb9dd;
-    font-size: 14px;
-    margin-top: 20px;
-}
-
-.auth-bottom a {
-    color: #16bfff;
-    text-decoration: none;
-    font-weight: 800;
-}
-
-.auth-trust {
-    width: min(1050px,100%);
-    margin: 25px auto 0;
-    display: flex;
-    justify-content: center;
-    gap: 70px;
-    position: relative;
-    z-index: 2;
-}
-
-.trust-item {
-    display: flex;
-    gap: 11px;
-    align-items: center;
-    color: #eef2ff;
-}
-
-.trust-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(135deg,#153ea9,#7224df);
-    font-size: 20px;
-}
-
-.trust-item small {
-    display: block;
-    color: #91a0c9;
-    margin-top: 3px;
-}
-
-.site-header,
-.site-footer {
-    display: none !important;
-}
-
-@keyframes authFloat {
-    50% {
-        transform: translateY(-10px) rotate(2deg);
-    }
-}
-
-@media(max-width:1000px) {
-
-    .auth-grid {
-        grid-template-columns: 1fr;
+    .login-page {
+        min-height: 100vh;
+        margin: 0;
+        padding: 16px 2.5vw 28px;
+        color: #101d57;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+            radial-gradient(circle at 10% 30%, rgba(92, 173, 255, .28), transparent 27%),
+            radial-gradient(circle at 80% 25%, rgba(238, 113, 255, .20), transparent 30%),
+            radial-gradient(circle at 55% 95%, rgba(137, 91, 255, .20), transparent 30%),
+            linear-gradient(135deg, #edf6ff 0%, #f7efff 48%, #edf7ff 100%);
+        overflow-x: hidden;
     }
 
-    .auth-hero {
-        min-height: 580px;
+    .login-shell {
+        width: min(1408px, 100%);
+        margin: 0 auto;
     }
 
-    .auth-card {
-        max-width: 600px;
+    .login-header-image {
+        display: block;
         width: 100%;
-        margin: auto;
+        height: auto;
+        max-height: 126px;
+        object-fit: cover;
+        object-position: center;
+        border-radius: 26px;
+        filter: drop-shadow(0 12px 20px rgba(81, 91, 180, .08));
     }
 
-    .auth-trust {
-        gap: 25px;
-        flex-wrap: wrap;
-    }
-}
-
-@media(max-width:650px) {
-
-    .auth-page {
-        padding: 16px;
+    .login-main-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.62fr) minmax(410px, .94fr);
+        gap: 24px;
+        align-items: stretch;
+        margin-top: 0;
     }
 
-    .auth-hero {
-        padding: 35px 25px;
-        min-height: 560px;
+    .login-hero-reference {
+        width: 100%;
+        height: 100%;
+        min-height: 735px;
+        display: block;
+        object-fit: fill;
+        border-radius: 28px;
+        box-shadow: 0 18px 45px rgba(87, 95, 178, .16);
     }
 
-    .auth-hero h1 {
-        font-size: 40px;
+    .login-card {
+        min-height: 735px;
+        padding: 40px 38px 34px;
+        border: 1px solid rgba(255,255,255,.88);
+        border-radius: 28px;
+        background: rgba(250, 249, 255, .84);
+        box-shadow:
+            0 24px 60px rgba(93, 90, 170, .13),
+            inset 0 1px 0 rgba(255,255,255,.95);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
     }
 
-    .learning-orbit {
-        left: 25px;
-        top: 300px;
-        width: 150px;
-        height: 150px;
+    .secure-pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 34px;
+        padding: 0 15px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #f0e8ff, #e9dcff);
+        color: #4c22bb;
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: .4px;
+        text-transform: uppercase;
     }
 
-    .learning-orbit:before {
-        width: 90px;
-        height: 90px;
+    .login-card h1 {
+        margin: 21px 0 8px;
+        color: #101d57;
+        font-size: clamp(34px, 3vw, 42px);
+        line-height: 1.08;
+        letter-spacing: -.035em;
     }
 
-    .hero-character {
-        right: 35px;
-        bottom: 90px;
-        font-size: 105px;
+    .login-description {
+        max-width: 390px;
+        margin: 0 0 36px;
+        color: #1e2859;
+        font-size: 15px;
+        line-height: 1.65;
     }
 
-    .hero-book {
-        right: 95px;
-        bottom: 55px;
-        font-size: 70px;
+    .login-field { margin-bottom: 28px; }
+
+    .login-field label {
+        display: block;
+        margin-bottom: 10px;
+        color: #111b4d;
+        font-size: 15px;
+        font-weight: 800;
     }
 
-    .hero-castle {
-        right: 0;
-        bottom: 125px;
-        font-size: 75px;
+    .login-input-wrap { position: relative; }
+
+    .login-input-icon {
+        position: absolute;
+        left: 17px;
+        top: 50%;
+        width: 24px;
+        height: 24px;
+        transform: translateY(-50%);
+        color: #101d57;
+        pointer-events: none;
     }
 
-    .smart-strip {
-        left: 20px;
-        right: 20px;
+    .login-input-icon svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
     }
 
-    .auth-top {
-        margin-bottom: 12px;
+    .login-eye {
+        position: absolute;
+        right: 17px;
+        top: 50%;
+        width: 25px;
+        height: 25px;
+        transform: translateY(-50%);
+        color: #101d57;
+        pointer-events: none;
     }
 
-    .auth-brand strong {
-        font-size: 19px;
+    .login-eye svg {
+        width: 100%;
+        height: 100%;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
     }
 
-    .help-pill {
-        padding: 9px 12px;
+    .login-field input {
+        width: 100%;
+        height: 64px;
+        padding: 0 52px;
+        border: 1px solid #d9d9e7;
+        border-radius: 15px;
+        outline: none;
+        background: rgba(255,255,255,.58);
+        color: #101d57;
+        font: inherit;
+        font-size: 15px;
+        box-shadow: inset 0 1px 2px rgba(79, 83, 140, .04);
+        transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
     }
 
-    .auth-trust {
-        display: none;
+    .login-field input:focus {
+        border-color: #7652df;
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(118,82,223,.10);
     }
-}
+
+    .login-field input::placeholder { color: #6d7191; }
+
+    .login-error {
+        margin-top: 8px;
+        color: #c92d55;
+        font-size: 12px;
+        line-height: 1.45;
+    }
+
+    .login-error ul { margin: 0; padding-left: 18px; }
+
+    .login-options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 2px 0 31px;
+    }
+
+    .remember-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: #222a55;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .remember-label input {
+        width: 24px;
+        height: 24px;
+        margin: 0;
+        accent-color: #7439e8;
+        cursor: pointer;
+    }
+
+    .forgot-link,
+    .create-link {
+        color: #5525c5;
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+    .forgot-link { font-size: 14px; }
+    .forgot-link:hover,
+    .create-link:hover { text-decoration: underline; }
+
+    .login-submit {
+        width: 100%;
+        height: 62px;
+        border: 0;
+        border-radius: 17px;
+        background: linear-gradient(100deg, #9d28f4 0%, #6b35ee 42%, #168fe9 100%);
+        color: #fff;
+        font: inherit;
+        font-size: 18px;
+        font-weight: 900;
+        letter-spacing: .1px;
+        cursor: pointer;
+        box-shadow: 0 14px 27px rgba(96, 64, 220, .24);
+        transition: transform .16s ease, box-shadow .16s ease;
+    }
+
+    .login-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 17px 32px rgba(96, 64, 220, .28);
+    }
+
+    .login-submit:active { transform: translateY(0); }
+
+    .submit-arrow {
+        display: inline-block;
+        margin-left: 8px;
+        font-size: 26px;
+        line-height: 0;
+        vertical-align: -2px;
+    }
+
+    .create-account {
+        margin-top: 45px;
+        text-align: center;
+        color: #1f2856;
+        font-size: 15px;
+    }
+
+    .login-trust {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin-top: 20px;
+        border-radius: 28px;
+        box-shadow: 0 18px 40px rgba(87, 95, 178, .12);
+    }
+
+    .site-header,
+    .site-footer { display: none !important; }
+
+    @media (max-width: 1050px) {
+        .login-page { padding: 12px 16px 24px; }
+        .login-main-grid { grid-template-columns: 1fr; }
+        .login-hero-reference { min-height: auto; aspect-ratio: 845 / 750; }
+        .login-card { min-height: 0; }
+        .login-trust { margin-top: 18px; }
+    }
+
+    @media (max-width: 620px) {
+        .login-page { padding: 8px 10px 18px; }
+        .login-header-image { max-height: none; border-radius: 18px; }
+        .login-card { padding: 28px 20px; border-radius: 22px; }
+        .login-card h1 { font-size: 34px; }
+        .login-description { margin-bottom: 28px; }
+        .login-field { margin-bottom: 22px; }
+        .login-options { align-items: flex-start; flex-direction: column; margin-bottom: 25px; }
+        .create-account { margin-top: 30px; }
+        .login-trust { border-radius: 20px; }
+    }
 </style>
 
-<section class="auth-page">
+<section class="login-page">
+    <div class="login-shell">
+        <img class="login-header-image" src="{% static 'images/login_header.png' %}" alt="Smart Learning header">
 
-    <div class="auth-top">
+        <div class="login-main-grid">
+            <img class="login-hero-reference" src="{% static 'images/login_hero_panel.png' %}" alt="Smart Learning learning adventure">
 
-        <a class="auth-brand" href="{% url 'core:landing' %}">
-            <span class="auth-brand-icon">📖</span>
+            <section class="login-card" aria-labelledby="login-heading">
+                <div class="secure-pill">Secure Sign In</div>
 
-            <span>
-                <strong>Smart Learning</strong>
-                <small>Through Tunes &amp; Cartoons</small>
-            </span>
-        </a>
+                <h1 id="login-heading">Log in</h1>
 
-        <a class="help-pill" href="#">
-            ? &nbsp; Need Help?
-        </a>
+                <p class="login-description">
+                    Use the username and password for your learner or parent account.
+                </p>
 
-    </div>
+                {% if form.non_field_errors %}
+                    <div class="login-error">{{ form.non_field_errors }}</div>
+                {% endif %}
 
+                <form method="post" action="{% url 'accounts:login' %}">
+                    {% csrf_token %}
 
-    <div class="auth-grid">
-
-        <!-- LEFT SIDE -->
-        <div class="auth-hero">
-
-            <div class="auth-kicker">
-                Welcome Back
-            </div>
-
-            <h1>
-                Ready for the next little
-                <span>adventure?</span>
-            </h1>
-
-            <p>
-                Sign in to continue your
-                <b style="color:#18bfff">rhymes</b>,
-                <b style="color:#c25cff">Smart Repeat</b> practice,
-                <b style="color:#ffd52c">quizzes</b>
-                and
-                <b style="color:#1de5d2">progress.</b>
-            </p>
-
-            <div class="learning-orbit">
-                <b>LEARN</b>
-                <span>♫</span>
-                <small>PLAY</small>
-            </div>
-
-            <div class="hero-castle">
-                🏰
-            </div>
-
-            <div class="hero-character">
-                🧒
-            </div>
-
-            <div class="hero-book">
-                📖
-            </div>
-
-            <div class="smart-strip">
-
-                <div class="icon">
-                    ♫
-                </div>
-
-                <div>
-                    <strong>Smart Learning</strong>
-                    <small>Learn. Sing. Enjoy!</small>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- RIGHT SIDE LOGIN -->
-        <div class="auth-card">
-
-            <div class="secure">
-                Secure Sign In
-            </div>
-
-            <h2>
-                Log in
-            </h2>
-
-            <p class="desc">
-                Use the username and password for your learner or parent account.
-            </p>
-
-
-            {% if form.non_field_errors %}
-                <div class="auth-error">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
-
-
-            <form method="post" action="{% url 'accounts:login' %}">
-
-                {% csrf_token %}
-
-
-                <!-- USERNAME -->
-                <div class="auth-field">
-
-                    <label for="{{ form.username.id_for_label }}">
-                        Username
-                    </label>
-
-                    <input
-                        type="text"
-                        name="username"
-                        id="{{ form.username.id_for_label }}"
-                        value="{{ form.username.value|default:'' }}"
-                        placeholder="Enter your username"
-                        autocomplete="username"
-                        required
-                    >
-
-                    {% if form.username.errors %}
-                        <div class="auth-error">
-                            {{ form.username.errors }}
+                    <div class="login-field">
+                        <label for="{{ form.username.id_for_label }}">Username</label>
+                        <div class="login-input-wrap">
+                            <span class="login-input-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <circle cx="12" cy="8" r="3.5"></circle>
+                                    <path d="M5.5 20c.7-3.3 2.8-5 6.5-5s5.8 1.7 6.5 5"></path>
+                                </svg>
+                            </span>
+                            <input
+                                type="text"
+                                name="username"
+                                id="{{ form.username.id_for_label }}"
+                                value="{{ form.username.value|default:'' }}"
+                                placeholder="Enter your username"
+                                autocomplete="username"
+                                required
+                            >
                         </div>
-                    {% endif %}
+                        {% if form.username.errors %}
+                            <div class="login-error">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
 
-                </div>
-
-
-                <!-- PASSWORD -->
-                <div class="auth-field">
-
-                    <label for="{{ form.password.id_for_label }}">
-                        Password
-                    </label>
-
-                    <input
-                        type="password"
-                        name="password"
-                        id="{{ form.password.id_for_label }}"
-                        placeholder="Enter your password"
-                        autocomplete="current-password"
-                        required
-                    >
-
-                    {% if form.password.errors %}
-                        <div class="auth-error">
-                            {{ form.password.errors }}
+                    <div class="login-field">
+                        <label for="{{ form.password.id_for_label }}">Password</label>
+                        <div class="login-input-wrap">
+                            <span class="login-input-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+                                    <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                                    <circle cx="12" cy="15" r="1"></circle>
+                                </svg>
+                            </span>
+                            <input
+                                type="password"
+                                name="password"
+                                id="{{ form.password.id_for_label }}"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                            >
+                            <span class="login-eye" aria-hidden="true">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M2.5 12s3.3-5 9.5-5 9.5 5 9.5 5-3.3 5-9.5 5-9.5-5-9.5-5z"></path>
+                                    <circle cx="12" cy="12" r="2.3"></circle>
+                                </svg>
+                            </span>
                         </div>
-                    {% endif %}
+                        {% if form.password.errors %}
+                            <div class="login-error">{{ form.password.errors }}</div>
+                        {% endif %}
+                    </div>
 
+                    <div class="login-options">
+                        <label class="remember-label">
+                            <input type="checkbox" name="remember_me">
+                            <span>Remember Me</span>
+                        </label>
+
+                        <a class="forgot-link" href="{% url 'accounts:password_reset' %}">Forgot Password?</a>
+                    </div>
+
+                    <button class="login-submit" type="submit">
+                        Continue <span class="submit-arrow">→</span>
+                    </button>
+                </form>
+
+                <div class="create-account">
+                    New here?
+                    <a class="create-link" href="{% url 'accounts:register' %}">Create an account</a>
                 </div>
-
-
-                <!-- REMEMBER + FORGOT -->
-                <div class="auth-row">
-
-                    <label class="auth-check">
-
-                        <input
-                            type="checkbox"
-                            name="remember_me"
-                        >
-
-                        <span>
-                            Remember Me
-                        </span>
-
-                    </label>
-
-
-                    <a
-                        class="auth-link"
-                        href="{% url 'accounts:password_reset' %}"
-                    >
-                        Forgot Password?
-                    </a>
-
-                </div>
-
-
-                <!-- LOGIN BUTTON -->
-                <button
-                    class="auth-submit"
-                    type="submit"
-                >
-                    Continue &nbsp;→
-                </button>
-
-            </form>
-
-
-            <!-- REGISTER -->
-            <div class="auth-bottom">
-
-                New here?
-
-                <a href="{% url 'accounts:register' %}">
-                    Create an account
-                </a>
-
-            </div>
-
+            </section>
         </div>
 
+        <img class="login-trust" src="{% static 'images/login_trust.png' %}" alt="Safe and secure, kid-friendly, quality learning">
     </div>
-
-
-    <!-- TRUST SECTION -->
-    <div class="auth-trust">
-
-        <div class="trust-item">
-
-            <div class="trust-icon">
-                🛡️
-            </div>
-
-            <div>
-                <b>Safe &amp; Secure</b>
-                <small>Your data is protected</small>
-            </div>
-
-        </div>
-
-
-        <div class="trust-item">
-
-            <div class="trust-icon">
-                😊
-            </div>
-
-            <div>
-                <b>Kid-Friendly</b>
-                <small>Designed for children</small>
-            </div>
-
-        </div>
-
-
-        <div class="trust-item">
-
-            <div class="trust-icon">
-                ⭐
-            </div>
-
-            <div>
-                <b>Quality Learning</b>
-                <small>Curated educational content</small>
-            </div>
-
-        </div>
-
-    </div>
-
 </section>
-
 {% endblock %}

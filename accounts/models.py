@@ -11,6 +11,8 @@ class User(AbstractUser):
     ]
 
     AVATAR_CHOICES = [
+        ("boy", "👦 Boy"),
+        ("girl", "👧 Girl"),
         ("cat", "🐱 Cat"),
         ("dog", "🐶 Dog"),
         ("lion", "🦁 Lion"),

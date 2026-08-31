@@ -1,800 +1,219 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Create Account - Smart Learning</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            color: white;
-
-            background:
-                radial-gradient(circle at 15% 65%, #24149e, transparent 35%),
-                radial-gradient(circle at 80% 30%, #1b238e, transparent 35%),
-                #02052f;
-        }
-
-        .page {
-            min-height: 100vh;
-            padding: 28px 5%;
-        }
-
-        .top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 17px;
-            background: linear-gradient(135deg, #18b5ff, #6740ff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            box-shadow: 0 0 25px #146eff;
-        }
-
-        .logo-title {
-            font-size: 28px;
-            font-weight: 800;
-        }
-
-        .logo-subtitle {
-            color: #32baff;
-        }
-
-        .help {
-            padding: 13px 23px;
-            border: 1px solid #294ea5;
-            border-radius: 25px;
-        }
-
-        .content {
-            max-width: 1350px;
-            margin: 30px auto;
-            display: grid;
-            grid-template-columns: 1.1fr .9fr;
-            gap: 20px;
-        }
-
-        .left {
-            min-height: 760px;
-            padding: 60px 45px;
-            border: 1px solid #285bd0;
-            border-radius: 25px;
-            background:
-                radial-gradient(circle at 55% 70%, #4420b9, transparent 35%),
-                linear-gradient(135deg, #06104e, #071b83);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .small {
-            color: #00baff;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .left h1 {
-            font-size: 55px;
-            line-height: 1.05;
-            margin: 22px 0;
-        }
-
-        .left h1 span {
-            background: linear-gradient(90deg, #0dbbff, #9e53ff, #f05ecb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .description {
-            color: #d0d9ff;
-            font-size: 18px;
-            line-height: 1.6;
-            max-width: 600px;
-        }
-
-        .spaces {
-            display: flex;
-            gap: 20px;
-            margin-top: 40px;
-        }
-
-        .space {
-            flex: 1;
-            border: 1px solid #3157b2;
-            border-radius: 18px;
-            padding: 22px;
-            background: rgba(7, 23, 88, .7);
-        }
-
-        .space.active {
-            border: 2px solid #b13cff;
-            box-shadow: 0 0 25px rgba(166, 49, 255, .45);
-        }
-
-        .space-icon {
-            font-size: 40px;
-        }
-
-        .space-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .space-text {
-            color: #bbc7f0;
-            line-height: 1.5;
-        }
-
-        .character {
-            position: absolute;
-            bottom: -25px;
-            left: 22%;
-            font-size: 190px;
-            filter: drop-shadow(0 0 30px #1982ff);
-        }
-
-        .right {
-            padding: 40px;
-            border: 1px solid #315db9;
-            border-radius: 25px;
-            background: rgba(3, 14, 70, .9);
-        }
-
-        .right h2 {
-            font-size: 38px;
-            margin: 12px 0 25px;
-        }
-
-        .messages {
-            margin-bottom: 20px;
-        }
-
-        .error {
-            padding: 12px;
-            margin-bottom: 8px;
-            border-radius: 10px;
-            color: #ffb3c3;
-            background: rgba(255, 50, 90, .15);
-            border: 1px solid #ff5277;
-        }
-
-        .success {
-            padding: 12px;
-            margin-bottom: 8px;
-            border-radius: 10px;
-            color: #b8ffd0;
-            background: rgba(50, 255, 120, .10);
-            border: 1px solid #42d978;
-        }
-
-        .tabs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            margin-bottom: 25px;
-        }
-
-        .tab {
-            padding: 15px;
-            text-align: center;
-            border: 1px solid #3158a8;
-            background: rgba(10, 25, 80, .7);
-        }
-
-        .tab:first-child {
-            border-radius: 12px 0 0 12px;
-        }
-
-        .tab:last-child {
-            border-radius: 0 12px 12px 0;
-        }
-
-        .tab.active {
-            background: linear-gradient(90deg, #6324e8, #2730b9);
-            border-color: #9a40ff;
-        }
-
-        label {
-            display: block;
-            margin-top: 17px;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            height: 53px;
-            padding: 0 15px;
-            color: white;
-            background: rgba(5, 15, 58, .8);
-            border: 1px solid #2863cf;
-            border-radius: 11px;
-            font-size: 15px;
-            outline: none;
-        }
-
-        input::placeholder {
-            color: #8290c0;
-        }
-
-        input:focus {
-            border-color: #9743ff;
-            box-shadow: 0 0 15px rgba(112, 48, 255, .3);
-        }
-
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .avatars {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .avatar {
-            border: 1px solid #3158a8;
-            border-radius: 13px;
-            padding: 12px 5px;
-            text-align: center;
-            cursor: pointer;
-            background: rgba(7, 20, 73, .7);
-            transition: .2s;
-        }
-
-        .avatar:hover {
-            border-color: #a43cff;
-            transform: translateY(-2px);
-        }
-
-        .avatar:has(input:checked) {
-            border-color: #a43cff;
-            background: rgba(119, 43, 255, .20);
-            box-shadow: 0 0 15px rgba(164, 60, 255, .25);
-        }
-
-        .avatar input {
-            display: none;
-        }
-
-        .avatar-icon {
-            font-size: 42px;
-            display: block;
-        }
-
-        .avatar-name {
-            display: block;
-            margin-top: 5px;
-        }
-
-        .continue {
-            margin-top: 25px;
-            width: 100%;
-            height: 58px;
-            border: 0;
-            border-radius: 13px;
-            background: linear-gradient(90deg, #7220ff, #008fff);
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: .2s;
-        }
-
-        .continue:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(45, 124, 255, .35);
-        }
-
-        .login {
-            text-align: center;
-            margin-top: 20px;
-            color: #bbc7ee;
-        }
-
-        a {
-            color: #09baff;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .field-errors {
-            margin-top: 6px;
-            color: #ff9aae;
-            font-size: 13px;
-        }
-
-        .field-errors ul {
-            margin: 0;
-            padding-left: 18px;
-        }
-
-        @media(max-width: 1100px) {
-
-            .content {
-                grid-template-columns: 1fr;
-            }
-
-            .left {
-                min-height: 600px;
-            }
-
-        }
-
-        @media(max-width: 900px) {
-
-            .row {
-                grid-template-columns: 1fr;
-            }
-
-            .spaces {
-                flex-direction: column;
-            }
-
-            .character {
-                font-size: 120px;
-                left: 25%;
-            }
-
-        }
-
-        @media(max-width: 600px) {
-
-            .page {
-                padding: 18px 4%;
-            }
-
-            .top {
-                align-items: flex-start;
-            }
-
-            .logo-icon {
-                width: 48px;
-                height: 48px;
-                font-size: 25px;
-            }
-
-            .logo-title {
-                font-size: 21px;
-            }
-
-            .logo-subtitle {
-                font-size: 12px;
-            }
-
-            .help {
-                padding: 10px 12px;
-                font-size: 12px;
-            }
-
-            .left,
-            .right {
-                padding: 28px 22px;
-            }
-
-            .left h1 {
-                font-size: 38px;
-            }
-
-            .right h2 {
-                font-size: 30px;
-            }
-
-            .avatars {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account - Smart Learning</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;width:100%;min-height:100%;}
+body{background:#f4f6ff;color:#10205b;font-family:"Segoe UI",Arial,sans-serif;overflow-x:hidden;overflow-y:auto;}
+
+.register-page{width:100%;min-height:100vh;background:linear-gradient(135deg,#edf5ff 0%,#faf1ff 48%,#eef7ff 100%);padding:0 0 28px;}
+.register-shell{width:min(1448px,100%);margin:0 auto;}
+.header-wrap{position:relative;width:100%;line-height:0;}
+.header-wrap img{display:block;width:100%;height:auto;}
+
+.register-main{display:grid;grid-template-columns:681fr 614fr;gap:44px;align-items:start;}
+.hero-panel,.form-panel{position:relative;width:100%;line-height:0;}
+.panel-image{display:block;width:100%;height:auto;}
+
+/* The artwork already contains all labels/text. Inputs are transparent hit areas until the user types. */
+.register-form{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;}
+.field{
+ position:absolute;z-index:20;border:0;outline:0;background:transparent;
+ color:transparent;caret-color:transparent;text-shadow:none;
+ font:500 18px "Segoe UI",Arial,sans-serif;
+ padding:0 16px 0 58px;border-radius:15px;
+}
+.field::placeholder{color:transparent;opacity:0;}
+.field:focus{background:rgba(255,255,255,.16);box-shadow:0 0 0 2px rgba(65,110,255,.28);}
+.field.has-value{color:#18265e;caret-color:#18265e;}
+.field.has-value::placeholder{color:transparent;}
+
+/* Exact coordinates taken from the 614 x 759 reference panel. */
+.full-name{left:10.10%;top:24.24%;width:88.80%;height:7.90%;}
+.username{left:10.10%;top:40.05%;width:41.85%;height:7.95%;}
+.email{left:55.86%;top:40.05%;width:43.15%;height:7.95%;}
+
+.avatar-choice{
+ position:absolute;z-index:21;top:56.90%;width:19.25%;height:22.95%;
+ margin:0;padding:0;border-radius:15px;cursor:pointer;background:transparent;border:0;
+}
+.avatar-boy{left:10.10%}.avatar-girl{left:32.73%}.avatar-dog{left:56.35%}.avatar-cat{left:79.15%}
+.avatar-choice input{position:absolute;opacity:0;pointer-events:none;}
+.avatar-choice.selected{box-shadow:inset 0 0 0 2px rgba(64,108,245,.62);border-radius:15px;}
+
+.continue-button{
+ position:absolute;z-index:22;left:10.10%;top:83.55%;width:88.80%;height:8.70%;
+ border:0;border-radius:16px;background:transparent;color:transparent;cursor:pointer;padding:0;
+}
+.login-link{
+ position:absolute;z-index:22;left:63.5%;top:96.10%;width:25%;height:3.8%;
+ color:transparent;text-decoration:none;border-radius:10px;
+}
+
+.help-button{
+ position:absolute;z-index:30;right:2.65%;top:31%;width:12.2%;height:46%;
+ border:0;background:transparent;color:transparent;cursor:pointer;border-radius:30px;
+}
+
+/* Keep Django messages usable without disturbing the artwork. */
+.message-stack{position:fixed;z-index:100;top:18px;right:20px;width:min(390px,calc(100vw - 40px));pointer-events:none;}
+.message{margin-bottom:8px;padding:12px 15px;border-radius:14px;background:rgba(255,255,255,.96);border:1px solid rgba(89,109,190,.18);box-shadow:0 12px 30px rgba(54,70,150,.16);font-size:13px;line-height:1.4;color:#19275f;}
+
+.password-modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(28,39,94,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.password-modal.open{display:flex;}
+.password-card{width:min(470px,92vw);padding:30px;border-radius:28px;background:rgba(250,251,255,.98);border:1px solid rgba(255,255,255,.92);box-shadow:0 28px 80px rgba(35,51,125,.25);line-height:normal;}
+.eyebrow{display:inline-block;padding:7px 13px;border-radius:999px;background:#eeeaff;color:#5a2fd5;font-size:12px;font-weight:800;}
+.password-card h2{margin:16px 0 8px;font-size:28px;}.password-card p{margin:0 0 18px;color:#5d6681;font-size:14px;line-height:1.5;}
+.password-label{display:block;margin:12px 0 7px;font-weight:700;font-size:13px;}
+.password-input{width:100%;height:48px;border:1px solid #d9ddec;border-radius:13px;padding:0 14px;font-size:15px;color:#18275e;background:#fff;outline:0;}
+.password-input:focus{border-color:#687cff;box-shadow:0 0 0 4px rgba(104,124,255,.12);}
+.password-actions{display:flex;gap:10px;margin-top:20px;}.password-actions button{flex:1;height:48px;border:0;border-radius:14px;font-weight:800;cursor:pointer;font-size:15px;}
+.cancel-btn{background:#eef0f8;color:#273568;}.submit-btn{background:linear-gradient(90deg,#596fff,#a94df0);color:#fff;}
+.password-error{display:none;color:#c53c65;font-size:12px;margin-top:8px;}.password-error.show{display:block;}
+
+.trust-image{display:block;width:calc(100% - 70px);margin:26px auto 0;height:auto;}
+
+@media(max-width:1000px){
+ .register-main{grid-template-columns:1fr;gap:18px;padding:0 14px;}
+ .hero-panel,.form-panel{width:min(681px,100%);margin:0 auto;}
+ .trust-image{width:calc(100% - 28px);margin-top:18px;}
+ .help-button{right:2%;width:14%;}
+}
+@media(max-width:620px){
+ .register-page{padding-bottom:18px;}
+ .register-main{padding:0 8px;gap:12px;}
+ .trust-image{width:calc(100% - 16px);}
+ .field{font-size:13px;padding-left:44px;}
+ .help-button{width:18%;}
+}
+</style>
 </head>
-
 <body>
-
-<div class="page">
-
-    <!-- TOP HEADER -->
-
-    <div class="top">
-
-        <div class="logo">
-
-            <div class="logo-icon">
-                📖
-            </div>
-
-            <div>
-
-                <div class="logo-title">
-                    Smart Learning
-                </div>
-
-                <div class="logo-subtitle">
-                    Through Tunes & Cartoons
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="help">
-            ❔ Need Help?
-        </div>
-
-    </div>
-
-
-    <div class="content">
-
-
-        <!-- LEFT SIDE -->
-
-        <section class="left">
-
-            <div class="small">
-                YOUR LEARNING SPACE
-            </div>
-
-            <h1>
-                Pick the right space<br>
-                for <span>your family.</span>
-            </h1>
-
-            <p class="description">
-                Learners get the child-friendly learning experience.
-                Parents get a separate progress dashboard.
-            </p>
-
-
-            <div class="spaces">
-
-                <div class="space active">
-
-                    <div class="space-icon">
-                        🧒
-                    </div>
-
-                    <div class="space-title">
-                        Learner
-                    </div>
-
-                    <div class="space-text">
-                        Rhymes • Quizzes • Badges<br>
-                        Fun learning for kids
-                    </div>
-
-                </div>
-
-
-                <div class="space">
-
-                    <div class="space-icon">
-                        👨‍👩‍👧
-                    </div>
-
-                    <div class="space-title">
-                        Parent
-                    </div>
-
-                    <div class="space-text">
-                        Monitor • Add learners<br>
-                        Track progress & reports
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="character">
-                🧒📖
-            </div>
-
-        </section>
-
-
-        <!-- RIGHT SIDE -->
-
-        <section class="right">
-
-            <div class="small">
-                CREATE ACCOUNT
-            </div>
-
-            <h2>
-                Let's get started.
-            </h2>
-
-
-            <!-- DJANGO MESSAGES -->
-
-            {% if messages %}
-
-                <div class="messages">
-
-                    {% for message in messages %}
-
-                        <div class="{% if message.tags == 'success' %}success{% else %}error{% endif %}">
-                            {{ message }}
-                        </div>
-
-                    {% endfor %}
-
-                </div>
-
-            {% endif %}
-
-
-            <!-- ACCOUNT TYPE -->
-
-            <div class="tabs">
-
-                <div class="tab active">
-                    🧒 &nbsp; Learner
-                </div>
-
-                <div class="tab">
-                    👨‍👩‍👧 &nbsp; Parent
-                </div>
-
-            </div>
-
-
-            <!-- REGISTRATION FORM -->
-
-            <form method="POST">
-
-                {% csrf_token %}
-
-
-                <!-- FULL NAME -->
-
-                <label for="full_name">
-                    Your name
-                </label>
-
-                <input
-                    type="text"
-                    id="full_name"
-                    name="full_name"
-                    placeholder="Enter your full name"
-                    required
-                    autocomplete="name"
-                >
-
-
-                <!-- USERNAME + EMAIL -->
-
-                <div class="row">
-
-                    <div>
-
-                        <label for="username">
-                            Username
-                        </label>
-
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            placeholder="Choose a username"
-                            required
-                            autocomplete="username"
-                        >
-
-                    </div>
-
-
-                    <div>
-
-                        <label for="email">
-                            Email address
-                        </label>
-
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Enter email"
-                            required
-                            autocomplete="email"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- PASSWORDS -->
-
-                <div class="row">
-
-                    <div>
-
-                        <label for="password1">
-                            Password
-                        </label>
-
-                        <input
-                            type="password"
-                            id="password1"
-                            name="password1"
-                            placeholder="Create password"
-                            required
-                            autocomplete="new-password"
-                        >
-
-                    </div>
-
-
-                    <div>
-
-                        <label for="password2">
-                            Confirm password
-                        </label>
-
-                        <input
-                            type="password"
-                            id="password2"
-                            name="password2"
-                            placeholder="Confirm password"
-                            required
-                            autocomplete="new-password"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <!-- AVATAR -->
-
-                <label>
-                    Pick an avatar
-                </label>
-
-
-                <div class="avatars">
-
-                    <label class="avatar">
-
-                        <input
-                            type="radio"
-                            name="avatar"
-                            value="boy"
-                            checked
-                        >
-
-                        <span class="avatar-icon">
-                            🧒
-                        </span>
-
-                        <span class="avatar-name">
-                            Boy
-                        </span>
-
-                    </label>
-
-
-                    <label class="avatar">
-
-                        <input
-                            type="radio"
-                            name="avatar"
-                            value="girl"
-                        >
-
-                        <span class="avatar-icon">
-                            👧
-                        </span>
-
-                        <span class="avatar-name">
-                            Girl
-                        </span>
-
-                    </label>
-
-
-                    <label class="avatar">
-
-                        <input
-                            type="radio"
-                            name="avatar"
-                            value="dog"
-                        >
-
-                        <span class="avatar-icon">
-                            🐶
-                        </span>
-
-                        <span class="avatar-name">
-                            Dog
-                        </span>
-
-                    </label>
-
-
-                    <label class="avatar">
-
-                        <input
-                            type="radio"
-                            name="avatar"
-                            value="cat"
-                        >
-
-                        <span class="avatar-icon">
-                            🐱
-                        </span>
-
-                        <span class="avatar-name">
-                            Cat
-                        </span>
-
-                    </label>
-
-                </div>
-
-
-                <!-- SUBMIT -->
-
-                <button
-                    type="submit"
-                    class="continue"
-                >
-                    Continue →
-                </button>
-
-            </form>
-
-
-            <!-- LOGIN LINK -->
-
-            <div class="login">
-
-                Already have an account?
-
-                <a href="{% url 'accounts:login' %}">
-                    Log in
-                </a>
-
-            </div>
-
-        </section>
-
-    </div>
-
+<div class="register-page">
+ <div class="register-shell">
+  <div class="header-wrap">
+   <img src="{% static 'images/register_header.png' %}" alt="Smart Learning header">
+   <button class="help-button" id="helpButton" type="button" aria-label="Need Help?" title="Need Help?"></button>
+  </div>
+
+  <div class="register-main">
+   <div class="hero-panel">
+    <img class="panel-image" src="{% static 'images/register_hero_panel.png' %}" alt="Smart Learning learning space">
+   </div>
+
+   <section class="form-panel" aria-label="Create account">
+    <img class="panel-image" src="{% static 'images/register_form_panel.png' %}" alt="Create account">
+    <form method="POST" id="registerForm" class="register-form" novalidate>
+     {% csrf_token %}
+     <input type="hidden" name="account_type" value="learner">
+
+     <input class="field full-name" type="text" id="full_name" name="full_name" required autocomplete="name" aria-label="Your name">
+     <input class="field username" type="text" id="username" name="username" required autocomplete="username" aria-label="Username">
+     <input class="field email" type="email" id="email" name="email" required autocomplete="email" aria-label="Email address">
+
+     <label class="avatar-choice avatar-boy selected" aria-label="Boy"><input type="radio" name="avatar" value="boy" checked></label>
+     <label class="avatar-choice avatar-girl" aria-label="Girl"><input type="radio" name="avatar" value="girl"></label>
+     <label class="avatar-choice avatar-dog" aria-label="Dog"><input type="radio" name="avatar" value="dog"></label>
+     <label class="avatar-choice avatar-cat" aria-label="Cat"><input type="radio" name="avatar" value="cat"></label>
+
+     <button class="continue-button" type="button" id="continueButton" aria-label="Continue"></button>
+     <a class="login-link" href="{% url 'accounts:login' %}" aria-label="Log in"></a>
+    </form>
+   </section>
+  </div>
+
+  <img class="trust-image" src="{% static 'images/register_trust.png' %}" alt="Safe and secure, kid-friendly, quality learning">
+ </div>
 </div>
 
-</body>
+{% if messages %}
+<div class="message-stack">
+ {% for message in messages %}<div class="message">{{ message }}</div>{% endfor %}
+</div>
+{% endif %}
 
+<div class="password-modal" id="passwordModal" aria-hidden="true">
+ <div class="password-card" role="dialog" aria-modal="true" aria-labelledby="passwordTitle">
+  <span class="eyebrow">SECURE YOUR ACCOUNT</span>
+  <h2 id="passwordTitle">Create your password.</h2>
+  <p>Your account details are ready. Add a password to finish creating your account.</p>
+  <label class="password-label" for="password1">Password</label>
+  <input class="password-input" type="password" id="password1" name="password1" form="registerForm" minlength="8" required autocomplete="new-password" placeholder="Create password">
+  <label class="password-label" for="password2">Confirm password</label>
+  <input class="password-input" type="password" id="password2" name="password2" form="registerForm" minlength="8" required autocomplete="new-password" placeholder="Confirm password">
+  <div class="password-error" id="passwordError">Passwords must match and contain at least 8 characters.</div>
+  <div class="password-actions">
+   <button type="button" class="cancel-btn" id="cancelPassword">Back</button>
+   <button type="submit" class="submit-btn" form="registerForm">Create Account</button>
+  </div>
+ </div>
+</div>
+
+<script>
+(function(){
+ const form=document.getElementById('registerForm');
+ const continueButton=document.getElementById('continueButton');
+ const modal=document.getElementById('passwordModal');
+ const cancelButton=document.getElementById('cancelPassword');
+ const password1=document.getElementById('password1');
+ const password2=document.getElementById('password2');
+ const passwordError=document.getElementById('passwordError');
+ const helpButton=document.getElementById('helpButton');
+
+ document.querySelectorAll('.field').forEach(function(field){
+  function sync(){ field.classList.toggle('has-value',field.value.length>0); }
+  field.addEventListener('input',sync);
+  field.addEventListener('change',sync);
+  sync();
+ });
+
+ document.querySelectorAll('.avatar-choice').forEach(function(label){
+  label.addEventListener('click',function(){
+   document.querySelectorAll('.avatar-choice').forEach(x=>x.classList.remove('selected'));
+   label.classList.add('selected');
+   label.querySelector('input').checked=true;
+  });
+ });
+
+ continueButton.addEventListener('click',function(){
+  const fields=[document.getElementById('full_name'),document.getElementById('username'),document.getElementById('email')];
+  for(const field of fields){
+   if(!field.value.trim() || (field.type==='email' && !field.checkValidity())){
+    field.focus();
+    return;
+   }
+  }
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+  setTimeout(()=>password1.focus(),40);
+ });
+
+ cancelButton.addEventListener('click',function(){
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+  passwordError.classList.remove('show');
+ });
+
+ form.addEventListener('submit',function(event){
+  if(!password1.value || password1.value.length<8 || password1.value!==password2.value){
+   event.preventDefault();
+   passwordError.classList.add('show');
+   password2.focus();
+  }
+ });
+
+ helpButton.addEventListener('click',function(){
+  alert('Enter your name, username and email, choose an avatar, then press Continue to create your account.');
+ });
+
+ document.addEventListener('keydown',function(event){
+  if(event.key==='Escape' && modal.classList.contains('open')) cancelButton.click();
+ });
+})();
+</script>
+</body>
 </html>

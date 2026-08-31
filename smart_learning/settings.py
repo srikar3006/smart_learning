@@ -124,7 +124,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "core:home"
-LOGOUT_REDIRECT_URL = "core:landing"
+LOGOUT_REDIRECT_URL = "accounts:login"
 
 # Upload safety / request limits.
 DATA_UPLOAD_MAX_MEMORY_SIZE = int(os.environ.get("MAX_UPLOAD_SIZE", 52428800))

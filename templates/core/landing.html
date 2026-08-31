@@ -1,912 +1,101 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Smart Learning | Welcome</title>
-
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; min-height: 100%; }
         body {
-            min-height: 100vh;
-            font-family: Arial, Helvetica, sans-serif;
-            color: white;
-
-            background:
-                radial-gradient(
-                    circle at 15% 20%,
-                    #1736a8 0%,
-                    transparent 30%
-                ),
-                radial-gradient(
-                    circle at 85% 80%,
-                    #34119c 0%,
-                    transparent 30%
-                ),
-                linear-gradient(
-                    135deg,
-                    #02052d,
-                    #07156c 50%,
-                    #05012c
-                );
-
+            background: #eef0ff;
             overflow-x: hidden;
         }
-
-        /* =====================================================
-           PAGE
-        ===================================================== */
-
-        .page {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 28px 6%;
-        }
-
-        /* =====================================================
-           HEADER
-        ===================================================== */
-
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 25px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo-icon {
-            width: 62px;
-            height: 62px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 18px;
-
-            font-size: 35px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #20aaff,
-                    #673dff
-                );
-
-            box-shadow:
-                0 0 30px rgba(35, 125, 255, .75);
-        }
-
-        .logo-title {
-            font-size: 30px;
-            font-weight: 800;
-            letter-spacing: .3px;
-        }
-
-        .logo-subtitle {
-            color: #42bfff;
-            font-size: 17px;
-            margin-top: 3px;
-        }
-
-        .help {
-            border: 1px solid #3154a8;
-
-            padding: 13px 24px;
-
-            border-radius: 30px;
-
-            background: rgba(10, 25, 90, .7);
-
-            font-size: 15px;
-
-            color: #dbe5ff;
-
-            box-shadow:
-                0 0 20px rgba(20, 100, 255, .12);
-        }
-
-        /* =====================================================
-           HERO
-        ===================================================== */
-
-        .hero {
-            flex: 1;
-
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-
-            gap: 28px;
-
-            align-items: center;
-
-            margin-top: 35px;
-            margin-bottom: 30px;
-        }
-
-        .hero-left,
-        .hero-right {
-            border: 1px solid #285bd0;
-
-            border-radius: 25px;
-
-            background:
-                rgba(5, 17, 76, .72);
-
-            box-shadow:
-                0 0 35px rgba(0, 111, 255, .16);
-        }
-
-        /* =====================================================
-           LEFT HERO
-        ===================================================== */
-
-        .hero-left {
-            min-height: 520px;
-
-            padding: 65px 50px;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-
+        .reference-ui {
             position: relative;
-
+            width: 100%;
+            line-height: 0;
             overflow: hidden;
         }
-
-        .hero-left:after {
-            content: "🎵  ♪  🎶  ✨  🎵";
-
-            position: absolute;
-
-            right: 30px;
-            top: 30px;
-
-            color: #35bfff;
-
-            font-size: 24px;
-
-            letter-spacing: 15px;
-
-            opacity: .8;
-        }
-
-        .small-title {
-            color: #00b9ff;
-
-            font-size: 16px;
-
-            font-weight: bold;
-
-            letter-spacing: 1px;
-
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            margin: 0;
-
-            font-size: clamp(
-                42px,
-                5vw,
-                70px
-            );
-
-            line-height: 1.05;
-        }
-
-        h1 span {
-            background:
-                linear-gradient(
-                    90deg,
-                    #00bfff,
-                    #9d54ff,
-                    #ff65c8
-                );
-
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .description {
-            margin-top: 25px;
-
-            max-width: 600px;
-
-            font-size: 19px;
-
-            line-height: 1.6;
-
-            color: #d5dcff;
-        }
-
-        /* =====================================================
-           FEATURES
-        ===================================================== */
-
-        .features {
-            display: flex;
-
-            gap: 15px;
-
-            margin-top: 35px;
-        }
-
-        .feature {
-            padding: 18px 20px;
-
-            border: 1px solid #244ca9;
-
-            border-radius: 18px;
-
-            background:
-                rgba(12, 31, 108, .8);
-
-            flex: 1;
-
-            transition: .25s;
-        }
-
-        .feature:hover {
-            transform: translateY(-5px);
-
-            border-color: #3b8dff;
-
-            box-shadow:
-                0 0 25px rgba(0, 145, 255, .25);
-        }
-
-        .feature strong {
+        .reference-ui img {
             display: block;
-
-            font-size: 17px;
-
-            margin-top: 7px;
-
-            margin-bottom: 5px;
+            width: 100%;
+            height: auto;
+            user-select: none;
+            -webkit-user-drag: none;
         }
-
-        .feature small {
-            color: #aab9ec;
-
-            font-size: 13px;
+        .ui-link {
+            position: absolute;
+            display: block;
+            z-index: 2;
+            border-radius: 999px;
+            outline: none;
         }
-
-        /* =====================================================
-           RIGHT AUTH CARD
-        ===================================================== */
-
-        .hero-right {
-            padding: 45px;
+        .ui-link:focus-visible {
+            box-shadow: 0 0 0 4px rgba(81, 93, 255, .55);
         }
-
-        .card-title {
-            color: #09baff;
-
-            font-size: 15px;
-
-            font-weight: bold;
-
-            letter-spacing: 1px;
-
-            margin-bottom: 8px;
+        /* Exact hit areas over the Login/Register controls in the supplied reference. */
+        .login-main {
+            left: 46.15%;
+            top: 55.20%;
+            width: 20.55%;
+            height: 6.15%;
         }
-
-        .hero-right h2 {
-            font-size: 40px;
-
-            margin: 12px 0 10px;
+        .register-main {
+            left: 73.37%;
+            top: 55.20%;
+            width: 20.67%;
+            height: 6.15%;
         }
-
-        .auth-description {
-            color: #b9c8f7;
-
-            font-size: 15px;
-
-            line-height: 1.6;
-
-            margin-bottom: 28px;
+        .register-inline {
+            left: 58.8%;
+            top: 65.15%;
+            width: 9.5%;
+            height: 3.0%;
         }
-
-        /* =====================================================
-           AUTH STATUS
-        ===================================================== */
-
-        .auth-status {
-            display: flex;
-
-            align-items: center;
-
-            gap: 10px;
-
-            padding: 12px 15px;
-
-            margin-bottom: 20px;
-
-            border-radius: 14px;
-
-            border: 1px solid rgba(
-                47,
-                137,
-                255,
-                .35
-            );
-
-            background:
-                rgba(15, 40, 120, .45);
-
-            color: #dce7ff;
-
-            font-size: 13px;
-        }
-
-        .status-dot {
-            width: 9px;
-            height: 9px;
-
-            border-radius: 50%;
-
-            background: #20e6a2;
-
-            box-shadow:
-                0 0 12px #20e6a2;
-        }
-
-        /* =====================================================
-           CHOICE BUTTONS
-        ===================================================== */
-
-        .choice-buttons {
-            display: grid;
-
-            grid-template-columns: 1fr 1fr;
-
-            gap: 18px;
-        }
-
-        .choice {
-            text-decoration: none;
-
-            color: white;
-
-            padding: 28px 20px;
-
-            border-radius: 18px;
-
-            border: 1px solid #3159b5;
-
-            text-align: center;
-
-            background:
-                rgba(15, 30, 100, .7);
-
-            transition: .25s;
-
-            cursor: pointer;
-        }
-
-        .choice:hover {
-            transform: translateY(-5px);
-
-            border-color: #a447ff;
-
-            box-shadow:
-                0 0 25px rgba(
-                    139,
-                    55,
-                    255,
-                    .6
-                );
-        }
-
-        .choice.login {
-            border-color: #168dff;
-        }
-
-        .choice.login:hover {
-            border-color: #00c8ff;
-
-            box-shadow:
-                0 0 28px rgba(
-                    0,
-                    200,
-                    255,
-                    .45
-                );
-        }
-
-        .choice.register {
-            border-color: #7b42ff;
-        }
-
-        .choice.register:hover {
-            border-color: #d45aff;
-
-            box-shadow:
-                0 0 28px rgba(
-                    180,
-                    70,
-                    255,
-                    .45
-                );
-        }
-
-        .choice-icon {
-            font-size: 45px;
-
-            margin-bottom: 12px;
-        }
-
-        .choice-title {
-            font-size: 23px;
-
-            font-weight: bold;
-        }
-
-        .choice-text {
-            color: #b8c6f3;
-
-            margin-top: 8px;
-
-            font-size: 13px;
-
-            line-height: 1.5;
-        }
-
-        /* =====================================================
-           LOGIN NOTE
-        ===================================================== */
-
-        .login-note {
-            margin-top: 22px;
-
-            padding: 14px 16px;
-
-            border-radius: 14px;
-
-            background:
-                rgba(3, 10, 55, .55);
-
-            border: 1px solid
-                rgba(80, 110, 200, .25);
-
-            color: #aebde9;
-
-            font-size: 12px;
-
-            line-height: 1.5;
-
-            text-align: center;
-        }
-
-        .login-note strong {
-            color: #53c9ff;
-        }
-
-        /* =====================================================
-           FOOTER
-        ===================================================== */
-
-        .footer {
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            flex-wrap: wrap;
-
-            gap: 55px;
-
-            padding-top: 20px;
-
-            color: #c3cdf4;
-
-            font-size: 13px;
-        }
-
-        /* =====================================================
-           TABLET
-        ===================================================== */
-
-        @media(max-width: 1000px) {
-
-            .hero {
-                grid-template-columns: 1fr;
-
-                margin-top: 30px;
-            }
-
-            .hero-left {
-                min-height: auto;
-
-                padding: 55px 45px;
-            }
-
-            .hero-right {
-                padding: 40px;
-            }
-
-            h1 {
-                font-size: 52px;
-            }
-
-            .features {
-                flex-direction: row;
-            }
-        }
-
-        /* =====================================================
-           MOBILE
-        ===================================================== */
-
-        @media(max-width: 650px) {
-
-            .page {
-                padding: 20px;
-            }
-
-            .header {
-                flex-direction: column;
-
-                align-items: flex-start;
-
-                gap: 20px;
-            }
-
-            .logo-icon {
-                width: 55px;
-                height: 55px;
-
-                font-size: 30px;
-            }
-
-            .logo-title {
-                font-size: 25px;
-            }
-
-            .logo-subtitle {
-                font-size: 14px;
-            }
-
-            .help {
-                width: 100%;
-
-                text-align: center;
-            }
-
-            .hero {
-                margin-top: 25px;
-
-                gap: 20px;
-            }
-
-            .hero-left {
-                padding: 40px 25px;
-
-                min-height: auto;
-            }
-
-            .hero-left:after {
-                font-size: 18px;
-
-                right: 15px;
-                top: 15px;
-
-                letter-spacing: 7px;
-            }
-
-            .small-title {
-                font-size: 12px;
-            }
-
-            h1 {
-                font-size: 40px;
-            }
-
-            .description {
-                font-size: 16px;
-            }
-
-            .features {
-                flex-direction: column;
-
-                gap: 10px;
-            }
-
-            .hero-right {
-                padding: 30px 20px;
-            }
-
-            .hero-right h2 {
-                font-size: 32px;
-            }
-
-            .choice-buttons {
-                grid-template-columns: 1fr;
-            }
-
-            .choice {
-                padding: 24px 18px;
-            }
-
-            .footer {
-                flex-direction: column;
-
-                gap: 10px;
-
-                padding-bottom: 20px;
-            }
+        .login-inline {
+            left: 88.4%;
+            top: 65.15%;
+            width: 5.0%;
+            height: 3.0%;
         }
     </style>
 </head>
-
 <body>
-
-<div class="page">
-
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
-
-    <header class="header">
-
-        <div class="logo">
-
-            <div class="logo-icon">
-                📖
-            </div>
-
-            <div>
-
-                <div class="logo-title">
-                    Smart Learning
-                </div>
-
-                <div class="logo-subtitle">
-                    Through Tunes & Cartoons
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="help">
-            ❔ Need Help?
-        </div>
-
-    </header>
-
-
-    <!-- =====================================================
-         MAIN HERO
-    ====================================================== -->
-
-    <main class="hero">
-
-        <!-- =================================================
-             LEFT SIDE
-        ================================================== -->
-
-        <section class="hero-left">
-
-            <div class="small-title">
-                ✨ WELCOME TO YOUR LEARNING SPACE
-            </div>
-
-            <h1>
-                Smart Learning<br>
-                Through
-                <span>Tunes & Cartoons</span>
-            </h1>
-
-            <p class="description">
-                Learn, Sing, Enjoy! Interactive nursery rhymes,
-                fun quizzes and playful activities designed
-                especially for children.
-            </p>
-
-
-            <!-- FEATURES -->
-
-            <div class="features">
-
-                <div class="feature">
-
-                    🎵
-
-                    <strong>
-                        Fun Learning
-                    </strong>
-
-                    <small>
-                        Learn through rhymes
-                    </small>
-
-                </div>
-
-
-                <div class="feature">
-
-                    🎮
-
-                    <strong>
-                        Interactive
-                    </strong>
-
-                    <small>
-                        Quizzes & activities
-                    </small>
-
-                </div>
-
-
-                <div class="feature">
-
-                    🏆
-
-                    <strong>
-                        Track Progress
-                    </strong>
-
-                    <small>
-                        Earn badges
-                    </small>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             RIGHT SIDE - AUTHENTICATION
-        ================================================== -->
-
-        <section class="hero-right">
-
-            <div class="card-title">
-                GET STARTED
-            </div>
-
-            <h2>
-                Welcome! 👋
-            </h2>
-
-            <p class="auth-description">
-                Please choose an option below to continue.
-                You must login with valid credentials before
-                accessing your Smart Learning dashboard.
-            </p>
-
-
-            <!-- AUTH STATUS -->
-
-            <div class="auth-status">
-
-                <span class="status-dot"></span>
-
-                <span>
-                    Secure Login Required
-                </span>
-
-            </div>
-
-
-            <!-- LOGIN / REGISTER -->
-
-            <div class="choice-buttons">
-
-                <!-- ================= LOGIN ================= -->
-
-                <a
-                    href="{% url 'accounts:login' %}"
-                    class="choice login"
-                >
-
-                    <div class="choice-icon">
-                        🔐
-                    </div>
-
-                    <div class="choice-title">
-                        Login
-                    </div>
-
-                    <div class="choice-text">
-                        Already have an account?
-                        Login to continue learning.
-                    </div>
-
-                </a>
-
-
-                <!-- ================= REGISTER ================= -->
-
-                <a
-                    href="{% url 'accounts:register' %}"
-                    class="choice register"
-                >
-
-                    <div class="choice-icon">
-                        🚀
-                    </div>
-
-                    <div class="choice-title">
-                        Register
-                    </div>
-
-                    <div class="choice-text">
-                        Create a new account and
-                        start your learning journey.
-                    </div>
-
-                </a>
-
-            </div>
-
-
-            <!-- SECURITY NOTE -->
-
-            <div class="login-note">
-
-                🛡️
-                <strong>
-                    Secure Access:
-                </strong>
-
-                Your dashboard is protected.
-                Login verification is required before
-                entering the Home page.
-
-            </div>
-
-        </section>
-
+    <main class="reference-ui" aria-label="Smart Learning landing page">
+        <img
+            src="{% static 'images/landing_reference.png' %}"
+            alt="Smart Learning Through Tunes & Cartoons landing page"
+        >
+
+        <a
+            href="{% url 'accounts:login' %}"
+            class="ui-link login-main"
+            aria-label="Login"
+            title="Login"
+        ></a>
+
+        <a
+            href="{% url 'accounts:register' %}"
+            class="ui-link register-main"
+            aria-label="Register"
+            title="Register"
+        ></a>
+
+        <a
+            href="{% url 'accounts:register' %}"
+            class="ui-link register-inline"
+            aria-label="Register Now"
+            title="Register Now"
+        ></a>
+
+        <a
+            href="{% url 'accounts:login' %}"
+            class="ui-link login-inline"
+            aria-label="Login"
+            title="Login"
+        ></a>
     </main>
-
-
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-
-    <footer class="footer">
-
-        <span>
-            🛡️ Safe & Secure
-        </span>
-
-        <span>
-            😊 Kid-Friendly
-        </span>
-
-        <span>
-            ⭐ Quality Learning
-        </span>
-
-        <span>
-            © 2026 Smart Learning
-        </span>
-
-    </footer>
-
-</div>
-
 </body>
 </html>

@@ -1,3 +1,4 @@
 {% extends "base.html" %}
 {% block title %}Page not found — Smart Learning{% endblock %}
 {% block content %}<div class="empty-panel"><div class="empty-illustration">🌈</div><span class="eyebrow">404</span><h2>That page wandered away.</h2><p>Let's take you back to your learning space.</p><a href="{% if user.is_authenticated %}{% if user.is_parent %}{% url 'parent:dashboard' %}{% else %}{% url 'core:home' %}{% endif %}{% else %}{% url 'core:landing' %}{% endif %}" class="btn btn-primary">Go home</a></div>{% endblock %}
+

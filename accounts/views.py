@@ -34,8 +34,10 @@ def login_view(request):
         -> Stay on Login page
     """
 
+    # Always show the Login page when the user clicks Login.
+    # If an old session exists, clear it first so Login never jumps to Home.
     if request.user.is_authenticated:
-        return redirect("core:home")
+        logout(request)
 
     if request.method == "POST":
 
