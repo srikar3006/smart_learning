@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animated Videos &amp; Stories — Smart Learning</title>
+<style>
+:root{--ink:#101f57;--muted:#6d7696;--purple:#6d2ce7;--purple2:#8a4df1;--green:#2fb66d;--pink:#e84288;--blue:#3d6ee8;--line:#e7e3fb;--soft:#f7f7ff;--shadow:0 14px 35px rgba(75,62,164,.10)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:linear-gradient(135deg,#f5f6ff 0%,#f9fbff 50%,#f5f3ff 100%);color:var(--ink);min-height:100vh}button,input{font:inherit}button{border:0}a{text-decoration:none;color:inherit}.app{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:100vh}.sidebar{margin:12px 8px 12px 14px;padding:14px 10px 12px;border-radius:27px;background:rgba(255,255,255,.92);border:1px solid var(--line);box-shadow:var(--shadow);position:sticky;top:12px;height:calc(100vh - 24px);display:flex;flex-direction:column;z-index:5}.side-logo{display:block;border-radius:20px;overflow:hidden;margin:2px 3px 18px}.side-logo img{display:block;width:100%;height:auto}.menu{display:flex;flex-direction:column;gap:5px}.menu a{display:flex;align-items:center;gap:12px;padding:12px 11px;border-radius:18px;font-weight:800;font-size:13px;line-height:1.25;transition:transform .18s ease,background .18s ease,box-shadow .18s ease,color .18s ease}.menu a:hover{background:#f2edff;transform:translateX(2px)}.menu a.active{color:#5e22d5;background:linear-gradient(105deg,#f0e7ff,#fff);box-shadow:0 8px 20px rgba(105,62,226,.15)}.mi{width:28px;text-align:center;font-size:21px;flex:0 0 28px}.side-child{margin-top:auto;padding:8px 4px 0}.side-child img{display:block;width:100%;border-radius:20px}.streak{margin:9px 3px 0;padding:13px 12px;border-radius:19px;background:linear-gradient(135deg,#6c2ce8,#7b39ec 55%,#8e45f1);color:#fff;box-shadow:0 13px 26px rgba(100,40,220,.23)}.streak small{display:block;font-size:10px;opacity:.92}.streak strong{display:block;font-size:22px;line-height:1.1;margin:3px 0}.streak span{font-size:10px;opacity:.9}.main{min-width:0;padding:13px 17px 24px 10px}.topbar{height:76px;display:flex;align-items:center;gap:12px;margin-bottom:10px}.topnav{flex:1;display:flex;align-items:center;justify-content:center;gap:3px;padding:6px;border:1px solid var(--line);background:#fff;border-radius:26px;box-shadow:0 10px 28px rgba(85,70,170,.08)}.topnav a{padding:11px 15px;border-radius:19px;font-size:13px;font-weight:800;white-space:nowrap;text-align:center;line-height:1.15}.topnav a.active{color:#5d22d4;background:#f0e7ff;box-shadow:0 7px 18px rgba(104,61,224,.15)}.top-actions{display:flex;align-items:center;gap:9px}.bell{position:relative;width:54px;height:54px;border-radius:20px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-size:24px;box-shadow:0 9px 22px rgba(75,62,164,.08)}.badge{position:absolute;right:1px;top:-3px;width:20px;height:20px;border-radius:50%;background:#7730df;color:#fff;font-size:10px;font-weight:900;display:grid;place-items:center;border:2px solid #fff}.profile{display:flex;align-items:center;gap:9px;padding:6px 12px 6px 7px;background:#fff;border:1px solid var(--line);border-radius:22px;min-width:188px;box-shadow:0 9px 22px rgba(75,62,164,.08)}.avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;background:#f1ebff}.avatar img{width:100%;height:100%;object-fit:cover}.profile strong{display:block;font-size:12px}.profile small{display:block;font-size:9px;color:var(--muted);margin-top:3px}.profile .chev{margin-left:auto;font-size:18px}.hero{position:relative;min-height:170px;border-radius:26px;overflow:hidden;border:1px solid #dfe8ff;background:linear-gradient(100deg,#eaf6ff,#d8ecff 52%,#f0e7ff);box-shadow:var(--shadow);padding:25px 30px 20px}.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;filter:blur(2px);opacity:.7}.hero:before{width:220px;height:120px;right:19%;top:-55px;background:#fff}.hero:after{width:180px;height:100px;right:5%;bottom:-55px;background:#dff6ff}.hero-copy{position:relative;z-index:2;max-width:630px}.eyebrow{display:inline-flex;align-items:center;gap:7px;color:#2a9d64;font-weight:900;font-size:12px;margin-bottom:6px}.hero h1{font-size:31px;line-height:1.08;letter-spacing:-.7px}.hero h1 .green{color:#2aa765}.hero p{font-size:13px;color:#4e5c7e;margin-top:7px}.hero-art{position:absolute;right:17px;bottom:-12px;width:360px;height:180px;z-index:1;object-fit:cover;object-position:center;border-radius:22px;mix-blend-mode:multiply;opacity:.92}.hero-castle{position:absolute;right:-12px;bottom:-12px;width:390px;height:180px;object-fit:cover;object-position:center;border-radius:22px;opacity:.42;mix-blend-mode:multiply}.filters{display:flex;align-items:center;gap:8px;overflow:auto;padding:12px 1px 8px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}.filter{display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border-radius:19px;background:#fff;border:1px solid var(--line);font-size:12px;font-weight:850;color:#28376b;white-space:nowrap;cursor:pointer;transition:.18s}.filter:hover{transform:translateY(-1px);box-shadow:0 7px 15px rgba(90,70,180,.10)}.filter.active{background:linear-gradient(110deg,#6e2be7,#8543ed);color:#fff;border-color:transparent;box-shadow:0 9px 18px rgba(106,42,224,.22)}.search{margin-left:auto;min-width:260px;display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:21px;background:#fff;border:1px solid var(--line);box-shadow:0 7px 18px rgba(85,70,170,.07)}.search span{font-size:18px;color:#6c7592}.search input{border:0;outline:0;width:100%;font-size:12px;color:var(--ink);background:transparent}.search input::placeholder{color:#9299b2}.section{margin-top:10px}.section-head{display:flex;align-items:center;justify-content:space-between;margin:10px 2px}.section-title{display:flex;align-items:center;gap:9px;font-size:18px}.section-title .icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#efe6ff;color:#6a2ce4;font-size:18px}.section-title.green .icon{background:#e4f8ee;color:#25a664}.section-head p{font-size:11px;color:var(--muted)}.video-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}.video-card{min-width:0;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 8px 20px rgba(75,62,164,.07);transition:transform .2s ease,box-shadow .2s ease}.video-card:hover{transform:translateY(-4px);box-shadow:0 15px 28px rgba(75,62,164,.13)}.thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:linear-gradient(135deg,#e9edff,#f9ddf2)}.thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s ease}.video-card:hover .thumb img{transform:scale(1.035)}.duration{position:absolute;right:7px;bottom:7px;background:rgba(16,25,55,.88);color:#fff;border-radius:9px;padding:4px 6px;font-size:9px;font-weight:900}.play-btn{position:absolute;left:8px;bottom:8px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#6627df;font-size:14px;box-shadow:0 7px 16px rgba(35,28,100,.22);cursor:pointer;transition:transform .18s,background .18s}.play-btn:hover{transform:scale(1.08);background:#faf7ff}.card-body{padding:9px 10px 11px}.card-body h3{font-size:12px;line-height:1.25;min-height:30px}.card-body p{font-size:9px;line-height:1.45;color:#707b99;margin-top:4px;min-height:27px}.card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px}.tag{font-size:8px;font-weight:900;color:#5f28d7;background:#f2ebff;border-radius:10px;padding:4px 7px}.rating{font-size:9px;color:#f1ae00;font-weight:900}.stories-layout{display:grid;grid-template-columns:1.08fr 1fr;gap:10px}.story-list{display:grid;grid-template-columns:1fr 1fr;gap:9px}.story-card{display:grid;grid-template-columns:112px 1fr;min-height:104px;background:#fff;border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:0 8px 20px rgba(75,62,164,.07);transition:.2s}.story-card:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(75,62,164,.11)}.story-card .thumb{aspect-ratio:auto;min-height:104px}.story-card .card-body{padding:10px}.story-card .card-body h3{min-height:auto}.story-card .card-body p{min-height:auto}.keep{margin-top:12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}.keep-card,.actions{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 8px 20px rgba(75,62,164,.07)}.keep-card{display:flex;align-items:center;gap:12px;padding:9px 12px}.keep-thumb{width:92px;height:58px;border-radius:13px;object-fit:cover}.keep-copy{min-width:140px;flex:1}.keep-copy small{display:block;font-size:9px;color:#7c85a1}.keep-copy strong{display:block;font-size:12px;margin:3px 0 7px}.progress{height:6px;border-radius:10px;background:#ecebfa;overflow:hidden}.progress span{display:block;width:60%;height:100%;background:linear-gradient(90deg,#6b2be7,#9d53f2);border-radius:inherit}.keep-percent{font-size:10px;font-weight:900;color:#6c2be7}.actions{display:flex;align-items:center;gap:7px;padding:8px}.action{padding:10px 13px;border-radius:15px;background:#fbfaff;font-size:10px;font-weight:850;cursor:pointer;color:#313c69}.action:hover{background:#f1eaff;color:#5d21d4}.modal{position:fixed;inset:0;background:rgba(20,17,56,.64);backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modal.open{display:flex}.player{width:min(900px,96vw);background:linear-gradient(145deg,#5520c8,#7a34e9);border-radius:25px;padding:12px;box-shadow:0 30px 70px rgba(27,12,78,.45)}.player-head{display:flex;align-items:center;justify-content:space-between;color:#fff;padding:5px 5px 10px}.player-head small{display:block;font-size:10px;opacity:.75}.player-head strong{display:block;font-size:16px;margin-top:2px}.close{width:34px;height:34px;border-radius:50%;background:#fff;color:#5c20cf;font-size:20px;cursor:pointer}.frame{position:relative;background:#0d0c19;border-radius:17px;overflow:hidden;aspect-ratio:16/9}.frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.player-foot{display:flex;justify-content:space-between;align-items:center;color:#fff;padding:8px 5px 2px;font-size:9px;opacity:.88}.player-foot span{display:flex;align-items:center;gap:7px}.empty{display:none;text-align:center;padding:38px 20px;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);color:var(--muted)}.empty.show{display:block}.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);background:#16113d;color:#fff;padding:10px 15px;border-radius:14px;font-size:11px;font-weight:800;opacity:0;pointer-events:none;transition:.25s;z-index:80}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1300px){.video-grid{grid-template-columns:repeat(3,1fr)}.hero-art,.hero-castle{width:330px}.search{min-width:220px}}
+@media(max-width:1000px){.app{grid-template-columns:195px minmax(0,1fr)}.topnav a{padding:10px 9px;font-size:11px}.profile{min-width:155px}.video-grid{grid-template-columns:repeat(2,1fr)}.stories-layout{grid-template-columns:1fr}.story-list{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.app{display:block}.sidebar{position:static;height:auto;margin:8px;padding:10px}.side-logo{max-width:250px;margin:0 auto 10px}.menu{display:grid;grid-template-columns:repeat(2,1fr)}.side-child{display:none}.streak{display:none}.main{padding:7px 10px 20px}.topbar{height:auto}.topnav{overflow:auto;justify-content:flex-start;padding-right:10px}.topnav a{font-size:10px;padding:9px 10px}.top-actions{display:none}.hero{min-height:210px;padding:21px 19px}.hero h1{font-size:26px}.hero p{font-size:11px;max-width:270px}.hero-art{right:-40px;bottom:-12px;width:290px;height:150px;opacity:.42}.hero-castle{right:-35px;width:310px;height:150px;opacity:.25}.filters{flex-wrap:nowrap}.search{order:2;margin-left:0;min-width:210px}.filters{display:grid;grid-template-columns:repeat(3,max-content);align-items:center}.video-grid{grid-template-columns:1fr 1fr}.story-list{grid-template-columns:1fr}.keep{grid-template-columns:1fr}.actions{justify-content:center}.player{width:100%;padding:9px;border-radius:19px}.player-head strong{font-size:13px}}
+@media(max-width:480px){.menu{grid-template-columns:1fr}.hero{min-height:225px}.hero h1{font-size:24px}.filters{display:flex;flex-wrap:wrap}.search{width:100%;order:2}.video-grid{grid-template-columns:1fr}.section-title{font-size:16px}.story-card{grid-template-columns:100px 1fr}.story-card .thumb{min-height:98px}.keep-card{align-items:flex-start}.keep-thumb{width:78px;height:52px}.action{flex:1;text-align:center;padding:9px 7px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <a class="side-logo" href="{% url 'core:home' %}"><img src="{% static 'img/reference/logo.png' %}" alt="Smart Learning"></a>
+  <nav class="menu" aria-label="Learner navigation">
+    <a href="{% url 'core:home' %}"><span class="mi">🏠</span>Home</a>
+    <a href="{% url 'rhymes:list' %}"><span class="mi">🎵</span>Rhymes</a>
+    <a class="active" href="{% url 'core:animated' %}"><span class="mi">📺</span><span>Animated<br>Videos/Stories</span></a>
+    <a href="#" onclick="return false"><span class="mi">🎮</span>Games</a>
+    <a href="#" onclick="return false"><span class="mi">🏆</span>Quiz</a>
+    <a href="{% url 'core:profile' %}"><span class="mi">👤</span>Profile</a>
+    <a href="#" onclick="return false"><span class="mi">⚙️</span>Settings</a>
+  </nav>
+  <div class="side-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Learner enjoying Smart Learning"></div>
+  <div class="streak"><small>⭐ Watch Streak</small><strong>7 Days</strong><span>Amazing! Keep it up! 🎉</span></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <nav class="topnav" aria-label="Top navigation">
+    <a href="{% url 'core:home' %}">🏠 Home</a>
+    <a href="{% url 'rhymes:list' %}">🎵 Rhymes</a>
+    <a class="active" href="{% url 'core:animated' %}">📺 Animated<br>Videos &amp; Stories</a>
+    <a href="#" onclick="return false">🎮 Games</a>
+    <a href="#" onclick="return false">🏆 Quiz</a>
+  </nav>
+  <div class="top-actions">
+    <div class="bell" aria-label="Notifications">♧<span class="badge">3</span></div>
+    <div class="profile"><div class="avatar"><img src="{% static 'img/reference/avatar.png' %}" alt="Learner avatar"></div><div><strong>Hi, Learner!</strong><small>Happy Learning! 🎉</small></div><span class="chev">⌄</span></div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">📺 Smart video library</span>
+    <h1>Animated Videos <span class="green">&amp; Stories</span></h1>
+    <p>Watch, learn and enjoy exciting animated videos and stories!</p>
+  </div>
+  <img class="hero-castle" src="{% static 'img/reference/hero-castle.png' %}" alt="Learning castle illustration">
+  <img class="hero-art" src="{% static 'img/reference/hero-character.png' %}" alt="Child learning illustration">
+</section>
+
+<div class="filters" id="filters">
+  <button class="filter active" data-filter="All">✨ All</button>
+  <button class="filter" data-filter="Learning">🎓 Learning</button>
+  <button class="filter" data-filter="Stories">📖 Stories</button>
+  <button class="filter" data-filter="Moral Stories">💗 Moral Stories</button>
+  <button class="filter" data-filter="Nature">🌿 Nature</button>
+  <button class="filter" data-filter="Life Skills">⭐ Life Skills</button>
+  <label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Search videos or stories..." aria-label="Search videos or stories"></label>
+</div>
+
+<section class="section" id="animatedSection">
+  <div class="section-head"><div><h2 class="section-title"><span class="icon">📺</span>Animated Videos</h2><p>Bright, friendly learning videos made for little learners.</p></div></div>
+  <div class="video-grid" id="videoGrid">
+    {% for video in videos %}
+      {% if video.type == 'video' %}
+      <article class="video-card media-card" data-category="{{ video.category }}" data-title="{{ video.title|lower }}" data-type="video">
+        <div class="thumb">
+          <img src="https://i.ytimg.com/vi/{{ video.video_id }}/hqdefault.jpg" alt="{{ video.title }}" loading="lazy" onerror="this.onerror=null;this.src='{% static 'img/reference/hero-character.png' %}';">
+          <span class="duration">{{ video.duration }}</span>
+          <button class="play-btn" type="button" data-video-id="{{ video.video_id }}" data-title="{{ video.title }}" aria-label="Play {{ video.title }}">▶</button>
+        </div>
+        <div class="card-body"><h3>{{ video.title }}</h3><p>{{ video.description }}</p><div class="card-foot"><span class="tag">{{ video.category }}</span><span class="rating">★ {{ video.rating }}</span></div></div>
+      </article>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section" id="storiesSection">
+  <div class="section-head"><div><h2 class="section-title green"><span class="icon">📖</span>Stories</h2><p>Classic tales with playful lessons and happy learning moments.</p></div></div>
+  <div class="stories-layout">
+    <div class="story-list">
+      {% for video in videos %}
+        {% if video.type == 'story' %}
+        <article class="story-card media-card" data-category="{{ video.category }}" data-title="{{ video.title|lower }}" data-type="story">
+          <div class="thumb"><img src="https://i.ytimg.com/vi/{{ video.video_id }}/hqdefault.jpg" alt="{{ video.title }}" loading="lazy" onerror="this.onerror=null;this.src='{% static 'img/reference/sidebar-child.png' %}';"><span class="duration">{{ video.duration }}</span><button class="play-btn" type="button" data-video-id="{{ video.video_id }}" data-title="{{ video.title }}" aria-label="Play {{ video.title }}">▶</button></div>
+          <div class="card-body"><h3>{{ video.title }}</h3><p>{{ video.description }}</p><div class="card-foot"><span class="tag">{{ video.category }}</span><span class="rating">★ {{ video.rating }}</span></div></div>
+        </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="story-feature" id="featureCard">
+      <article class="video-card media-card" data-category="Moral Stories" data-title="the tortoise and the hare" data-type="story" style="height:100%">
+        <div class="thumb" style="height:calc(100% - 82px);min-height:210px"><img src="https://i.ytimg.com/vi/gfbSIdwL0FE/maxresdefault.jpg" alt="The Tortoise and the Hare" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/gfbSIdwL0FE/hqdefault.jpg';"><span class="duration">07:30</span><button class="play-btn" type="button" data-video-id="gfbSIdwL0FE" data-title="The Tortoise and the Hare" aria-label="Play The Tortoise and the Hare">▶</button></div>
+        <div class="card-body"><h3>The Tortoise and the Hare</h3><p>Slow and steady wins the race. A cheerful classic for story time.</p><div class="card-foot"><span class="tag">Featured story</span><span class="rating">★ 4.9</span></div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div class="empty" id="emptyState"><div style="font-size:30px">🔎</div><h3 style="margin-top:7px;color:var(--ink)">No videos found</h3><p style="margin-top:4px">Try another search or choose a different category.</p></div>
+
+<section class="keep">
+  <div class="keep-card"><img class="keep-thumb" src="https://i.ytimg.com/vi/gfbSIdwL0FE/hqdefault.jpg" alt="The Tortoise and the Hare" onerror="this.onerror=null;this.src='{% static 'img/reference/twinkle.png' %}';"><div class="keep-copy"><small>Keep Watching</small><strong>The Tortoise and the Hare</strong><div class="progress"><span></span></div></div><span class="keep-percent">60%</span></div>
+  <div class="actions"><button class="action" type="button" id="myListBtn">💗 My List</button><button class="action" type="button" id="historyBtn">↺ History</button></div>
+</section>
+</main>
+</div>
+
+<div class="modal" id="videoModal" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
+  <div class="player">
+    <div class="player-head"><div><small>Now Playing</small><strong id="playerTitle">Animated video</strong></div><button class="close" id="closePlayer" type="button" aria-label="Close video player">×</button></div>
+    <div class="frame"><iframe id="videoFrame" title="Embedded YouTube video player" src="" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+    <div class="player-foot"><span>▶ YouTube embedded player</span><span>Play • Pause • Volume • Progress • Fullscreen</span></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  const modal=document.getElementById('videoModal'), frame=document.getElementById('videoFrame'), title=document.getElementById('playerTitle'), close=document.getElementById('closePlayer'), search=document.getElementById('searchInput'), empty=document.getElementById('emptyState');
+  const cards=[...document.querySelectorAll('.media-card')]; let activeFilter='All';
+  const embed=id=>'https://www.youtube.com/embed/'+encodeURIComponent(id)+'?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
+  function openPlayer(id,name){title.textContent=name;frame.src=embed(id);modal.classList.add('open');document.body.style.overflow='hidden';try{localStorage.setItem('smartLearningLastVideo',JSON.stringify({id:id,title:name,at:Date.now()}));}catch(e){} }
+  function closePlayer(){frame.src='';modal.classList.remove('open');document.body.style.overflow='';}
+  document.querySelectorAll('.play-btn').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openPlayer(btn.dataset.videoId,btn.dataset.title)}));
+  close.addEventListener('click',closePlayer); modal.addEventListener('click',e=>{if(e.target===modal)closePlayer()}); document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))closePlayer()});
+  function apply(){const q=search.value.trim().toLowerCase();let shown=0;cards.forEach(card=>{const matchesFilter=activeFilter==='All'||card.dataset.category===activeFilter;const matchesSearch=!q||card.dataset.title.includes(q)||card.dataset.category.toLowerCase().includes(q);const show=matchesFilter&&matchesSearch;card.style.display=show?'':'none';if(show)shown++;});empty.classList.toggle('show',shown===0);document.getElementById('animatedSection').style.display=[...cards].some(c=>c.dataset.type==='video'&&c.style.display!=='none')?'':'none';document.getElementById('storiesSection').style.display=[...cards].some(c=>c.dataset.type==='story'&&c.style.display!=='none')?'':'none';}
+  document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');activeFilter=btn.dataset.filter;apply()})); search.addEventListener('input',apply);
+  const toast=document.getElementById('toast');function showToast(text){toast.textContent=text;toast.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>toast.classList.remove('show'),1800)}
+  document.getElementById('myListBtn').addEventListener('click',()=>{try{localStorage.setItem('smartLearningMyList','saved');}catch(e){}showToast('Added to My List 💗')});
+  document.getElementById('historyBtn').addEventListener('click',()=>showToast('Your watch history is saved on this device ↺'));
+  apply();
+})();
+</script>
+</body>
+</html>

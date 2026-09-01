@@ -4,11 +4,15 @@ from django.db.models import Count, Q
 
 from django.shortcuts import redirect, render
 
+from django.templatetags.static import static
+
 from django.views.decorators.cache import never_cache
 
-from accounts.decorators import parent_required
+from accounts.decorators import parent_required, learner_required
 
 from accounts.forms import ChildCreationForm
+
+from .video_data import CATEGORIES, VIDEOS
 
 from progress.services import get_progress_summary
 
@@ -166,6 +170,53 @@ def home(request):
         request,
         "core/home.html",
         context
+    )
+
+
+# ============================================================
+# ANIMATED VIDEOS & STORIES
+# ============================================================
+#
+# Content (categories + video/story list) lives in
+# core/video_data.py — edit that file to add new videos.
+# Search, category filtering, the video player, "Keep Watching",
+# "My List" and "History" all run client-side (see
+# templates/core/videos.html) so this view just supplies the
+# base data set.
+# ============================================================
+
+@never_cache
+@learner_required
+def videos(request):
+
+    # Resolve each video/thumbnail path through Django's static()
+    # helper here, once, so the template/JS can use them directly
+    # without needing to know STATIC_URL.
+    videos_for_js = [
+        {
+            **item,
+            "thumbnail": static(item["thumbnail"]),
+            "video": static(item["video"]),
+        }
+        for item in VIDEOS
+    ]
+
+    return render(
+
+        request,
+
+        "core/videos.html",
+
+        {
+            "categories":
+                CATEGORIES,
+
+            "videos":
+                VIDEOS,
+
+            "videos_json":
+                videos_for_js,
+        },
     )
 
 

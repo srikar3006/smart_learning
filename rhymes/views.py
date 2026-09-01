@@ -1,4 +1,4 @@
-import json
+
 from urllib.parse import urlparse
 
 from django.db.models import Q
@@ -25,6 +25,106 @@ def _safe_embed_url(url):
         video_id = parsed.path.strip("/").split("/", 1)[0]
         return f"https://www.youtube.com/embed/{video_id}" if video_id else url
     return url
+
+
+RHYMES_PAGE_SHOWCASE = [
+    {
+        "title": "Humpty Dumpty",
+        "category": "Nursery",
+        "category_icon": "🥚",
+        "description": "A classic rhyme about Humpty’s big tumble.",
+        "rating": "4.8",
+        "duration": "02:15",
+        "video_id": "nrv495corBc",
+        "difficulty": "Easy",
+        "color": "violet",
+        "fallback_image": "img/rhymes/humpty.svg",
+    },
+    {
+        "title": "Twinkle Twinkle Little Star",
+        "category": "Nature",
+        "category_icon": "⭐",
+        "description": "A gentle lullaby about a shining little star.",
+        "rating": "4.9",
+        "duration": "01:45",
+        "video_id": "yCjJyiqpAuU",
+        "difficulty": "Easy",
+        "color": "indigo",
+        "fallback_image": "img/rhymes/twinkle.svg",
+    },
+    {
+        "title": "Baa Baa Black Sheep",
+        "category": "Animals",
+        "category_icon": "🐑",
+        "description": "Sing along with a friendly black sheep on the farm.",
+        "rating": "4.7",
+        "duration": "01:30",
+        "video_id": "g7c3G4m2BRA",
+        "difficulty": "Easy",
+        "color": "green",
+        "fallback_image": "img/rhymes/baa-baa.svg",
+    },
+    {
+        "title": "Wheels on the Bus",
+        "category": "Action",
+        "category_icon": "🚌",
+        "description": "Ride along and move with the wheels, doors and wipers.",
+        "rating": "4.6",
+        "duration": "02:05",
+        "video_id": "IRap6FOoZKA",
+        "difficulty": "Easy",
+        "color": "blue",
+        "fallback_image": "img/rhymes/wheels.svg",
+    },
+    {
+        "title": "Mary Had a Little Lamb",
+        "category": "Animals",
+        "category_icon": "🐑",
+        "description": "A sweet farm rhyme featuring a little lamb and friends.",
+        "rating": "4.7",
+        "duration": "01:50",
+        "video_id": "28W4ywSsBPc",
+        "difficulty": "Easy",
+        "color": "rose",
+        "fallback_image": "img/rhymes/mary.svg",
+    },
+    {
+        "title": "Rain Rain Go Away",
+        "category": "Nature",
+        "category_icon": "🌧️",
+        "description": "A cheerful rainy-day song for family sing-along time.",
+        "rating": "4.5",
+        "duration": "01:40",
+        "video_id": "LFrKYjrIDs8",
+        "difficulty": "Easy",
+        "color": "sky",
+        "fallback_image": "img/rhymes/rain.svg",
+    },
+    {
+        "title": "If You're Happy and You Know It",
+        "category": "Action",
+        "category_icon": "👏",
+        "description": "Clap, stomp and shout hooray in this movement rhyme.",
+        "rating": "4.8",
+        "duration": "01:55",
+        "video_id": "M6LoRZsHMSs",
+        "difficulty": "Easy",
+        "color": "yellow",
+        "fallback_image": "img/rhymes/happy.svg",
+    },
+    {
+        "title": "Jingle Bells",
+        "category": "Festival",
+        "category_icon": "🎄",
+        "description": "Dash through the snow with a bright holiday sing-along.",
+        "rating": "4.9",
+        "duration": "02:10",
+        "video_id": "4YBGRGBj7_w",
+        "difficulty": "Easy",
+        "color": "red",
+        "fallback_image": "img/rhymes/jingle.svg",
+    },
+]
 
 
 @learner_required
@@ -56,6 +156,7 @@ def rhyme_list(request):
             "search": search,
             "difficulty": difficulty,
             "completed_ids": completed_ids,
+            "showcase_rhymes": RHYMES_PAGE_SHOWCASE,
         },
     )
 

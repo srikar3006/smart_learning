@@ -1,0 +1,677 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animated Videos & Stories — Smart Learning</title>
+<style>
+/* ============================================================
+   BASE / SIDEBAR / TOPBAR
+   These rules intentionally mirror templates/core/home.html so
+   this page shares the same look & feel as the rest of the app.
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,Arial,sans-serif;background:#f6f6ff;color:#101f57;min-height:100vh}
+a{text-decoration:none;color:inherit}
+button{font:inherit;cursor:pointer}
+.app{display:grid;grid-template-columns:245px minmax(0,1fr);min-height:100vh;gap:0}
+.sidebar{margin:12px 8px 12px 14px;padding:16px 12px 12px;border-radius:26px;background:rgba(255,255,255,.88);box-shadow:0 12px 35px rgba(90,74,190,.10);border:1px solid #e7e2ff;position:sticky;top:12px;height:calc(100vh - 24px);display:flex;flex-direction:column}
+.side-logo{width:100%;border-radius:20px;margin-bottom:22px}
+.side-logo img{display:block;width:100%;height:auto}
+.menu{display:flex;flex-direction:column;gap:5px}
+.menu a{display:flex;align-items:center;gap:14px;padding:13px 14px;border-radius:18px;font-weight:700;font-size:14px;transition:.2s}
+.menu a:hover{background:#f0eaff}
+.menu a.active{background:linear-gradient(100deg,#f1eaff,#fff);color:#5e27db;box-shadow:0 7px 18px rgba(105,65,230,.13)}
+.mi{width:27px;text-align:center;font-size:22px}
+.side-child{margin-top:auto;border-radius:20px;overflow:hidden}
+.side-child img{display:block;width:100%;height:auto}
+.main{min-width:0;padding:14px 18px 24px 12px}
+.topbar{height:76px;display:flex;align-items:center;gap:16px;margin-bottom:14px}
+.topnav{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:7px;border:1px solid #e7e2ff;background:#fff;border-radius:25px;box-shadow:0 10px 28px rgba(85,70,170,.08)}
+.topnav a{padding:12px 17px;border-radius:18px;font-size:13px;font-weight:700;white-space:nowrap}
+.topnav a.active{background:#f0e8ff;color:#5d20d7;box-shadow:0 6px 16px rgba(105,61,222,.13)}
+.top-actions{display:flex;align-items:center;gap:10px}
+.bell{width:56px;height:56px;border-radius:20px;background:#fff;border:1px solid #e7e2ff;display:grid;place-items:center;font-size:25px;position:relative}
+.badge{position:absolute;right:7px;top:5px;background:#7b2de8;color:#fff;font-size:10px;font-weight:800;border-radius:20px;padding:4px 6px}
+.profile{display:flex;align-items:center;gap:9px;padding:6px 12px 6px 7px;background:#fff;border:1px solid #e7e2ff;border-radius:25px}
+.avatar{width:45px;height:45px;border-radius:50%;overflow:hidden;background:#ffe8bd}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.profile strong{display:block;font-size:13px}
+.profile small{display:block;font-size:10px;margin-top:3px;color:#65729b}
+
+/* ============================================================
+   HERO / CATEGORY TABS / SEARCH
+   ============================================================ */
+.vhero{position:relative;overflow:hidden;border-radius:28px;border:1px solid #d9d7ff;box-shadow:0 12px 28px rgba(79,73,180,.13);background:linear-gradient(105deg,#b8d7ff 0%,#dcd2ff 55%,#f1dcff 100%);padding:26px 30px 22px}
+.vhero-top{display:flex;align-items:center;gap:14px;position:relative;z-index:3}
+.vhero-icon{width:56px;height:56px;border-radius:20px;background:#fff;display:grid;place-items:center;font-size:28px;box-shadow:0 9px 20px rgba(79,73,180,.18)}
+.vhero h1{font-size:32px;font-weight:900;color:#14265d}
+.vhero p{font-size:14px;color:#3c4785;margin-top:4px}
+.vhero-art{position:absolute;right:-10px;bottom:-14px;width:230px;opacity:.95;pointer-events:none}
+.vhero-art img{width:100%;display:block}
+.vtabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;position:relative;z-index:3}
+.vtab{display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border-radius:20px;background:#fff;border:1px solid #e7e2ff;font-weight:800;font-size:12.5px;color:#4a4f7a;transition:.15s}
+.vtab:hover{transform:translateY(-2px)}
+.vtab.active{background:linear-gradient(90deg,#6e2be9,#8335ee);color:#fff;border-color:transparent;box-shadow:0 8px 18px rgba(105,41,225,.28)}
+
+.section-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:26px 4px 12px;flex-wrap:wrap}
+.section-row h2{font-size:18px;display:flex;align-items:center;gap:8px}
+.search-box{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e7e2ff;border-radius:20px;padding:10px 16px;min-width:240px;box-shadow:0 8px 18px rgba(79,73,180,.07)}
+.search-box input{border:none;outline:none;font:inherit;font-size:13px;flex:1;background:transparent;color:#101f57}
+.search-box span{color:#8a90bd}
+
+/* ============================================================
+   VIDEO / STORY CARD GRID  (VideoCard component)
+   ============================================================ */
+.card-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.card-grid.stories-grid{grid-template-columns:repeat(4,1fr)}
+.vcard{background:#fff;border:1px solid #e7e2ff;border-radius:22px;overflow:hidden;box-shadow:0 9px 20px rgba(79,73,180,.08);transition:.18s;display:flex;flex-direction:column;cursor:pointer}
+.vcard:hover{transform:translateY(-4px);box-shadow:0 16px 30px rgba(79,73,180,.16)}
+.vcard-art{position:relative;aspect-ratio:16/10;background:#eef0ff;overflow:hidden}
+.vcard-art img{width:100%;height:100%;object-fit:cover;display:block}
+.vcard-duration{position:absolute;right:8px;bottom:8px;background:rgba(15,10,40,.65);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:9px}
+.vcard-play{position:absolute;inset:0;display:grid;place-items:center;background:rgba(20,10,50,0);transition:.18s;pointer-events:none}
+.vcard-play span{width:44px;height:44px;border-radius:50%;background:#fff;color:#6630db;display:grid;place-items:center;font-size:16px;box-shadow:0 8px 18px rgba(60,30,140,.25);opacity:0;transform:scale(.8);transition:.18s}
+.vcard:hover .vcard-play{background:rgba(20,10,50,.18)}
+.vcard:hover .vcard-play span{opacity:1;transform:scale(1)}
+.vcard-like{position:absolute;left:8px;top:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;font-size:13px;border:none;color:#c23b7a}
+.vcard-like.active{color:#e21c5c}
+.vcard-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.vcard-body h3{font-size:12.5px;line-height:1.3}
+.vcard-body p{font-size:10px;color:#6f7897}
+.vcard-tag{margin-top:auto;align-self:flex-start;font-size:9px;font-weight:800;color:#5e28d9;background:#f1eaff;padding:4px 9px;border-radius:10px}
+.empty-note{grid-column:1/-1;text-align:center;padding:30px 10px;color:#7a82ab;font-size:13px}
+
+/* ============================================================
+   KEEP WATCHING STRIP
+   ============================================================ */
+.keep-watching{margin-top:26px;background:#fff;border:1px solid #e7e2ff;border-radius:22px;box-shadow:0 9px 20px rgba(79,73,180,.08);padding:14px}
+.keep-watching h2{font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.kw-row{display:flex;gap:12px;overflow-x:auto;padding-bottom:2px}
+.kw-item{flex:0 0 220px;border:1px solid #eee9ff;border-radius:16px;overflow:hidden;background:#fbfaff;cursor:pointer}
+.kw-item img{width:100%;height:96px;object-fit:cover;display:block}
+.kw-info{padding:8px 10px}
+.kw-info strong{font-size:11px;display:block;margin-bottom:6px}
+.kw-bar{height:6px;border-radius:6px;background:#e9e5ff;overflow:hidden}
+.kw-bar span{display:block;height:100%;background:linear-gradient(90deg,#e63d8e,#6e2be9)}
+.kw-pct{font-size:9px;color:#7a82ab;margin-top:4px;display:block}
+
+/* ============================================================
+   BOTTOM PILL NAV  (My List / Downloads / History / Parents)
+   ============================================================ */
+.bottom-pills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:18px}
+.bpill{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:22px;background:#fff;border:1px solid #e7e2ff;font-weight:800;font-size:12.5px;box-shadow:0 8px 18px rgba(79,73,180,.07)}
+.bpill:hover{transform:translateY(-2px)}
+
+/* ============================================================
+   SLIDE-UP PANEL  (My List / Downloads / History)
+   ============================================================ */
+.panel-overlay{position:fixed;inset:0;background:rgba(20,12,45,.45);display:none;align-items:flex-end;justify-content:center;z-index:60;padding:0}
+.panel-overlay.open{display:flex}
+.panel-sheet{background:#f6f6ff;width:100%;max-width:900px;max-height:80vh;border-radius:26px 26px 0 0;padding:18px 20px 22px;overflow-y:auto;box-shadow:0 -12px 40px rgba(30,15,70,.25)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.panel-head h2{font-size:16px;display:flex;align-items:center;gap:8px}
+.panel-close{width:32px;height:32px;border-radius:50%;background:#fff;border:1px solid #e7e2ff;display:grid;place-items:center;font-size:14px}
+.panel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.dl-btn{margin-top:8px;font-size:9px;font-weight:800;padding:6px 8px;border-radius:10px;border:1px dashed #cfc7ff;color:#6a4fd1;background:#f7f4ff;text-align:center}
+.hist-item{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #eee9ff;border-radius:14px;padding:8px;margin-bottom:8px}
+.hist-item img{width:56px;height:40px;object-fit:cover;border-radius:8px}
+.hist-item strong{font-size:11.5px;display:block}
+.hist-item small{font-size:9.5px;color:#7a82ab}
+.panel-clear{font-size:11px;font-weight:800;color:#c23b7a;background:none;border:none}
+
+/* ============================================================
+   VIDEO PLAYER MODAL  (VideoPlayerModal component)
+   ============================================================ */
+.player-overlay{position:fixed;inset:0;background:rgba(15,8,35,.65);display:none;align-items:center;justify-content:center;z-index:80;padding:16px}
+.player-overlay.open{display:flex}
+.player-modal{width:100%;max-width:760px;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 25px 60px rgba(20,10,50,.4)}
+.player-head{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:linear-gradient(90deg,#6e2be9,#8f3ff0);color:#fff}
+.player-head small{display:block;font-size:10px;opacity:.85}
+.player-head strong{font-size:14px}
+.player-close{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:14px;display:grid;place-items:center}
+.player-stage{position:relative;background:#0c0a1a;aspect-ratio:16/9}
+.player-stage video{width:100%;height:100%;object-fit:contain;background:#000}
+.player-fallback{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#e6e1ff;text-align:center;padding:20px}
+.player-fallback.show{display:flex}
+.player-fallback span{font-size:34px}
+.player-controls{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#160c33}
+.pc-btn{background:none;border:none;color:#fff;font-size:15px;width:30px;height:30px;display:grid;place-items:center;border-radius:8px}
+.pc-btn:hover{background:rgba(255,255,255,.12)}
+.pc-time{color:#cfc7ff;font-size:10.5px;min-width:78px;text-align:center}
+.pc-progress{flex:1;height:5px;border-radius:5px;background:#372a63;position:relative;cursor:pointer}
+.pc-progress span{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#e63d8e,#a259ff);border-radius:5px}
+.pc-volume{width:70px;accent-color:#a259ff}
+
+@media(max-width:1150px){
+  .app{grid-template-columns:205px minmax(0,1fr)}
+  .card-grid{grid-template-columns:repeat(4,1fr)}
+  .card-grid.stories-grid{grid-template-columns:repeat(3,1fr)}
+  .vhero h1{font-size:26px}
+  .panel-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:800px){
+  .app{display:block}
+  .sidebar{position:static;height:auto;margin:8px;padding:12px}
+  .side-logo{max-width:250px;margin:0 auto 12px}
+  .menu{display:grid;grid-template-columns:repeat(2,1fr)}
+  .side-child{display:none}
+  .main{padding:8px 12px 20px}
+  .topbar{height:auto}
+  .topnav{overflow:auto;justify-content:flex-start}
+  .topnav a{font-size:11px;padding:10px}
+  .profile{display:none}
+  .bell{width:48px;height:48px}
+  .vhero-art{width:150px}
+  .card-grid{grid-template-columns:repeat(2,1fr)}
+  .card-grid.stories-grid{grid-template-columns:repeat(2,1fr)}
+  .section-row{flex-direction:column;align-items:flex-start}
+  .search-box{width:100%}
+  .panel-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:500px){
+  .menu{grid-template-columns:1fr}
+  .card-grid{grid-template-columns:repeat(2,1fr)}
+  .card-grid.stories-grid{grid-template-columns:repeat(2,1fr)}
+  .vhero{padding:20px 16px 18px}
+  .vhero-art{display:none}
+  .pc-volume{display:none}
+  .panel-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============== SIDEBAR (same structure as home.html) ============== -->
+  <aside class="sidebar">
+    <a class="side-logo" href="{% url 'core:home' %}"><img src="{% static 'img/reference/logo.png' %}" alt="Smart Learning"></a>
+    <nav class="menu">
+      <a href="{% url 'core:home' %}"><span class="mi">🏠</span>Home</a>
+      <a href="{% url 'rhymes:list' %}"><span class="mi">🎵</span>Rhymes</a>
+      <a class="active" href="{% url 'core:videos' %}"><span class="mi">📺</span><span>Animated<br>Videos/Stories</span></a>
+      <a href="#games"><span class="mi">🎮</span>Games</a>
+      <a href="{% url 'rhymes:list' %}"><span class="mi">🏆</span>Quiz</a>
+      <a href="{% url 'core:profile' %}"><span class="mi">👤</span>Profile</a>
+      <a href="#"><span class="mi">⚙️</span>Settings</a>
+    </nav>
+    <div class="side-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Child learning with a book"></div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ============== TOPBAR (same structure as home.html) ============== -->
+    <header class="topbar">
+      <nav class="topnav">
+        <a href="{% url 'core:home' %}">🏠 Home</a>
+        <a href="{% url 'rhymes:list' %}">🎵 Rhymes</a>
+        <a class="active" href="{% url 'core:videos' %}">📺 Animated<br>Videos/Stories</a>
+        <a href="#games">🎮 Games</a>
+        <a href="{% url 'rhymes:list' %}">🏆 Quiz</a>
+      </nav>
+      <div class="top-actions">
+        <div class="bell">♧<span class="badge">3</span></div>
+        <div class="profile"><div class="avatar"><img src="{% static 'img/reference/avatar.png' %}" alt="Learner avatar"></div><div><strong>Hi, Learner!</strong><small>Happy Learning! 🎉</small></div><span>⌄</span></div>
+      </div>
+    </header>
+
+    <!-- ============== HERO + CATEGORY TABS ============== -->
+    <section class="vhero">
+      <div class="vhero-top">
+        <div class="vhero-icon">📺</div>
+        <div>
+          <h1>Animated Videos &amp; Stories</h1>
+          <p>Watch, learn and enjoy exciting animated videos and stories!</p>
+        </div>
+      </div>
+
+      <!-- CategoryFilter component: tabs are generated from core/video_data.py -->
+      <div class="vtabs" id="category-tabs">
+        {% for cat in categories %}
+        <button type="button" class="vtab{% if cat.slug == 'all' %} active{% endif %}" data-category="{{ cat.slug }}">{{ cat.icon }} {{ cat.label }}</button>
+        {% endfor %}
+      </div>
+
+      <div class="vhero-art"><img src="{% static 'img/reference/hero-castle.png' %}" alt="Fantasy learning castle"></div>
+    </section>
+
+    <!-- ============== SEARCH + ANIMATED VIDEOS GRID ============== -->
+    <div class="section-row">
+      <h2>📺 Animated Videos</h2>
+      <div class="search-box"><span>⌕</span><input type="search" id="search-input" placeholder="Search videos or stories…"></div>
+    </div>
+    <div class="card-grid" id="videos-grid"><!-- VideoCard elements are rendered by JS from VIDEOS --></div>
+
+    <!-- ============== STORIES GRID ============== -->
+    <div class="section-row">
+      <h2>📖 Stories</h2>
+    </div>
+    <div class="card-grid stories-grid" id="stories-grid"><!-- VideoCard elements are rendered by JS from VIDEOS --></div>
+
+    <!-- ============== KEEP WATCHING ============== -->
+    <section class="keep-watching" id="keep-watching" style="display:none">
+      <h2>⏱ Keep Watching</h2>
+      <div class="kw-row" id="keep-watching-row"></div>
+    </section>
+
+    <!-- ============== BOTTOM PILLS ============== -->
+    <nav class="bottom-pills">
+      <button type="button" class="bpill" data-panel="mylist">💗 My List</button>
+      <button type="button" class="bpill" data-panel="downloads">⬇️ Downloads</button>
+      <button type="button" class="bpill" data-panel="history">🕘 History</button>
+      <a class="bpill" href="{% url 'core:profile' %}">👨‍👩‍👧 Parents</a>
+    </nav>
+
+  </main>
+</div>
+
+<!-- ============== SLIDE-UP PANEL (My List / Downloads / History) ============== -->
+<div class="panel-overlay" id="panel-overlay">
+  <div class="panel-sheet">
+    <div class="panel-head">
+      <h2 id="panel-title"></h2>
+      <button type="button" class="panel-close" id="panel-close">✕</button>
+    </div>
+    <div id="panel-body"></div>
+  </div>
+</div>
+
+<!-- ============== VIDEO PLAYER MODAL ============== -->
+<div class="player-overlay" id="player-overlay">
+  <div class="player-modal">
+    <div class="player-head">
+      <div>
+        <small>Now Playing</small>
+        <strong id="player-title">—</strong>
+      </div>
+      <button type="button" class="player-close" id="player-close">✕</button>
+    </div>
+    <div class="player-stage">
+      <video id="player-video" playsinline></video>
+      <div class="player-fallback" id="player-fallback">
+        <span>🎬</span>
+        <div><strong id="player-fallback-title">Video coming soon</strong></div>
+        <small>Add the .mp4 file for this video to <code>static/videos/</code> and it will play here automatically.</small>
+      </div>
+    </div>
+    <div class="player-controls">
+      <button type="button" class="pc-btn" id="pc-playpause">▶</button>
+      <button type="button" class="pc-btn" id="pc-skip">⏭</button>
+      <span class="pc-time" id="pc-time">00:00 / 00:00</span>
+      <div class="pc-progress" id="pc-progress"><span id="pc-progress-fill"></span></div>
+      <button type="button" class="pc-btn" id="pc-mute">🔊</button>
+      <input type="range" class="pc-volume" id="pc-volume" min="0" max="1" step="0.05" value="1">
+      <button type="button" class="pc-btn" id="pc-fullscreen">⛶</button>
+    </div>
+  </div>
+</div>
+
+{{ videos_json|json_script:"videos-data" }}
+
+<script>
+/* ============================================================
+   ANIMATED VIDEOS & STORIES — page logic
+   ------------------------------------------------------------
+   Everything here is plain JS and self-contained to this page,
+   the same way templates/core/home.html is self-contained.
+   It does not touch any other page's script or storage.
+
+   To add a new video: edit core/video_data.py — this file only
+   *renders* whatever is in VIDEOS, it has no data of its own.
+   ============================================================ */
+(() => {
+  const VIDEOS = JSON.parse(document.getElementById('videos-data').textContent);
+
+  const STORAGE_KEYS = {
+    progress: 'sl_video_progress',   // { [id]: { seconds, duration } }
+    myList:   'sl_video_mylist',     // [id, id, ...]
+    history:  'sl_video_history',    // [{ id, playedAt }]
+  };
+
+  const readStore = (key, fallback) => {
+    try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+    catch (e) { return fallback; }
+  };
+  const writeStore = (key, value) => {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* storage unavailable */ }
+  };
+
+  let progressMap = readStore(STORAGE_KEYS.progress, {});
+  let myList = readStore(STORAGE_KEYS.myList, []);
+  let history = readStore(STORAGE_KEYS.history, []);
+
+  let activeCategory = 'all';
+  let searchTerm = '';
+
+  const videosGrid = document.getElementById('videos-grid');
+  const storiesGrid = document.getElementById('stories-grid');
+
+  // "Stories" section = Stories / Moral Stories categories.
+  // "Animated Videos" section = everything else.
+  const isStoryItem = (item) => item.category === 'stories' || item.category === 'moral-stories';
+
+  // ------------------------------------------------------------
+  // VideoCard component
+  // ------------------------------------------------------------
+  function renderCard(item) {
+    const card = document.createElement('div');
+    card.className = 'vcard';
+    card.dataset.id = item.id;
+
+    const liked = myList.includes(item.id);
+
+    card.innerHTML = `
+      <div class="vcard-art">
+        <img src="${item.thumbnail}" alt="${item.title}" loading="lazy">
+        <span class="vcard-duration">${item.duration}</span>
+        <button type="button" class="vcard-like${liked ? ' active' : ''}" aria-label="Add to My List">${liked ? '♥' : '♡'}</button>
+        <div class="vcard-play"><span>▶</span></div>
+      </div>
+      <div class="vcard-body">
+        <h3>${item.title}</h3>
+        <p>${item.description}</p>
+        <span class="vcard-tag">${item.category.replace('-', ' ')}</span>
+      </div>
+    `;
+
+    card.querySelector('.vcard-like').addEventListener('click', (event) => {
+      event.stopPropagation();
+      toggleMyList(item.id);
+      renderAll();
+    });
+
+    card.addEventListener('click', () => openPlayer(item.id));
+    return card;
+  }
+
+  function matchesFilters(item) {
+    const inCategory = activeCategory === 'all' || item.category === activeCategory;
+    const q = searchTerm.trim().toLowerCase();
+    const inSearch = !q
+      || item.title.toLowerCase().includes(q)
+      || item.description.toLowerCase().includes(q)
+      || item.category.toLowerCase().includes(q);
+    return inCategory && inSearch;
+  }
+
+  function renderGrid(container, items, emptyText) {
+    container.innerHTML = '';
+    if (!items.length) {
+      const note = document.createElement('div');
+      note.className = 'empty-note';
+      note.textContent = emptyText;
+      container.appendChild(note);
+      return;
+    }
+    items.forEach((item) => container.appendChild(renderCard(item)));
+  }
+
+  function renderAll() {
+    const filtered = VIDEOS.filter(matchesFilters);
+    const videoItems = filtered.filter((item) => !isStoryItem(item));
+    const storyItems = filtered.filter(isStoryItem);
+
+    renderGrid(videosGrid, videoItems, 'No animated videos match your search yet.');
+    renderGrid(storiesGrid, storyItems, 'No stories match your search yet.');
+    renderKeepWatching();
+  }
+
+  // ------------------------------------------------------------
+  // CategoryFilter component (tabs are server-rendered; this
+  // just wires up the click behaviour + active state)
+  // ------------------------------------------------------------
+  document.querySelectorAll('#category-tabs .vtab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      activeCategory = tab.dataset.category;
+      document.querySelectorAll('#category-tabs .vtab').forEach((t) => t.classList.toggle('active', t === tab));
+      renderAll();
+    });
+  });
+
+  document.getElementById('search-input').addEventListener('input', (event) => {
+    searchTerm = event.target.value;
+    renderAll();
+  });
+
+  function toggleMyList(id) {
+    myList = myList.includes(id) ? myList.filter((x) => x !== id) : [...myList, id];
+    writeStore(STORAGE_KEYS.myList, myList);
+  }
+
+  // ------------------------------------------------------------
+  // Keep Watching strip
+  // ------------------------------------------------------------
+  function renderKeepWatching() {
+    const section = document.getElementById('keep-watching');
+    const row = document.getElementById('keep-watching-row');
+    row.innerHTML = '';
+
+    const entries = Object.entries(progressMap)
+      .map(([id, data]) => ({ item: VIDEOS.find((v) => String(v.id) === String(id)), ...data }))
+      .filter((entry) => entry.item && entry.duration > 0 && entry.seconds / entry.duration < 0.95);
+
+    if (!entries.length) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+
+    entries.forEach(({ item, seconds, duration }) => {
+      const pct = Math.min(100, Math.round((seconds / duration) * 100));
+      const el = document.createElement('div');
+      el.className = 'kw-item';
+      el.innerHTML = `
+        <img src="${item.thumbnail}" alt="${item.title}">
+        <div class="kw-info">
+          <strong>${item.title}</strong>
+          <div class="kw-bar"><span style="width:${pct}%"></span></div>
+          <span class="kw-pct">${pct}% watched</span>
+        </div>
+      `;
+      el.addEventListener('click', () => openPlayer(item.id));
+      row.appendChild(el);
+    });
+  }
+
+  // ------------------------------------------------------------
+  // VideoPlayerModal component
+  // ------------------------------------------------------------
+  const playerOverlay = document.getElementById('player-overlay');
+  const playerVideo = document.getElementById('player-video');
+  const playerFallback = document.getElementById('player-fallback');
+  const playerTitle = document.getElementById('player-title');
+  const playPauseBtn = document.getElementById('pc-playpause');
+  const timeLabel = document.getElementById('pc-time');
+  const progressBar = document.getElementById('pc-progress');
+  const progressFill = document.getElementById('pc-progress-fill');
+  const muteBtn = document.getElementById('pc-mute');
+  const volumeSlider = document.getElementById('pc-volume');
+  const fullscreenBtn = document.getElementById('pc-fullscreen');
+
+  let currentItem = null;
+  let progressSaveTimer = null;
+
+  function fmtTime(sec) {
+    if (!isFinite(sec) || sec < 0) sec = 0;
+    const m = Math.floor(sec / 60).toString().padStart(2, '0');
+    const s = Math.floor(sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  function logHistory(id) {
+    history = [{ id, playedAt: Date.now() }, ...history.filter((h) => h.id !== id)].slice(0, 20);
+    writeStore(STORAGE_KEYS.history, history);
+  }
+
+  function openPlayer(id) {
+    const item = VIDEOS.find((v) => v.id === id);
+    if (!item) return;
+    currentItem = item;
+
+    playerTitle.textContent = `${item.title} • ${item.duration}`;
+    playerOverlay.classList.add('open');
+    playerFallback.classList.remove('show');
+    playerVideo.style.display = 'block';
+
+    const saved = progressMap[item.id];
+    playerVideo.src = item.video;
+    playerVideo.currentTime = 0;
+    playerVideo.load();
+
+    playerVideo.onloadedmetadata = () => {
+      if (saved && saved.seconds && saved.seconds < playerVideo.duration - 2) {
+        playerVideo.currentTime = saved.seconds;
+      }
+      playerVideo.play().catch(() => {});
+    };
+    playerVideo.onerror = () => {
+      playerVideo.style.display = 'none';
+      playerFallback.classList.add('show');
+    };
+
+    logHistory(item.id);
+  }
+
+  function closePlayer() {
+    playerOverlay.classList.remove('open');
+    playerVideo.pause();
+    saveProgress();
+    renderAll();
+  }
+
+  function saveProgress() {
+    if (!currentItem || !playerVideo.duration) return;
+    progressMap[currentItem.id] = {
+      seconds: playerVideo.currentTime,
+      duration: playerVideo.duration,
+    };
+    writeStore(STORAGE_KEYS.progress, progressMap);
+  }
+
+  document.getElementById('player-close').addEventListener('click', closePlayer);
+  playerOverlay.addEventListener('click', (e) => { if (e.target === playerOverlay) closePlayer(); });
+
+  playPauseBtn.addEventListener('click', () => {
+    if (playerVideo.paused) playerVideo.play().catch(() => {});
+    else playerVideo.pause();
+  });
+  playerVideo.addEventListener('play', () => { playPauseBtn.textContent = '⏸'; });
+  playerVideo.addEventListener('pause', () => { playPauseBtn.textContent = '▶'; });
+
+  document.getElementById('pc-skip').addEventListener('click', () => {
+    playerVideo.currentTime = Math.min(playerVideo.duration || 0, playerVideo.currentTime + 10);
+  });
+
+  playerVideo.addEventListener('timeupdate', () => {
+    const pct = playerVideo.duration ? (playerVideo.currentTime / playerVideo.duration) * 100 : 0;
+    progressFill.style.width = `${pct}%`;
+    timeLabel.textContent = `${fmtTime(playerVideo.currentTime)} / ${fmtTime(playerVideo.duration)}`;
+
+    clearTimeout(progressSaveTimer);
+    progressSaveTimer = setTimeout(saveProgress, 800);
+  });
+
+  progressBar.addEventListener('click', (event) => {
+    if (!playerVideo.duration) return;
+    const rect = progressBar.getBoundingClientRect();
+    const ratio = (event.clientX - rect.left) / rect.width;
+    playerVideo.currentTime = ratio * playerVideo.duration;
+  });
+
+  muteBtn.addEventListener('click', () => {
+    playerVideo.muted = !playerVideo.muted;
+    muteBtn.textContent = playerVideo.muted ? '🔇' : '🔊';
+  });
+  volumeSlider.addEventListener('input', () => {
+    playerVideo.volume = Number(volumeSlider.value);
+    playerVideo.muted = false;
+    muteBtn.textContent = '🔊';
+  });
+  fullscreenBtn.addEventListener('click', () => {
+    if (playerVideo.requestFullscreen) playerVideo.requestFullscreen().catch(() => {});
+  });
+
+  playerVideo.addEventListener('ended', () => {
+    if (currentItem) {
+      progressMap[currentItem.id] = { seconds: 0, duration: playerVideo.duration || 0 };
+      writeStore(STORAGE_KEYS.progress, progressMap);
+    }
+    renderAll();
+  });
+
+  // ------------------------------------------------------------
+  // Bottom slide-up panels: My List / Downloads / History
+  // ------------------------------------------------------------
+  const panelOverlay = document.getElementById('panel-overlay');
+  const panelTitle = document.getElementById('panel-title');
+  const panelBody = document.getElementById('panel-body');
+
+  function openPanel(kind) {
+    panelOverlay.classList.add('open');
+
+    if (kind === 'mylist') {
+      panelTitle.textContent = '💗 My List';
+      const items = VIDEOS.filter((v) => myList.includes(v.id));
+      panelBody.innerHTML = items.length ? '<div class="panel-grid"></div>' : '<p class="empty-note">Nothing in your list yet — tap the heart on any card to save it here.</p>';
+      if (items.length) {
+        const grid = panelBody.querySelector('.panel-grid');
+        items.forEach((item) => grid.appendChild(renderCard(item)));
+      }
+    }
+
+    if (kind === 'downloads') {
+      panelTitle.textContent = '⬇️ Downloads';
+      panelBody.innerHTML = `
+        <p class="empty-note" style="padding-bottom:14px">Downloads work with the local video files you add to <code>static/videos/</code> — nothing is fetched from the internet.</p>
+        <div class="panel-grid" id="downloads-grid"></div>
+      `;
+      const grid = document.getElementById('downloads-grid');
+      VIDEOS.forEach((item) => {
+        const el = renderCard(item);
+        const dlBtn = document.createElement('div');
+        dlBtn.className = 'dl-btn';
+        dlBtn.textContent = 'Available once video file is added';
+        el.querySelector('.vcard-body').appendChild(dlBtn);
+        grid.appendChild(el);
+      });
+    }
+
+    if (kind === 'history') {
+      panelTitle.textContent = '🕘 History';
+      if (!history.length) {
+        panelBody.innerHTML = '<p class="empty-note">No videos played yet.</p>';
+      } else {
+        panelBody.innerHTML = '<div id="history-list"></div><button type="button" class="panel-clear" id="clear-history">Clear history</button>';
+        const list = document.getElementById('history-list');
+        history.forEach((entry) => {
+          const item = VIDEOS.find((v) => v.id === entry.id);
+          if (!item) return;
+          const row = document.createElement('div');
+          row.className = 'hist-item';
+          row.innerHTML = `<img src="${item.thumbnail}" alt="${item.title}"><div><strong>${item.title}</strong><small>${new Date(entry.playedAt).toLocaleString()}</small></div>`;
+          row.addEventListener('click', () => { closePanel(); openPlayer(item.id); });
+          list.appendChild(row);
+        });
+        document.getElementById('clear-history').addEventListener('click', () => {
+          history = [];
+          writeStore(STORAGE_KEYS.history, history);
+          openPanel('history');
+        });
+      }
+    }
+  }
+
+  function closePanel() { panelOverlay.classList.remove('open'); }
+
+  document.querySelectorAll('.bpill[data-panel]').forEach((btn) => {
+    btn.addEventListener('click', () => openPanel(btn.dataset.panel));
+  });
+  document.getElementById('panel-close').addEventListener('click', closePanel);
+  panelOverlay.addEventListener('click', (e) => { if (e.target === panelOverlay) closePanel(); });
+
+  // ------------------------------------------------------------
+  // Initial render
+  // ------------------------------------------------------------
+  renderAll();
+})();
+</script>
+</body>
+</html>
