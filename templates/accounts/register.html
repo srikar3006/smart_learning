@@ -7,212 +7,381 @@
 <title>Create Account - Smart Learning</title>
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;width:100%;min-height:100%;}
-body{background:#f4f6ff;color:#10205b;font-family:"Segoe UI",Arial,sans-serif;overflow-x:hidden;overflow-y:auto;}
-
-.register-page{width:100%;min-height:100vh;background:linear-gradient(135deg,#edf5ff 0%,#faf1ff 48%,#eef7ff 100%);padding:0 0 28px;}
-.register-shell{width:min(1448px,100%);margin:0 auto;}
-.header-wrap{position:relative;width:100%;line-height:0;}
-.header-wrap img{display:block;width:100%;height:auto;}
-
-.register-main{display:grid;grid-template-columns:681fr 614fr;gap:44px;align-items:start;}
-.hero-panel,.form-panel{position:relative;width:100%;line-height:0;}
-.panel-image{display:block;width:100%;height:auto;}
-
-/* The artwork already contains all labels/text. Inputs are transparent hit areas until the user types. */
-.register-form{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;}
-.field{
- position:absolute;z-index:20;border:0;outline:0;background:transparent;
- color:transparent;caret-color:transparent;text-shadow:none;
- font:500 18px "Segoe UI",Arial,sans-serif;
- padding:0 16px 0 58px;border-radius:15px;
+:root{
+  --ink:#10245f;
+  --blue:#2468e8;
+  --purple:#7c39ea;
+  --line:#dbe2f2;
+  --muted:#66708e;
+  --card:#fdfdff;
 }
-.field::placeholder{color:transparent;opacity:0;}
-.field:focus{background:rgba(255,255,255,.16);box-shadow:0 0 0 2px rgba(65,110,255,.28);}
-.field.has-value{color:#18265e;caret-color:#18265e;}
-.field.has-value::placeholder{color:transparent;}
-
-/* Exact coordinates taken from the 614 x 759 reference panel. */
-.full-name{left:10.10%;top:24.24%;width:88.80%;height:7.90%;}
-.username{left:10.10%;top:40.05%;width:41.85%;height:7.95%;}
-.email{left:55.86%;top:40.05%;width:43.15%;height:7.95%;}
-
-.avatar-choice{
- position:absolute;z-index:21;top:56.90%;width:19.25%;height:22.95%;
- margin:0;padding:0;border-radius:15px;cursor:pointer;background:transparent;border:0;
+html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink)}
+body{
+  background:
+    radial-gradient(circle at 80% 25%,rgba(108,113,255,.09),transparent 30%),
+    radial-gradient(circle at 20% 80%,rgba(84,156,255,.08),transparent 28%),
+    #f8f9fe;
 }
-.avatar-boy{left:10.10%}.avatar-girl{left:32.73%}.avatar-dog{left:56.35%}.avatar-cat{left:79.15%}
-.avatar-choice input{position:absolute;opacity:0;pointer-events:none;}
-.avatar-choice.selected{box-shadow:inset 0 0 0 2px rgba(64,108,245,.62);border-radius:15px;}
-
-.continue-button{
- position:absolute;z-index:22;left:10.10%;top:83.55%;width:88.80%;height:8.70%;
- border:0;border-radius:16px;background:transparent;color:transparent;cursor:pointer;padding:0;
+.page{width:100%;min-height:100vh;padding:0 24px 28px}
+.shell{max-width:1400px;margin:0 auto}
+.header{
+  height:132px;
+  position:relative;
+  background:url("{% static 'images/register_header.png' %}") center/100% 100% no-repeat;
 }
-.login-link{
- position:absolute;z-index:22;left:63.5%;top:96.10%;width:25%;height:3.8%;
- color:transparent;text-decoration:none;border-radius:10px;
-}
-
 .help-button{
- position:absolute;z-index:30;right:2.65%;top:31%;width:12.2%;height:46%;
- border:0;background:transparent;color:transparent;cursor:pointer;border-radius:30px;
+  position:absolute;right:3.4%;top:27px;width:166px;height:62px;border:0;border-radius:34px;
+  background:transparent;cursor:pointer;color:#152451;font-size:16px;font-weight:700;
 }
-
-/* Keep Django messages usable without disturbing the artwork. */
-.message-stack{position:fixed;z-index:100;top:18px;right:20px;width:min(390px,calc(100vw - 40px));pointer-events:none;}
-.message{margin-bottom:8px;padding:12px 15px;border-radius:14px;background:rgba(255,255,255,.96);border:1px solid rgba(89,109,190,.18);box-shadow:0 12px 30px rgba(54,70,150,.16);font-size:13px;line-height:1.4;color:#19275f;}
-
-.password-modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(28,39,94,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
-.password-modal.open{display:flex;}
-.password-card{width:min(470px,92vw);padding:30px;border-radius:28px;background:rgba(250,251,255,.98);border:1px solid rgba(255,255,255,.92);box-shadow:0 28px 80px rgba(35,51,125,.25);line-height:normal;}
-.eyebrow{display:inline-block;padding:7px 13px;border-radius:999px;background:#eeeaff;color:#5a2fd5;font-size:12px;font-weight:800;}
-.password-card h2{margin:16px 0 8px;font-size:28px;}.password-card p{margin:0 0 18px;color:#5d6681;font-size:14px;line-height:1.5;}
-.password-label{display:block;margin:12px 0 7px;font-weight:700;font-size:13px;}
-.password-input{width:100%;height:48px;border:1px solid #d9ddec;border-radius:13px;padding:0 14px;font-size:15px;color:#18275e;background:#fff;outline:0;}
-.password-input:focus{border-color:#687cff;box-shadow:0 0 0 4px rgba(104,124,255,.12);}
-.password-actions{display:flex;gap:10px;margin-top:20px;}.password-actions button{flex:1;height:48px;border:0;border-radius:14px;font-weight:800;cursor:pointer;font-size:15px;}
-.cancel-btn{background:#eef0f8;color:#273568;}.submit-btn{background:linear-gradient(90deg,#596fff,#a94df0);color:#fff;}
-.password-error{display:none;color:#c53c65;font-size:12px;margin-top:8px;}.password-error.show{display:block;}
-
-.trust-image{display:block;width:calc(100% - 70px);margin:26px auto 0;height:auto;}
-
-@media(max-width:1000px){
- .register-main{grid-template-columns:1fr;gap:18px;padding:0 14px;}
- .hero-panel,.form-panel{width:min(681px,100%);margin:0 auto;}
- .trust-image{width:calc(100% - 28px);margin-top:18px;}
- .help-button{right:2%;width:14%;}
+.help-button:hover{background:rgba(255,255,255,.32)}
+.main{
+  display:grid;grid-template-columns:minmax(0,1.1fr) minmax(540px,.95fr);
+  gap:18px;align-items:stretch;
 }
-@media(max-width:620px){
- .register-page{padding-bottom:18px;}
- .register-main{padding:0 8px;gap:12px;}
- .trust-image{width:calc(100% - 16px);}
- .field{font-size:13px;padding-left:44px;}
- .help-button{width:18%;}
+.left-card,.right-card{
+  min-width:0;border-radius:24px;overflow:hidden;
+  border:1px solid rgba(216,224,242,.92);
+  box-shadow:0 18px 42px rgba(58,82,153,.14);
 }
-</style>
+.left-card{
+  min-height:759px;background:#f6f8ff url("{% static 'images/register_hero_panel.png' %}") center/100% 100% no-repeat;
+}
+.right-card{
+  min-height:759px;padding:33px 36px 27px;
+  background:
+    radial-gradient(circle at 85% 90%,rgba(133,75,255,.06),transparent 30%),
+    linear-gradient(145deg,#fff,#f8f9ff 62%,#f5f6ff);
+}
+.kicker{
+  display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:18px;
+  border:1px solid #d7def1;background:rgba(255,255,255,.75);
+  box-shadow:0 4px 12px rgba(74,92,150,.08);
+  color:#2561d6;font-size:13px;font-weight:800;letter-spacing:.2px;
+}
+h1{font-size:38px;line-height:1.12;letter-spacing:-1.5px;margin:16px 0 24px;color:#12245d}
+.messages{margin:0 0 14px}
+.message{padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:7px}
+.message.error{background:#fff1f4;border:1px solid #ffcad6;color:#a91e45}
+.message.success{background:#effdf5;border:1px solid #bcefd0;color:#197144}
+.form-label{display:block;margin:0 0 7px;font-size:14px;font-weight:750;color:#142354}
+.field{position:relative;margin-bottom:14px}
+input{
+  width:100%;height:53px;border:1px solid #d8dfef;border-radius:12px;
+  padding:0 15px;background:rgba(255,255,255,.82);color:#17275c;
+  font-size:15px;outline:none;box-shadow:0 5px 16px rgba(72,91,145,.08);
+  transition:border-color .18s,box-shadow .18s,transform .18s;
+}
+input::placeholder{color:#727b98}
+input:focus{border-color:#668ef1;box-shadow:0 0 0 4px rgba(57,105,229,.11),0 8px 20px rgba(72,91,145,.10)}
+input.invalid{border-color:#e65a76;box-shadow:0 0 0 3px rgba(230,90,118,.10)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.password-wrap input{padding-right:48px}
+.toggle-password{
+  position:absolute;right:11px;top:50%;transform:translateY(-50%);
+  border:0;background:transparent;color:#53638d;cursor:pointer;font-size:17px;padding:7px;
+}
+.strength{margin-top:7px;font-size:12px;color:#68728e;display:flex;align-items:center;gap:8px}
+.strength-bars{display:flex;gap:3px;flex:0 0 70px}
+.strength-bars i{height:4px;flex:1;border-radius:4px;background:#dce2ef}
+.strength-bars i.on{background:#4e7fe9}
+.error-text{display:none;color:#c52c52;font-size:12px;margin-top:5px}
+.field.has-error .error-text{display:block}
+.avatars-title{margin:3px 0 8px;font-size:14px;font-weight:750}
+.avatars{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.avatar-card{
+  position:relative;min-width:0;height:151px;border:1px solid #dce2ef;border-radius:14px;
+  background:rgba(255,255,255,.78);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;cursor:pointer;box-shadow:0 6px 16px rgba(72,91,145,.08);
+  transition:transform .18s,border-color .18s,box-shadow .18s;
+  overflow:hidden;
+}
+.avatar-card:hover{transform:translateY(-2px);border-color:#8ca9f3}
+.avatar-card.selected{
+  border:2px solid #668bf0;
+  background:linear-gradient(180deg,#ffffff,#f4f6ff);
+  box-shadow:0 8px 19px rgba(74,110,220,.16);
+}
+.avatar-card input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.avatar-art{
+  width:82px;height:82px;object-fit:contain;display:block;
+  margin:0 0 3px;border-radius:50%;
+}
+.avatar-name{font-size:15px;font-weight:750;line-height:1.1}
+.radio{
+  width:19px;height:19px;border:2px solid #bfc8dc;border-radius:50%;margin-top:7px;
+  display:grid;place-items:center;
+}
+.selected .radio{border-color:#547ff0}
+.selected .radio:after{content:"";width:9px;height:9px;border-radius:50%;background:#547ff0}
+.continue{
+  width:100%;height:59px;margin-top:18px;border:0;border-radius:13px;
+  color:white;font-size:18px;font-weight:800;cursor:pointer;
+  background:linear-gradient(90deg,#626df2,#9847ee);
+  box-shadow:0 10px 22px rgba(102,76,227,.27);transition:.18s;
+}
+.continue:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.03)}
+.continue:disabled{opacity:.68;cursor:not-allowed}
+.login{text-align:center;margin-top:17px;font-size:15px;color:#4e5979}
+.login a{color:#2d63db;font-weight:750;text-decoration:none}
+.login a:hover{text-decoration:underline}
+.trust{
+  height:113px;margin-top:18px;border-radius:20px;overflow:hidden;
+  background:url("{% static 'images/register_trust.png' %}") center/100% 100% no-repeat;
+}
+.help-modal{
+  display:none;position:fixed;inset:0;background:rgba(22,31,65,.34);backdrop-filter:blur(5px);
+  z-index:20;align-items:center;justify-content:center;padding:20px;
+}
+.help-modal.open{display:flex}
+.help-box{width:min(420px,100%);padding:28px;border-radius:22px;background:white;box-shadow:0 25px 70px rgba(20,34,79,.25);text-align:center}
+.help-box h2{margin:0 0 8px}.help-box p{margin:0 0 20px;color:#69728c;line-height:1.55}
+.close-help{border:0;border-radius:11px;padding:11px 22px;background:#2f66e1;color:#fff;font-weight:700;cursor:pointer}
+@media(max-width:1050px){
+  .main{grid-template-columns:1fr}
+  .left-card{min-height:600px}
+  .right-card{min-height:0}
+  .header{background-size:auto 100%;background-position:center}
+}
+@media(max-width:650px){
+  .page{padding:0 10px 18px}
+  .header{height:92px;background-size:auto 92px;background-position:left center}
+  .help-button{right:0;top:18px;width:115px;height:45px;font-size:12px}
+  .left-card{min-height:470px;background-size:cover;background-position:center}
+  .right-card{padding:25px 18px}
+  h1{font-size:31px}
+  .row{grid-template-columns:1fr}
+  .avatars{grid-template-columns:repeat(2,1fr)}
+  .trust{display:none}
+}
+.single-field-row{grid-template-columns:1fr}.single-field-row>div{width:100%}</style>
 </head>
 <body>
-<div class="register-page">
- <div class="register-shell">
-  <div class="header-wrap">
-   <img src="{% static 'images/register_header.png' %}" alt="Smart Learning header">
-   <button class="help-button" id="helpButton" type="button" aria-label="Need Help?" title="Need Help?"></button>
+<div class="page">
+  <div class="shell">
+    <header class="header">
+      <button class="help-button" type="button" id="helpButton" aria-label="Need Help?"></button>
+    </header>
+
+    <main class="main">
+      <section class="left-card" aria-label="Learning space"></section>
+
+      <section class="right-card">
+        <div class="kicker">CREATE ACCOUNT</div>
+        <h1>Let's get started.</h1>
+
+        {% if messages %}
+          <div class="messages" aria-live="polite">
+            {% for message in messages %}
+              <div class="message {% if message.tags == 'success' %}success{% else %}error{% endif %}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="POST" id="registerForm" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="account_type" value="{{ selected_role|default:'learner' }}">
+
+          <div class="field" data-field="full_name">
+            <label class="form-label" for="full_name">Your name</label>
+            <input id="full_name" name="full_name" type="text" placeholder="Enter your full name"
+                   autocomplete="name" value="{{ request.POST.full_name|default:'' }}">
+            <div class="error-text"></div>
+          </div>
+
+          <div class="field" data-field="username">
+            <label class="form-label" for="username">Username</label>
+            <input id="username" name="username" type="text" placeholder="Choose a username"
+                   autocomplete="username" value="{{ request.POST.username|default:'' }}">
+            <div class="error-text"></div>
+          </div>
+
+          <div class="row">
+            <div class="field password-wrap" data-field="password1">
+              <label class="form-label" for="password1">Password</label>
+              <input id="password1" name="password1" type="password" placeholder="Create a password"
+                     autocomplete="new-password">
+              <button class="toggle-password" type="button" data-target="password1" aria-label="Show password">👁</button>
+              <div class="strength">
+                <span class="strength-bars"><i></i><i></i><i></i><i></i></span>
+                <span id="strengthText">Use 8+ characters</span>
+              </div>
+              <div class="error-text"></div>
+            </div>
+
+            <div class="field password-wrap" data-field="password2">
+              <label class="form-label" for="password2">Confirm password</label>
+              <input id="password2" name="password2" type="password" placeholder="Confirm your password"
+                     autocomplete="new-password">
+              <button class="toggle-password" type="button" data-target="password2" aria-label="Show password">👁</button>
+              <div class="error-text"></div>
+            </div>
+          </div>
+
+          <div class="avatars-title">Pick an avatar</div>
+          <div class="avatars" id="avatars">
+            <label class="avatar-card selected">
+              <input type="radio" name="avatar" value="boy" checked>
+              <img class="avatar-art" src="{% static 'images/clean-boy.png' %}" alt="Boy">
+              <span class="avatar-name">Boy</span><span class="radio"></span>
+            </label>
+            <label class="avatar-card">
+              <input type="radio" name="avatar" value="girl">
+              <img class="avatar-art" src="{% static 'images/clean-girl.png' %}" alt="Girl">
+              <span class="avatar-name">Girl</span><span class="radio"></span>
+            </label>
+            <label class="avatar-card">
+              <input type="radio" name="avatar" value="dog">
+              <img class="avatar-art" src="{% static 'images/clean-dog.png' %}" alt="Dog">
+              <span class="avatar-name">Dog</span><span class="radio"></span>
+            </label>
+            <label class="avatar-card">
+              <input type="radio" name="avatar" value="cat">
+              <img class="avatar-art" src="{% static 'images/clean-cat.png' %}" alt="Cat">
+              <span class="avatar-name">Cat</span><span class="radio"></span>
+            </label>
+          </div>
+
+          <button class="continue" id="continueButton" type="submit">Continue&nbsp;&nbsp;→</button>
+        </form>
+
+        <div class="login">Already have an account? <a href="{% url 'accounts:login' %}">Log in</a></div>
+      </section>
+    </main>
+
+    <div class="trust" aria-label="Safe and secure, kid-friendly, quality learning"></div>
   </div>
-
-  <div class="register-main">
-   <div class="hero-panel">
-    <img class="panel-image" src="{% static 'images/register_hero_panel.png' %}" alt="Smart Learning learning space">
-   </div>
-
-   <section class="form-panel" aria-label="Create account">
-    <img class="panel-image" src="{% static 'images/register_form_panel.png' %}" alt="Create account">
-    <form method="POST" id="registerForm" class="register-form" novalidate>
-     {% csrf_token %}
-     <input type="hidden" name="account_type" value="learner">
-
-     <input class="field full-name" type="text" id="full_name" name="full_name" required autocomplete="name" aria-label="Your name">
-     <input class="field username" type="text" id="username" name="username" required autocomplete="username" aria-label="Username">
-     <input class="field email" type="email" id="email" name="email" required autocomplete="email" aria-label="Email address">
-
-     <label class="avatar-choice avatar-boy selected" aria-label="Boy"><input type="radio" name="avatar" value="boy" checked></label>
-     <label class="avatar-choice avatar-girl" aria-label="Girl"><input type="radio" name="avatar" value="girl"></label>
-     <label class="avatar-choice avatar-dog" aria-label="Dog"><input type="radio" name="avatar" value="dog"></label>
-     <label class="avatar-choice avatar-cat" aria-label="Cat"><input type="radio" name="avatar" value="cat"></label>
-
-     <button class="continue-button" type="button" id="continueButton" aria-label="Continue"></button>
-     <a class="login-link" href="{% url 'accounts:login' %}" aria-label="Log in"></a>
-    </form>
-   </section>
-  </div>
-
-  <img class="trust-image" src="{% static 'images/register_trust.png' %}" alt="Safe and secure, kid-friendly, quality learning">
- </div>
 </div>
 
-{% if messages %}
-<div class="message-stack">
- {% for message in messages %}<div class="message">{{ message }}</div>{% endfor %}
-</div>
-{% endif %}
-
-<div class="password-modal" id="passwordModal" aria-hidden="true">
- <div class="password-card" role="dialog" aria-modal="true" aria-labelledby="passwordTitle">
-  <span class="eyebrow">SECURE YOUR ACCOUNT</span>
-  <h2 id="passwordTitle">Create your password.</h2>
-  <p>Your account details are ready. Add a password to finish creating your account.</p>
-  <label class="password-label" for="password1">Password</label>
-  <input class="password-input" type="password" id="password1" name="password1" form="registerForm" minlength="8" required autocomplete="new-password" placeholder="Create password">
-  <label class="password-label" for="password2">Confirm password</label>
-  <input class="password-input" type="password" id="password2" name="password2" form="registerForm" minlength="8" required autocomplete="new-password" placeholder="Confirm password">
-  <div class="password-error" id="passwordError">Passwords must match and contain at least 8 characters.</div>
-  <div class="password-actions">
-   <button type="button" class="cancel-btn" id="cancelPassword">Back</button>
-   <button type="submit" class="submit-btn" form="registerForm">Create Account</button>
+<div class="help-modal" id="helpModal" aria-hidden="true">
+  <div class="help-box">
+    <h2>Need Help? 💙</h2>
+    <p>Enter your details above to create your Smart Learning account. If you already have an account, use the Log in link below the form.</p>
+    <button class="close-help" type="button" id="closeHelp">Got it</button>
   </div>
- </div>
 </div>
 
 <script>
-(function(){
- const form=document.getElementById('registerForm');
- const continueButton=document.getElementById('continueButton');
- const modal=document.getElementById('passwordModal');
- const cancelButton=document.getElementById('cancelPassword');
- const password1=document.getElementById('password1');
- const password2=document.getElementById('password2');
- const passwordError=document.getElementById('passwordError');
- const helpButton=document.getElementById('helpButton');
+(() => {
+  const form = document.getElementById("registerForm");
+  const submit = document.getElementById("continueButton");
+  const password = document.getElementById("password1");
+  const confirm = document.getElementById("password2");
+  const strengthText = document.getElementById("strengthText");
+  const bars = [...document.querySelectorAll(".strength-bars i")];
 
- document.querySelectorAll('.field').forEach(function(field){
-  function sync(){ field.classList.toggle('has-value',field.value.length>0); }
-  field.addEventListener('input',sync);
-  field.addEventListener('change',sync);
-  sync();
- });
+  const setError = (name, message) => {
+    const field = document.querySelector(`[data-field="${name}"]`);
+    if (!field) return;
+    field.classList.add("has-error");
+    field.querySelector(".error-text").textContent = message;
+    const input = field.querySelector("input");
+    if (input) input.classList.add("invalid");
+  };
 
- document.querySelectorAll('.avatar-choice').forEach(function(label){
-  label.addEventListener('click',function(){
-   document.querySelectorAll('.avatar-choice').forEach(x=>x.classList.remove('selected'));
-   label.classList.add('selected');
-   label.querySelector('input').checked=true;
+  const clearError = (name) => {
+    const field = document.querySelector(`[data-field="${name}"]`);
+    if (!field) return;
+    field.classList.remove("has-error");
+    field.querySelector(".error-text").textContent = "";
+    const input = field.querySelector("input");
+    if (input) input.classList.remove("invalid");
+  };
+
+  const strength = value => {
+    let score = 0;
+    if (value.length >= 8) score++;
+    if (/[A-Z]/.test(value)) score++;
+    if (/[0-9]/.test(value)) score++;
+    if (/[^A-Za-z0-9]/.test(value)) score++;
+    bars.forEach((bar, i) => bar.classList.toggle("on", i < score));
+    strengthText.textContent =
+      !value ? "Use 8+ characters" :
+      score <= 1 ? "Weak password" :
+      score === 2 ? "Fair password" :
+      score === 3 ? "Good password" : "Strong password";
+  };
+
+  password.addEventListener("input", () => {
+    strength(password.value);
+    if (password.value) clearError("password1");
   });
- });
+  confirm.addEventListener("input", () => {
+    if (confirm.value === password.value) clearError("password2");
+  });
 
- continueButton.addEventListener('click',function(){
-  const fields=[document.getElementById('full_name'),document.getElementById('username'),document.getElementById('email')];
-  for(const field of fields){
-   if(!field.value.trim() || (field.type==='email' && !field.checkValidity())){
-    field.focus();
-    return;
-   }
-  }
-  modal.classList.add('open');
-  modal.setAttribute('aria-hidden','false');
-  setTimeout(()=>password1.focus(),40);
- });
+  document.querySelectorAll(".toggle-password").forEach(button => {
+    button.addEventListener("click", () => {
+      const input = document.getElementById(button.dataset.target);
+      const showing = input.type === "text";
+      input.type = showing ? "password" : "text";
+      button.textContent = showing ? "👁" : "🙈";
+      button.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+    });
+  });
 
- cancelButton.addEventListener('click',function(){
-  modal.classList.remove('open');
-  modal.setAttribute('aria-hidden','true');
-  passwordError.classList.remove('show');
- });
+  document.querySelectorAll(".avatar-card").forEach(card => {
+    card.addEventListener("click", () => {
+      document.querySelectorAll(".avatar-card").forEach(x => x.classList.remove("selected"));
+      card.classList.add("selected");
+      card.querySelector("input").checked = true;
+    });
+  });
 
- form.addEventListener('submit',function(event){
-  if(!password1.value || password1.value.length<8 || password1.value!==password2.value){
-   event.preventDefault();
-   passwordError.classList.add('show');
-   password2.focus();
-  }
- });
+  form.addEventListener("submit", event => {
+    let valid = true;
+    const fullName = document.getElementById("full_name");
+    const username = document.getElementById("username");
 
- helpButton.addEventListener('click',function(){
-  alert('Enter your name, username and email, choose an avatar, then press Continue to create your account.');
- });
+    ["full_name","username","password1","password2"].forEach(clearError);
 
- document.addEventListener('keydown',function(event){
-  if(event.key==='Escape' && modal.classList.contains('open')) cancelButton.click();
- });
+    if (!fullName.value.trim()) {
+      setError("full_name", "Please enter your full name.");
+      valid = false;
+    }
+    if (!username.value.trim()) {
+      setError("username", "Please choose a username.");
+      valid = false;
+    } else if (!/^[A-Za-z0-9@.+_-]{3,150}$/.test(username.value.trim())) {
+      setError("username", "Use 3–150 valid username characters.");
+      valid = false;
+    }
+    if (!password.value) {
+      setError("password1", "Please create a password.");
+      valid = false;
+    } else if (password.value.length < 8) {
+      setError("password1", "Password must be at least 8 characters.");
+      valid = false;
+    }
+    if (!confirm.value) {
+      setError("password2", "Please confirm your password.");
+      valid = false;
+    } else if (password.value !== confirm.value) {
+      setError("password2", "Passwords do not match.");
+      valid = false;
+    }
+
+    if (!valid) {
+      event.preventDefault();
+      const first = form.querySelector(".invalid");
+      if (first) first.focus();
+      return;
+    }
+
+    submit.disabled = true;
+    submit.textContent = "Creating account…";
+  });
+
+  const help = document.getElementById("helpModal");
+  document.getElementById("helpButton").addEventListener("click", () => {
+    help.classList.add("open");
+    help.setAttribute("aria-hidden", "false");
+  });
+  const closeHelp = () => {
+    help.classList.remove("open");
+    help.setAttribute("aria-hidden", "true");
+  };
+  document.getElementById("closeHelp").addEventListener("click", closeHelp);
+  help.addEventListener("click", e => { if (e.target === help) closeHelp(); });
 })();
 </script>
 </body>

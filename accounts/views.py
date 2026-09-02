@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 
 
@@ -86,86 +88,95 @@ def login_view(request):
 
 def register_view(request):
     """
-    Registration page.
+    Create an account using:
+    - Full name
+    - Username
+    - Password
+    - Confirm password
+    - Avatar
 
-    Registration DOES NOT automatically login the user.
-
-    After successful registration:
-        Register -> Login -> verify credentials -> Home
+    Email is intentionally NOT required or used
+    in the registration flow.
     """
 
-    if request.user.is_authenticated:
-        return redirect("core:home")
+    selected_role = request.GET.get(
+        "type",
+        "learner"
+    ).strip().lower()
+
+    if selected_role not in {"learner", "parent"}:
+        selected_role = "learner"
 
     if request.method == "POST":
 
-        full_name = request.POST.get("full_name", "").strip()
-        username = request.POST.get("username", "").strip()
-        email = request.POST.get("email", "").strip()
+        full_name = request.POST.get(
+            "full_name",
+            ""
+        ).strip()
 
-        password1 = request.POST.get("password1", "")
-        password2 = request.POST.get("password2", "")
+        username = request.POST.get(
+            "username",
+            ""
+        ).strip()
+
+        password1 = request.POST.get(
+            "password1",
+            ""
+        )
+
+        password2 = request.POST.get(
+            "password2",
+            ""
+        )
 
         account_type = request.POST.get(
             "account_type",
-            "learner"
-        )
+            selected_role
+        ).strip().lower()
 
         avatar = request.POST.get(
             "avatar",
             "boy"
-        )
+        ).strip().lower()
 
-        # -----------------------------
-        # VALIDATION
-        # -----------------------------
+        if account_type not in {"learner", "parent"}:
+            account_type = "learner"
 
+        context = {
+            "selected_role": account_type
+        }
+
+        # Full Name
         if not full_name:
+
             messages.error(
                 request,
                 "Please enter your full name."
             )
+
             return render(
                 request,
-                "accounts/register.html"
+                "accounts/register.html",
+                context
             )
 
+        # Username
         if not username:
+
             messages.error(
                 request,
                 "Please choose a username."
             )
+
             return render(
                 request,
-                "accounts/register.html"
+                "accounts/register.html",
+                context
             )
 
-        if not password1:
-            messages.error(
-                request,
-                "Please create a password."
-            )
-            return render(
-                request,
-                "accounts/register.html"
-            )
-
-        if password1 != password2:
-            messages.error(
-                request,
-                "Passwords do not match."
-            )
-            return render(
-                request,
-                "accounts/register.html"
-            )
-
-        # -----------------------------
-        # CHECK USERNAME
-        # -----------------------------
-
+        # Username uniqueness
         if User.objects.filter(
-            username=username
+            username__iexact=username
         ).exists():
 
             messages.error(
@@ -175,58 +186,105 @@ def register_view(request):
 
             return render(
                 request,
-                "accounts/register.html"
+                "accounts/register.html",
+                context
             )
 
-        # -----------------------------
-        # CHECK EMAIL
-        # -----------------------------
-
-        if email and User.objects.filter(
-            email=email
-        ).exists():
+        # Password
+        if not password1:
 
             messages.error(
                 request,
-                "This email is already registered."
+                "Please create a password."
             )
 
             return render(
                 request,
-                "accounts/register.html"
+                "accounts/register.html",
+                context
             )
 
-        # -----------------------------
-        # CREATE CUSTOM USER
-        # -----------------------------
+        # Confirm Password
+        if password1 != password2:
 
-        user = User.objects.create_user(
+            messages.error(
+                request,
+                "Passwords do not match."
+            )
+
+            return render(
+                request,
+                "accounts/register.html",
+                context
+            )
+
+        # Django password validation
+        try:
+
+            validate_password(
+                password1,
+                user=User(
+                    username=username,
+                    first_name=full_name,
+                ),
+            )
+
+        except ValidationError as exc:
+
+            for error in exc.messages:
+
+                messages.error(
+                    request,
+                    error
+                )
+
+            return render(
+                request,
+                "accounts/register.html",
+                context
+            )
+
+        # Avatar validation
+        allowed_avatars = {
+            choice[0]
+            for choice in User.AVATAR_CHOICES
+        }
+
+        if avatar not in allowed_avatars:
+            avatar = "boy"
+
+        # Create account.
+        # Email is deliberately omitted.
+        User.objects.create_user(
             username=username,
-            email=email,
             password=password1,
-            first_name=full_name
+            first_name=full_name,
+            account_type=account_type,
+            avatar=(
+                avatar
+                if account_type == "learner"
+                else "star"
+            ),
+            is_child_learner=(
+                account_type == "learner"
+            ),
         )
-
-        # Store registration choices in session
-        request.session["account_type"] = account_type
-        request.session["avatar"] = avatar
-
-        # IMPORTANT:
-        # DO NOT login automatically here.
-        #
-        # User must go to Login page and
-        # verify username + password first.
 
         messages.success(
             request,
             "Registration successful! Please login to continue. 🎉"
         )
 
-        return redirect("accounts:login")
+        return redirect(
+            "accounts:login"
+        )
 
     return render(
         request,
-        "accounts/register.html"
+        "accounts/register.html",
+        {
+            "selected_role": selected_role
+        }
     )
 
 
@@ -256,4 +314,6 @@ def logout_view(request):
         "You have logged out safely. See you next time! 👋"
     )
 
-    return redirect("core:landing")
+    return redirect(
+        "core:landing"
+    )
