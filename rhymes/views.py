@@ -1,15 +1,16 @@
-
 from urllib.parse import urlparse
 
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.templatetags.static import static
 from django.views.decorators.http import require_POST
 
 from accounts.decorators import learner_required
 from progress.models import RhymeProgress
 from progress.services import check_and_award_badges
 from .models import Category, Rhyme
+from .rhyme_data import CATEGORIES as RHYME_CATEGORIES, RHYMES
 
 
 def _safe_embed_url(url):
@@ -27,104 +28,15 @@ def _safe_embed_url(url):
     return url
 
 
-RHYMES_PAGE_SHOWCASE = [
-    {
-        "title": "Humpty Dumpty",
-        "category": "Nursery",
-        "category_icon": "🥚",
-        "description": "A classic rhyme about Humpty’s big tumble.",
-        "rating": "4.8",
-        "duration": "02:15",
-        "video_id": "nrv495corBc",
-        "difficulty": "Easy",
-        "color": "violet",
-        "fallback_image": "img/rhymes/humpty.svg",
-    },
-    {
-        "title": "Twinkle Twinkle Little Star",
-        "category": "Nature",
-        "category_icon": "⭐",
-        "description": "A gentle lullaby about a shining little star.",
-        "rating": "4.9",
-        "duration": "01:45",
-        "video_id": "yCjJyiqpAuU",
-        "difficulty": "Easy",
-        "color": "indigo",
-        "fallback_image": "img/rhymes/twinkle.svg",
-    },
-    {
-        "title": "Baa Baa Black Sheep",
-        "category": "Animals",
-        "category_icon": "🐑",
-        "description": "Sing along with a friendly black sheep on the farm.",
-        "rating": "4.7",
-        "duration": "01:30",
-        "video_id": "g7c3G4m2BRA",
-        "difficulty": "Easy",
-        "color": "green",
-        "fallback_image": "img/rhymes/baa-baa.svg",
-    },
-    {
-        "title": "Wheels on the Bus",
-        "category": "Action",
-        "category_icon": "🚌",
-        "description": "Ride along and move with the wheels, doors and wipers.",
-        "rating": "4.6",
-        "duration": "02:05",
-        "video_id": "IRap6FOoZKA",
-        "difficulty": "Easy",
-        "color": "blue",
-        "fallback_image": "img/rhymes/wheels.svg",
-    },
-    {
-        "title": "Mary Had a Little Lamb",
-        "category": "Animals",
-        "category_icon": "🐑",
-        "description": "A sweet farm rhyme featuring a little lamb and friends.",
-        "rating": "4.7",
-        "duration": "01:50",
-        "video_id": "28W4ywSsBPc",
-        "difficulty": "Easy",
-        "color": "rose",
-        "fallback_image": "img/rhymes/mary.svg",
-    },
-    {
-        "title": "Rain Rain Go Away",
-        "category": "Nature",
-        "category_icon": "🌧️",
-        "description": "A cheerful rainy-day song for family sing-along time.",
-        "rating": "4.5",
-        "duration": "01:40",
-        "video_id": "LFrKYjrIDs8",
-        "difficulty": "Easy",
-        "color": "sky",
-        "fallback_image": "img/rhymes/rain.svg",
-    },
-    {
-        "title": "If You're Happy and You Know It",
-        "category": "Action",
-        "category_icon": "👏",
-        "description": "Clap, stomp and shout hooray in this movement rhyme.",
-        "rating": "4.8",
-        "duration": "01:55",
-        "video_id": "M6LoRZsHMSs",
-        "difficulty": "Easy",
-        "color": "yellow",
-        "fallback_image": "img/rhymes/happy.svg",
-    },
-    {
-        "title": "Jingle Bells",
-        "category": "Festival",
-        "category_icon": "🎄",
-        "description": "Dash through the snow with a bright holiday sing-along.",
-        "rating": "4.9",
-        "duration": "02:10",
-        "video_id": "4YBGRGBj7_w",
-        "difficulty": "Easy",
-        "color": "red",
-        "fallback_image": "img/rhymes/jingle.svg",
-    },
-]
+# ============================================================
+# NOTE: the actual rhyme content (titles, categories, local
+# audio + thumbnail paths) now lives in rhymes/rhyme_data.py —
+# edit that one file to add/remove/update a rhyme. Everything
+# below just resolves those local paths through Django's
+# static() helper and hands the data to the template/JS, the
+# same pattern core/views.py uses for the Animated Videos &
+# Stories page (core/video_data.py).
+# ============================================================
 
 
 @learner_required
@@ -146,6 +58,18 @@ def rhyme_list(request):
         RhymeProgress.objects.filter(user=request.user, completed=True).values_list("rhyme_id", flat=True)
     )
 
+    # Resolve each local rhyme's thumbnail/audio path through Django's
+    # static() helper here, once, so the template/JS can use them
+    # directly without needing to know STATIC_URL.
+    rhymes_for_js = [
+        {
+            **item,
+            "thumbnail": static(item["thumbnail"]),
+            "audio": static(item["audio"]),
+        }
+        for item in RHYMES
+    ]
+
     return render(
         request,
         "rhymes/rhyme_list.html",
@@ -156,7 +80,8 @@ def rhyme_list(request):
             "search": search,
             "difficulty": difficulty,
             "completed_ids": completed_ids,
-            "showcase_rhymes": RHYMES_PAGE_SHOWCASE,
+            "rhyme_categories": RHYME_CATEGORIES,
+            "rhymes_json": rhymes_for_js,
         },
     )
 
