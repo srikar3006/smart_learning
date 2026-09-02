@@ -1,0 +1,234 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings • Smart Learning</title>
+<link rel="stylesheet" href="{% static 'css/settings.css' %}">
+<script src="{% static 'js/settings.js' %}"></script>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="Learner navigation">
+    <a class="side-logo" href="{% url 'core:home' %}"><img src="{% static 'img/reference/logo.png' %}" alt="Smart Learning Through Tunes & Cartoons"></a>
+    <nav class="menu">
+      <a href="{% url 'core:home' %}"><span class="mi">🏠</span>Home</a>
+      <a href="{% url 'rhymes:list' %}"><span class="mi">🎵</span>Rhymes</a>
+      <a href="{% url 'core:videos' %}"><span class="mi">📺</span><span>Animated<br>Videos &amp; Stories</span></a>
+      <a href="{% url 'core:games' %}"><span class="mi">🎮</span>Games</a>
+      <a href="{% url 'quizzes:list' %}"><span class="mi">🏆</span>Quiz</a>
+      <a href="{% url 'core:profile' %}"><span class="mi">👤</span>Profile</a>
+      <a class="active" aria-current="page" href="{% url 'core:settings' %}"><span class="mi">⚙️</span>Settings</a>
+    </nav>
+    <div class="side-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Happy child learning"></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <nav class="topnav" aria-label="Primary navigation">
+        <a href="{% url 'core:home' %}">🏠 Home</a>
+        <a href="{% url 'rhymes:list' %}">🎵 Rhymes</a>
+        <a href="{% url 'core:videos' %}">📺 Animated Videos &amp; Stories</a>
+        <a href="{% url 'core:games' %}">🎮 Games</a>
+        <a href="{% url 'quizzes:list' %}">🏆 Quiz</a>
+        <a href="{% url 'core:profile' %}">👤 Profile</a>
+        <a class="active" aria-current="page" href="{% url 'core:settings' %}">⚙️ Settings</a>
+      </nav>
+      <div class="top-actions">
+        <div class="bell" aria-label="Notifications">🔔<span class="badge">3</span></div>
+        <div class="profile">
+          <div class="avatar"><img src="{% static 'img/reference/avatar.png' %}" alt="Learner avatar"></div>
+          <div><strong>Hi, {{ request.user.first_name|default:request.user.username }}!</strong><small>Happy Learning! 🎉</small></div>
+          <span>⌄</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="settings-shell" aria-labelledby="settings-title">
+      <div class="settings-hero">
+        <div class="hero-copy">
+          <span class="hero-icon" aria-hidden="true">⚙️</span>
+          <h1 id="settings-title">Settings</h1>
+          <p>Customize your experience and manage your preferences.</p>
+        </div>
+        <img class="hero-art" src="{% static 'img/reference/hero-character.png' %}" alt="Friendly child learning illustration">
+      </div>
+
+      <div class="settings-layout">
+        <aside class="settings-category" aria-label="Settings categories">
+          <button class="category-btn active" type="button" data-category="general"><span class="category-icon">⚙️</span><span class="category-copy"><strong>General</strong><small>Basic app preferences</small></span></button>
+          <button class="category-btn" type="button" data-category="account"><span class="category-icon">👤</span><span class="category-copy"><strong>Account</strong><small>Manage your account</small></span></button>
+          <button class="category-btn" type="button" data-category="appearance"><span class="category-icon">🎨</span><span class="category-copy"><strong>Appearance</strong><small>Theme &amp; display</small></span></button>
+          <button class="category-btn" type="button" data-category="audio"><span class="category-icon">🔊</span><span class="category-copy"><strong>Audio &amp; Video</strong><small>Sound and video settings</small></span></button>
+          <button class="category-btn" type="button" data-category="notifications"><span class="category-icon">🔔</span><span class="category-copy"><strong>Notifications</strong><small>Manage notifications</small></span></button>
+          <button class="category-btn" type="button" data-category="privacy"><span class="category-icon">🛡️</span><span class="category-copy"><strong>Privacy &amp; Safety</strong><small>Privacy and data</small></span></button>
+          <button class="category-btn" type="button" data-category="language"><span class="category-icon">🌐</span><span class="category-copy"><strong>Language</strong><small>Select your language</small></span></button>
+          <button class="category-btn" type="button" data-category="support"><span class="category-icon">❓</span><span class="category-copy"><strong>Help &amp; Support</strong><small>Help center &amp; feedback</small></span></button>
+          <button class="category-btn" type="button" data-category="about"><span class="category-icon">ⓘ</span><span class="category-copy"><strong>About</strong><small>App information</small></span></button>
+        </aside>
+
+        <section class="settings-content">
+          <div class="content-panel active" data-panel="general">
+            <div class="grid-main">
+              <section class="settings-card">
+                <div class="card-title"><span class="title-icon">⚙️</span><h2>General Settings</h2></div>
+                <div class="setting-row"><span class="row-icon">🌐</span><div class="setting-copy"><strong>App Language</strong><small>Choose your preferred language</small></div><select class="control" id="languageSelect" aria-label="App language">{% for value,label in languages %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select></div>
+                <div class="setting-row"><span class="row-icon">👨‍👩‍👧</span><div class="setting-copy"><strong>Age Group</strong><small>Customize content for age group</small></div><select class="control" id="ageGroupSelect" aria-label="Age group">{% for value,label in age_groups %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select></div>
+                <div class="setting-row"><span class="row-icon">🎯</span><div class="setting-copy"><strong>Daily Goal</strong><small>Set daily learning goal</small></div><select class="control" id="dailyGoalSelect" aria-label="Daily learning goal">{% for value,label in daily_goals %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select></div>
+                <div class="setting-row"><span class="row-icon">🛡️</span><div class="setting-copy"><strong>Content Filter</strong><small>Filter content based on age</small></div><select class="control" id="contentFilterSelect" aria-label="Content filter">{% for value,label in content_filters %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select></div>
+                <div class="setting-row"><span class="row-icon">▶️</span><div class="setting-copy"><strong>Auto Play</strong><small>Automatically play next video</small></div><div class="toggle-wrap"><button class="toggle" id="autoPlayToggle" type="button" role="switch" aria-checked="false" aria-label="Auto play"></button></div></div>
+                <div class="setting-row"><span class="row-icon">⬇️</span><div class="setting-copy"><strong>Offline Mode</strong><small>Download content for offline use</small></div><div class="toggle-wrap"><button class="toggle" id="offlineToggle" type="button" role="switch" aria-checked="false" aria-label="Offline mode"></button></div></div>
+                <button class="reset" type="button" id="resetSettings">↻ &nbsp; Reset All Settings</button>
+              </section>
+
+              <section class="settings-card">
+                <div class="card-title"><span class="title-icon">🎨</span><h2>Appearance</h2></div>
+                <div class="setting-copy" style="margin-bottom:10px"><strong>Theme</strong><small>Choose how Smart Learning looks</small></div>
+                <div class="option-grid" id="themeOptions">
+                  <button class="theme-option" type="button" data-theme="light"><div class="theme-preview light-preview">☀️</div><strong>Light</strong></button>
+                  <button class="theme-option" type="button" data-theme="dark"><div class="theme-preview dark-preview">🌙</div><strong>Dark</strong></button>
+                  <button class="theme-option" type="button" data-theme="auto"><div class="theme-preview auto-preview">◐</div><strong>Auto</strong></button>
+                </div>
+                <div class="setting-copy" style="margin:18px 0 10px"><strong>Font Size</strong><small>Adjust text size for better readability</small></div>
+                <div class="font-grid" id="fontOptions">
+                  <button class="font-btn" type="button" data-font="small"><span style="font-size:15px">A</span><small>Small</small></button>
+                  <button class="font-btn" type="button" data-font="medium"><span style="font-size:20px">A</span><small>Medium</small></button>
+                  <button class="font-btn" type="button" data-font="large"><span style="font-size:25px">A</span><small>Large</small></button>
+                </div>
+              </section>
+            </div>
+            <div class="bottom-grid">
+              <section class="settings-card">
+                <div class="card-title"><span class="title-icon">🔊</span><h2>Audio Settings</h2></div>
+                <div class="volume-row"><label for="masterVolume">Master Volume</label><input class="volume" id="masterVolume" type="range" min="0" max="100" step="1"><span class="volume-value" id="masterValue">80%</span></div>
+                <div class="volume-row"><label for="musicVolume">Music Volume</label><input class="volume" id="musicVolume" type="range" min="0" max="100" step="1"><span class="volume-value" id="musicValue">70%</span></div>
+                <div class="volume-row"><label for="effectsVolume">Effects Volume</label><input class="volume" id="effectsVolume" type="range" min="0" max="100" step="1"><span class="volume-value" id="effectsValue">90%</span></div>
+              </section>
+              <section class="settings-card">
+                <div class="card-title"><span class="title-icon">📁</span><h2>Data &amp; Storage</h2></div>
+                <div class="storage-row"><div class="storage-copy"><strong>Clear Cache</strong><small>Clear locally stored video history and progress.</small></div><button class="storage-btn" type="button" id="clearCache">Clear</button></div>
+                <div class="storage-row"><div class="storage-copy"><strong>Downloaded Content</strong><small>No download manager exists in the current project.</small></div><button class="storage-btn" type="button" disabled>Not available</button></div>
+              </section>
+            </div>
+          </div>
+
+          <div class="content-panel" data-panel="account">
+            <section class="settings-card"><div class="card-title"><span class="title-icon">👤</span><h2>Account</h2></div><div class="info-grid"><div class="info-box"><strong>Name</strong><small>{{ request.user.first_name|default:request.user.username }}</small></div><div class="info-box"><strong>Username</strong><small>{{ request.user.username }}</small></div><div class="info-box"><strong>Account Type</strong><small>{{ request.user.get_account_type_display }}</small></div><div class="info-box"><strong>Member Since</strong><small>{{ request.user.created_at|date:"M Y" }}</small></div></div><a class="inline-link" href="{% url 'core:profile' %}">Open My Profile →</a></section>
+          </div>
+
+          <div class="content-panel" data-panel="appearance">
+            <section class="settings-card"><div class="card-title"><span class="title-icon">🎨</span><h2>Appearance</h2></div><div class="setting-copy" style="margin-bottom:10px"><strong>Theme</strong><small>Your selection is saved on this device and applied across supported project pages.</small></div><div class="option-grid" id="themeOptionsAppearance"><button class="theme-option" type="button" data-theme="light"><div class="theme-preview light-preview">☀️</div><strong>Light</strong></button><button class="theme-option" type="button" data-theme="dark"><div class="theme-preview dark-preview">🌙</div><strong>Dark</strong></button><button class="theme-option" type="button" data-theme="auto"><div class="theme-preview auto-preview">◐</div><strong>Auto</strong></button></div><div class="setting-copy" style="margin:18px 0 10px"><strong>Font Size</strong><small>Use a comfortable reading size.</small></div><div class="font-grid" id="fontOptionsAppearance"><button class="font-btn" type="button" data-font="small"><span style="font-size:15px">A</span><small>Small</small></button><button class="font-btn" type="button" data-font="medium"><span style="font-size:20px">A</span><small>Medium</small></button><button class="font-btn" type="button" data-font="large"><span style="font-size:25px">A</span><small>Large</small></button></div></section>
+          </div>
+
+          <div class="content-panel" data-panel="audio">
+            <section class="settings-card"><div class="card-title"><span class="title-icon">🔊</span><h2>Audio &amp; Video</h2></div><div class="volume-row"><label for="masterVolume2">Master Volume</label><input class="volume" id="masterVolume2" type="range" min="0" max="100"><span class="volume-value" id="masterValue2"></span></div><div class="volume-row"><label for="musicVolume2">Music Volume</label><input class="volume" id="musicVolume2" type="range" min="0" max="100"><span class="volume-value" id="musicValue2"></span></div><div class="volume-row"><label for="effectsVolume2">Effects Volume</label><input class="volume" id="effectsVolume2" type="range" min="0" max="100"><span class="volume-value" id="effectsValue2"></span></div><div class="setting-row" style="margin-top:10px"><span class="row-icon">▶️</span><div class="setting-copy"><strong>Auto Play</strong><small>Automatically play the next local video after the current one ends.</small></div><div class="toggle-wrap"><button class="toggle" id="autoPlayToggle2" type="button" role="switch" aria-checked="false"></button></div></div></section>
+          </div>
+
+          <div class="content-panel" data-panel="notifications">
+            <section class="settings-card"><div class="card-title"><span class="title-icon">🔔</span><h2>Notifications</h2></div><div class="setting-row"><span class="row-icon">🔔</span><div class="setting-copy"><strong>Notifications</strong><small>Allow Smart Learning reminders and alerts.</small></div><div class="toggle-wrap"><button class="toggle" id="notificationsToggle" type="button" role="switch"></button></div></div><div class="setting-row"><span class="row-icon">⏰</span><div class="setting-copy"><strong>Learning Reminders</strong><small>Keep your daily learning routine on track.</small></div><div class="toggle-wrap"><button class="toggle" id="learningRemindersToggle" type="button" role="switch"></button></div></div><div class="setting-row"><span class="row-icon">🏆</span><div class="setting-copy"><strong>Achievement Notifications</strong><small>Celebrate badges and quiz milestones.</small></div><div class="toggle-wrap"><button class="toggle" id="achievementToggle" type="button" role="switch"></button></div></div></section>
+          </div>
+
+          <div class="content-panel" data-panel="privacy">
+            <section class="settings-card"><div class="card-title"><span class="title-icon">🛡️</span><h2>Privacy &amp; Safety</h2></div><div class="support-box"><h3>Safe by default</h3><p>Authentication, passwords and account permissions continue to use the existing Django security flow. Settings below only control local learning preferences on this browser.</p></div><div class="setting-row" style="margin-top:10px"><span class="row-icon">🧹</span><div class="setting-copy"><strong>Clear Local Learning Data</strong><small>Removes video history, progress and saved settings from this browser.</small></div><button class="storage-btn" type="button" id="clearLocalData">Clear</button></div></section>
+          </div>
+
+          <div class="content-panel" data-panel="language">
+            <section class="settings-card"><div class="card-title"><span class="title-icon">🌐</span><h2>Language</h2></div><div class="setting-row"><span class="row-icon">🌐</span><div class="setting-copy"><strong>Preferred Language</strong><small>The current project has no translation catalog, so this stores the language preference and document language for future localization.</small></div><select class="control" id="languageSelect2">{% for value,label in languages %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select></div></section>
+          </div>
+
+          <div class="content-panel" data-panel="support">
+            <section class="settings-card"><div class="card-title"><span class="title-icon">❓</span><h2>Help &amp; Support</h2></div><div class="support-box"><h3>Need a little help?</h3><p>Use the existing learning pages for content help. Account/password issues continue through the existing authentication flow.</p><div class="support-actions"><a href="{% url 'core:home' %}">Home</a><a href="{% url 'rhymes:list' %}">Rhymes</a><a href="{% url 'core:videos' %}">Videos &amp; Stories</a><a href="{% url 'accounts:password_reset' %}">Password Help</a></div></div></section>
+          </div>
+
+          <div class="content-panel" data-panel="about">
+            <section class="settings-card"><div class="card-title"><span class="title-icon">ⓘ</span><h2>About Smart Learning</h2></div><div class="info-grid"><div class="info-box"><strong>Application</strong><small>Smart Learning Through Tunes &amp; Cartoons</small></div><div class="info-box"><strong>Platform</strong><small>Django server-rendered web application</small></div><div class="info-box"><strong>Account</strong><small>{{ request.user.username }}</small></div><div class="info-box"><strong>Timezone</strong><small>Asia/Kolkata</small></div></div></section>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+</div>
+
+{{ settings|json_script:"settings-data" }}
+<div class="toast" id="toast" aria-live="polite"></div>
+<div class="modal-backdrop" id="parentModal" role="dialog" aria-modal="true" aria-labelledby="parentModalTitle">
+  <div class="modal"><div class="modal-head"><h2 id="parentModalTitle">Parent Controls</h2><button class="close" type="button" id="closeParentModal" aria-label="Close">×</button></div><p id="parentModalText"></p><div id="parentModalControls"></div><div class="modal-actions"><button class="modal-secondary" type="button" id="cancelParentModal">Close</button>{% if is_parent %}<a class="modal-primary" style="padding:10px 14px;border-radius:11px;font-weight:800" href="{% url 'parent:dashboard' %}">Open Parent Dashboard</a>{% endif %}</div></div>
+</div>
+
+<script>
+(() => {
+  const serverSettings = JSON.parse(document.getElementById('settings-data').textContent);
+  const localSettings = window.SmartLearningSettings.get();
+  window.SmartLearningSettings.set({ ...serverSettings, ...localSettings, age_group: serverSettings.age_group });
+  const state = () => window.SmartLearningSettings.get();
+  const csrf = () => { const m = document.cookie.match(/(?:^|; )csrftoken=([^;]+)/); return m ? decodeURIComponent(m[1]) : ''; };
+  const toast = (message) => { const el = document.getElementById('toast'); el.textContent = message; el.classList.add('show'); clearTimeout(window.__slToast); window.__slToast = setTimeout(() => el.classList.remove('show'), 2200); };
+  const saveServer = async (patch) => {
+    try {
+      const response = await fetch('{% url "core:settings" %}', { method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json','X-CSRFToken':csrf(),'Accept':'application/json'}, body:JSON.stringify(patch) });
+      if (!response.ok) throw new Error('Unable to save settings');
+      const data = await response.json();
+      if (data.settings) window.SmartLearningSettings.set(data.settings);
+    } catch (_) { toast('Saved on this device. Server sync was unavailable.'); }
+  };
+  const save = (patch, message='Setting saved. ✨') => { window.SmartLearningSettings.set(patch); saveServer(patch); toast(message); render(); };
+
+  const setToggle = (id, value) => { const b=document.getElementById(id); if(!b)return; b.classList.toggle('on',!!value); b.setAttribute('aria-checked',String(!!value)); };
+  const setValue = (id, value) => { const e=document.getElementById(id); if(e)e.value=value; };
+  const setVolume = (id, valueId, value) => { setValue(id,value); const out=document.getElementById(valueId); if(out)out.textContent=value+'%'; };
+
+  function render() {
+    const s=state();
+    setValue('languageSelect',s.language); setValue('languageSelect2',s.language); setValue('ageGroupSelect',s.age_group); setValue('dailyGoalSelect',s.daily_goal); setValue('contentFilterSelect',s.content_filter);
+    setToggle('autoPlayToggle',s.auto_play); setToggle('offlineToggle',s.offline_mode); setToggle('autoPlayToggle2',s.auto_play);
+    setToggle('notificationsToggle',s.notifications); setToggle('learningRemindersToggle',s.learning_reminders); setToggle('achievementToggle',s.achievement_notifications);
+    setVolume('masterVolume','masterValue',s.master_volume); setVolume('musicVolume','musicValue',s.music_volume); setVolume('effectsVolume','effectsValue',s.effects_volume);
+    setVolume('masterVolume2','masterValue2',s.master_volume); setVolume('musicVolume2','musicValue2',s.music_volume); setVolume('effectsVolume2','effectsValue2',s.effects_volume);
+    document.querySelectorAll('[data-theme]').forEach(b=>b.classList.toggle('active',b.dataset.theme===s.theme));
+    document.querySelectorAll('[data-font]').forEach(b=>b.classList.toggle('active',b.dataset.font===s.font_size));
+  }
+
+  document.querySelectorAll('.category-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('.category-btn').forEach(b=>b.classList.toggle('active',b===btn));
+    document.querySelectorAll('.content-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===btn.dataset.category));
+  }));
+
+  document.getElementById('languageSelect').addEventListener('change',e=>save({language:e.target.value}));
+  document.getElementById('languageSelect2').addEventListener('change',e=>save({language:e.target.value}));
+  document.getElementById('ageGroupSelect').addEventListener('change',e=>save({age_group:e.target.value}));
+  document.getElementById('dailyGoalSelect').addEventListener('change',e=>save({daily_goal:Number(e.target.value)}));
+  document.getElementById('contentFilterSelect').addEventListener('change',e=>save({content_filter:e.target.value}));
+  [['autoPlayToggle','auto_play'],['autoPlayToggle2','auto_play'],['offlineToggle','offline_mode'],['notificationsToggle','notifications'],['learningRemindersToggle','learning_reminders'],['achievementToggle','achievement_notifications']].forEach(([id,key])=>{const b=document.getElementById(id);if(b)b.addEventListener('click',()=>save({[key]:!state()[key]}));});
+  document.querySelectorAll('[data-theme]').forEach(b=>b.addEventListener('click',()=>save({theme:b.dataset.theme},'Theme updated. 🎨')));
+  document.querySelectorAll('[data-font]').forEach(b=>b.addEventListener('click',()=>save({font_size:b.dataset.font},'Font size updated.')));
+  [['masterVolume','master_volume'],['musicVolume','music_volume'],['effectsVolume','effects_volume'],['masterVolume2','master_volume'],['musicVolume2','music_volume'],['effectsVolume2','effects_volume']].forEach(([id,key])=>{const e=document.getElementById(id);if(e)e.addEventListener('input',()=>{window.SmartLearningSettings.set({[key]:Number(e.value)});render();});if(e)e.addEventListener('change',()=>save({[key]:Number(e.value)}));});
+
+  document.getElementById('resetSettings').addEventListener('click',async()=>{
+    const defaults=window.SmartLearningSettings.defaults;
+    window.SmartLearningSettings.reset();
+    try{await fetch('{% url "core:settings" %}',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','X-CSRFToken':csrf()},body:JSON.stringify({...defaults,reset_all:true,age_group:defaults.age_group})});}catch(_){ }
+    render(); toast('All settings were reset.');
+  });
+  document.getElementById('clearCache').addEventListener('click',()=>{['sl_video_history','sl_video_progress','sl_video_mylist'].forEach(k=>localStorage.removeItem(k));toast('Video cache and history cleared.');});
+  document.getElementById('clearLocalData').addEventListener('click',()=>{['sl_settings','sl_video_history','sl_video_progress','sl_video_mylist'].forEach(k=>localStorage.removeItem(k));window.SmartLearningSettings.reset();toast('Local learning data cleared.');render();});
+
+  const parentModal=document.getElementById('parentModal');
+  document.querySelectorAll('.parent-item').forEach(item=>item.addEventListener('click',()=>{parentModal.classList.add('open');document.getElementById('parentModalText').textContent=item.dataset.message||'Parent controls are managed through the existing parent account area.';}));
+  const closeModal=()=>parentModal.classList.remove('open');
+  document.getElementById('closeParentModal').addEventListener('click',closeModal); document.getElementById('cancelParentModal').addEventListener('click',closeModal); parentModal.addEventListener('click',e=>{if(e.target===parentModal)closeModal();});
+
+  // Parent-control rows are injected into the General page below the main cards.
+  const general = document.querySelector('[data-panel="general"]');
+  const parentCard=document.createElement('section'); parentCard.className='settings-card'; parentCard.style.marginTop='16px'; parentCard.innerHTML=`<div class="card-title"><span class="title-icon">🛡️</span><h2>Parent Controls</h2></div><div class="parent-list"><button class="parent-item" type="button" data-key="screen_time_limit" data-label="Screen Time Limit" data-message="Choose a daily screen-time preference. This does not create a security lock because the current project has no parental-control enforcement service."><span class="parent-icon">🕐</span><span><strong>Screen Time Limit</strong><small>${state().screen_time_limit==='60'?'1 Hour per day':'Preference saved'}</small></span><span class="arrow">›</span></button><button class="parent-item" type="button" data-key="quiz_permissions" data-label="Quiz Permissions" data-message="Choose a quiz-access preference. Existing quiz authentication and routes remain unchanged."><span class="parent-icon">☑️</span><span><strong>Quiz Permissions</strong><small>${state().quiz_permissions==='all'?'Allow all quizzes':'Preference saved'}</small></span><span class="arrow">›</span></button><button class="parent-item" type="button" data-key="purchase_settings" data-label="Purchase Settings" data-message="Choose a purchase preference. No purchase system exists in the current project, so this setting is stored without pretending to provide payment security."><span class="parent-icon">🛒</span><span><strong>Purchase Settings</strong><small>${state().purchase_settings==='password'?'Require password':'Preference saved'}</small></span><span class="arrow">›</span></button></div><button class="manage-parent" type="button" id="manageParent">Manage Parental Controls <span>›</span></button>`;
+  general.appendChild(parentCard);
+  const parentOptions={screen_time_limit:[['30','30 Minutes per day'],['60','1 Hour per day'],['90','1.5 Hours per day'],['120','2 Hours per day']],quiz_permissions:[['all','Allow all quizzes'],['age','Age-appropriate quizzes only'],['none','Ask a parent first']],purchase_settings:[['password','Require password'],['parent','Parent approval required'],['blocked','Block purchases']]};
+  const openParentSetting=(item)=>{parentModal.classList.add('open');document.getElementById('parentModalText').textContent=item.dataset.message;const box=document.getElementById('parentModalControls');const key=item.dataset.key;const options=parentOptions[key]||[];box.innerHTML=`<label class="setting-copy" style="display:block;margin-top:12px"><strong>${item.dataset.label}</strong><select class="control" id="parentSettingSelect" style="margin-top:7px">${options.map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select></label><div class="modal-actions" style="justify-content:flex-start"><button class="modal-primary" type="button" id="saveParentSetting">Save Preference</button></div>`;const select=document.getElementById('parentSettingSelect');select.value=state()[key];document.getElementById('saveParentSetting').addEventListener('click',()=>{save({[key]:select.value},'Parent preference saved.');closeModal();});};
+  parentCard.querySelectorAll('.parent-item').forEach(item=>item.addEventListener('click',()=>openParentSetting(item)));
+  document.getElementById('manageParent').addEventListener('click',()=>{parentModal.classList.add('open');document.getElementById('parentModalControls').innerHTML='';document.getElementById('parentModalText').textContent='{% if is_parent %}Open the existing Parent Dashboard to manage children and their learning progress.{% else %}Parent controls are not exposed as a security bypass. A parent/guardian account should manage these controls.{% endif %}';});
+
+  render();
+})();
+</script>
+</body>
+</html>

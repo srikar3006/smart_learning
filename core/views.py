@@ -1,6 +1,8 @@
-from django.contrib.auth.decorators import login_required
 
+
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import JsonResponse
 
 from django.db.models import Count, Q, Sum
 
@@ -12,6 +14,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
 
 from accounts.decorators import parent_required, learner_required
+from accounts.models import User
 
 from accounts.forms import ChildCreationForm
 
@@ -542,3 +545,138 @@ def profile(request):
 @login_required(login_url="accounts:login")
 def profile_redirect(request):
     return profile(request)
+
+
+# ============================================================
+# LEARNER SETTINGS
+# ============================================================
+
+SETTINGS_DEFAULTS = {
+    "language": "en-us",
+    "daily_goal": 30,
+    "content_filter": "strict",
+    "auto_play": True,
+    "offline_mode": False,
+    "theme": "light",
+    "font_size": "medium",
+    "master_volume": 80,
+    "music_volume": 70,
+    "effects_volume": 90,
+    "notifications": True,
+    "learning_reminders": True,
+    "achievement_notifications": True,
+    "screen_time_limit": "60",
+    "quiz_permissions": "all",
+    "purchase_settings": "password",
+}
+
+SETTINGS_LANGUAGES = [
+    ("en-us", "English (US)"),
+    ("te", "Telugu"),
+    ("hi", "Hindi"),
+    ("ta", "Tamil"),
+    ("kn", "Kannada"),
+    ("ml", "Malayalam"),
+]
+
+SETTINGS_DAILY_GOALS = [(15, "15 Minutes"), (30, "30 Minutes"), (45, "45 Minutes"), (60, "60 Minutes")]
+SETTINGS_CONTENT_FILTERS = [("strict", "Strict"), ("moderate", "Moderate"), ("standard", "Standard")]
+SETTINGS_THEMES = [("light", "Light"), ("dark", "Dark"), ("auto", "Auto")]
+SETTINGS_FONT_SIZES = [("small", "Small"), ("medium", "Medium"), ("large", "Large")]
+SETTINGS_SCREEN_TIME = [("30", "30 Minutes per day"), ("60", "1 Hour per day"), ("90", "1.5 Hours per day"), ("120", "2 Hours per day")]
+SETTINGS_QUIZ_PERMISSIONS = [("all", "Allow all quizzes"), ("age", "Age-appropriate quizzes only"), ("none", "Ask a parent first")]
+SETTINGS_PURCHASE = [("password", "Require password"), ("parent", "Parent approval required"), ("blocked", "Block purchases")]
+
+
+def _settings_state(request):
+    saved = request.session.get("learning_settings", {})
+    state = {**SETTINGS_DEFAULTS, **saved}
+    state["age_group"] = request.user.age_group or "4-6"
+    return state
+
+
+@never_cache
+@login_required(login_url="accounts:login")
+def games(request):
+    """Child-friendly games hub. Games are browser-based and need no database setup."""
+    return render(request, "core/games.html")
+
+
+@never_cache
+@login_required(login_url="accounts:login")
+@require_http_methods(["GET", "POST"])
+def settings_page(request):
+    if request.method == "POST":
+        try:
+            payload = json.loads(request.body.decode("utf-8") or "{}")
+        except (TypeError, ValueError, UnicodeDecodeError):
+            return JsonResponse({"ok": False, "error": "Invalid settings payload."}, status=400)
+
+        state = _settings_state(request)
+        changed = False
+
+        if "language" in payload and payload["language"] in dict(SETTINGS_LANGUAGES):
+            state["language"] = payload["language"]
+            changed = True
+        if "age_group" in payload and payload["age_group"] in dict(User.AGE_GROUP_CHOICES):
+            request.user.age_group = payload["age_group"]
+            request.user.save(update_fields=["age_group"])
+            state["age_group"] = request.user.age_group
+            changed = True
+        if "daily_goal" in payload:
+            try:
+                value = int(payload["daily_goal"])
+            except (TypeError, ValueError):
+                value = None
+            if value in dict(SETTINGS_DAILY_GOALS):
+                state["daily_goal"] = value
+                changed = True
+        for key, allowed in {
+            "content_filter": dict(SETTINGS_CONTENT_FILTERS),
+            "theme": dict(SETTINGS_THEMES),
+            "font_size": dict(SETTINGS_FONT_SIZES),
+            "screen_time_limit": dict(SETTINGS_SCREEN_TIME),
+            "quiz_permissions": dict(SETTINGS_QUIZ_PERMISSIONS),
+            "purchase_settings": dict(SETTINGS_PURCHASE),
+        }.items():
+            if key in payload and payload[key] in allowed:
+                state[key] = payload[key]
+                changed = True
+
+        for key in ("auto_play", "offline_mode", "notifications", "learning_reminders", "achievement_notifications"):
+            if key in payload and isinstance(payload[key], bool):
+                state[key] = payload[key]
+                changed = True
+
+        for key in ("master_volume", "music_volume", "effects_volume"):
+            if key in payload:
+                try:
+                    value = max(0, min(100, int(payload[key])))
+                except (TypeError, ValueError):
+                    continue
+                state[key] = value
+                changed = True
+
+        if changed:
+            request.session["learning_settings"] = state
+            request.session.modified = True
+
+        return JsonResponse({"ok": True, "settings": state})
+
+    return render(
+        request,
+        "core/settings.html",
+        {
+            "settings": _settings_state(request),
+            "languages": SETTINGS_LANGUAGES,
+            "age_groups": User.AGE_GROUP_CHOICES,
+            "daily_goals": SETTINGS_DAILY_GOALS,
+            "content_filters": SETTINGS_CONTENT_FILTERS,
+            "themes": SETTINGS_THEMES,
+            "font_sizes": SETTINGS_FONT_SIZES,
+            "screen_time_options": SETTINGS_SCREEN_TIME,
+            "quiz_permission_options": SETTINGS_QUIZ_PERMISSIONS,
+            "purchase_options": SETTINGS_PURCHASE,
+            "is_parent": request.user.is_parent,
+        },
+    )

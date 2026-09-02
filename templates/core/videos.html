@@ -180,6 +180,7 @@ button{font:inherit;cursor:pointer}
   .panel-grid{grid-template-columns:1fr 1fr}
 }
 </style>
+<script src="{% static 'js/settings.js' %}"></script>
 </head>
 <body>
 <div class="app">
@@ -191,10 +192,10 @@ button{font:inherit;cursor:pointer}
       <a href="{% url 'core:home' %}"><span class="mi">🏠</span>Home</a>
       <a href="{% url 'rhymes:list' %}"><span class="mi">🎵</span>Rhymes</a>
       <a class="active" href="{% url 'core:videos' %}"><span class="mi">📺</span><span>Animated<br>Videos/Stories</span></a>
-      <a href="#games"><span class="mi">🎮</span>Games</a>
-      <a href="{% url 'rhymes:list' %}"><span class="mi">🏆</span>Quiz</a>
+      <a href="{% url 'core:games' %}"><span class="mi">🎮</span>Games</a>
+      <a href="{% url 'quizzes:list' %}"><span class="mi">🏆</span>Quiz</a>
       <a href="{% url 'core:profile' %}"><span class="mi">👤</span>Profile</a>
-      <a href="#"><span class="mi">⚙️</span>Settings</a>
+      <a href="{% url 'core:settings' %}"><span class="mi">⚙️</span>Settings</a>
     </nav>
     <div class="side-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Child learning with a book"></div>
   </aside>
@@ -207,8 +208,8 @@ button{font:inherit;cursor:pointer}
         <a href="{% url 'core:home' %}">🏠 Home</a>
         <a href="{% url 'rhymes:list' %}">🎵 Rhymes</a>
         <a class="active" href="{% url 'core:videos' %}">📺 Animated<br>Videos/Stories</a>
-        <a href="#games">🎮 Games</a>
-        <a href="{% url 'rhymes:list' %}">🏆 Quiz</a>
+        <a href="{% url 'core:games' %}">🎮 Games</a>
+        <a href="{% url 'quizzes:list' %}">🏆 Quiz</a>
       </nav>
       <div class="top-actions">
         <div class="bell">♧<span class="badge">3</span></div>
@@ -488,6 +489,8 @@ button{font:inherit;cursor:pointer}
 
   let currentItem = null;
   let progressSaveTimer = null;
+  const slSettings = () => window.SmartLearningSettings ? window.SmartLearningSettings.get() : {};
+  const applyVideoVolume = () => { const s=slSettings(); const volume=Math.max(0, Math.min(1, Number(s.master_volume ?? 100)/100)); playerVideo.volume=volume; volumeSlider.value=volume; };
 
   function fmtTime(sec) {
     if (!isFinite(sec) || sec < 0) sec = 0;
@@ -514,6 +517,7 @@ button{font:inherit;cursor:pointer}
     const saved = progressMap[item.id];
     playerVideo.src = item.video;
     playerVideo.currentTime = 0;
+    applyVideoVolume();
     playerVideo.load();
 
     playerVideo.onloadedmetadata = () => {
@@ -591,11 +595,18 @@ button{font:inherit;cursor:pointer}
 
   playerVideo.addEventListener('ended', () => {
     if (currentItem) {
-      progressMap[currentItem.id] = { seconds: 0, duration: playerVideo.duration || 0 };
+      const finishedId = currentItem.id;
+      progressMap[finishedId] = { seconds: 0, duration: playerVideo.duration || 0 };
       writeStore(STORAGE_KEYS.progress, progressMap);
+      if (slSettings().auto_play) {
+        const idx = VIDEOS.findIndex((v) => v.id === finishedId);
+        const next = idx >= 0 ? VIDEOS[(idx + 1) % VIDEOS.length] : null;
+        if (next) { window.setTimeout(() => openPlayer(next.id), 150); return; }
+      }
     }
     renderAll();
   });
+  window.addEventListener('sl-settings-changed', applyVideoVolume);
 
   // ------------------------------------------------------------
   // Bottom slide-up panels: My List / Downloads / History

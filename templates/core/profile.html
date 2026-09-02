@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Profile • Smart Learning</title>
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<script src="{% static 'js/settings.js' %}"></script>
 </head>
 <body>
 <div class="app">
@@ -15,9 +16,10 @@
       <a href="{% url 'core:home' %}"><span class="mi">🏠</span>Home</a>
       <a href="{% url 'rhymes:list' %}"><span class="mi">🎵</span>Rhymes</a>
       <a href="{% url 'core:videos' %}"><span class="mi">📺</span><span>Animated<br>Videos &amp; Stories</span></a>
-      <a href="#games"><span class="mi">🎮</span>Games</a>
-      <a href="{% url 'rhymes:list' %}"><span class="mi">🏆</span>Quiz</a>
+      <a href="{% url 'core:games' %}"><span class="mi">🎮</span>Games</a>
+      <a href="{% url 'quizzes:list' %}"><span class="mi">🏆</span>Quiz</a>
       <a class="active" aria-current="page" href="{% url 'core:profile' %}"><span class="mi">👤</span>Profile</a>
+      <a href="{% url 'core:settings' %}"><span class="mi">⚙️</span>Settings</a>
     </nav>
     <div class="side-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Happy child learning"></div>
     <div class="streak"><small>🔥 Watch Streak</small><strong id="streakValue">Calculating…</strong><span>Amazing! Keep it up!</span></div>
@@ -29,9 +31,10 @@
         <a href="{% url 'core:home' %}">🏠 Home</a>
         <a href="{% url 'rhymes:list' %}">🎵 Rhymes</a>
         <a href="{% url 'core:videos' %}">📺 Animated Videos &amp; Stories</a>
-        <a href="#games">🎮 Games</a>
-        <a href="{% url 'rhymes:list' %}">🏆 Quiz</a>
+        <a href="{% url 'core:games' %}">🎮 Games</a>
+        <a href="{% url 'quizzes:list' %}">🏆 Quiz</a>
         <a class="active" aria-current="page" href="{% url 'core:profile' %}">👤 Profile</a>
+        <a href="{% url 'core:settings' %}">⚙️ Settings</a>
       </nav>
       <div class="top-actions">
         <div class="bell" aria-label="Notifications">🔔<span class="bell-badge">3</span></div>

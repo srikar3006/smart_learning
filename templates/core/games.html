@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Games • Smart Learning</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f6f7ff;color:#20213d}.app{min-height:100vh;display:grid;grid-template-columns:220px 1fr}.sidebar{background:#fff;border-right:1px solid #e7e7f3;padding:18px 12px;position:sticky;top:0;height:100vh}.side-logo img{width:100%;max-width:190px;display:block;margin:auto}.menu{display:grid;gap:7px;margin-top:24px}.menu a{padding:12px 13px;border-radius:13px;text-decoration:none;color:#55556d;font-weight:800;display:flex;gap:10px;align-items:center}.menu a:hover,.menu a.active{background:#eeeaff;color:#6046d8}.mi{width:25px;text-align:center}.side-child img{width:100%;margin-top:35px}.main{padding:18px 28px 40px}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.topnav{display:flex;gap:8px;flex-wrap:wrap}.topnav a{padding:9px 12px;border-radius:10px;text-decoration:none;color:#5b5b70;font-size:13px;font-weight:800}.topnav a:hover{background:#eeeaff;color:#6046d8}.hero{background:linear-gradient(110deg,#5e7cf4,#8f5de8);border-radius:24px;padding:28px;color:#fff;display:flex;justify-content:space-between;align-items:center;overflow:hidden}.hero h1{margin:0 0 8px;font-size:32px}.hero p{margin:0;opacity:.9}.hero-icon{font-size:54px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:24px}.game{background:#fff;border:1px solid #e7e6f2;border-radius:22px;padding:22px;box-shadow:0 8px 25px rgba(45,35,100,.07)}.game h2{margin:0 0 7px}.game p{color:#68687b}.game button{border:0;border-radius:12px;padding:12px 18px;font-weight:900;cursor:pointer;background:#6754df;color:#fff}.play-area{margin-top:16px;min-height:120px;border-radius:16px;background:#f7f6ff;display:grid;place-items:center;padding:16px;text-align:center}.colors{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}.dot{width:55px;height:55px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px #bbb;cursor:pointer}.message{font-weight:900;margin-top:12px;min-height:24px}@media(max-width:800px){.app{display:block}.sidebar{position:static;height:auto}.side-child{display:none}.main{padding:12px}.grid{grid-template-columns:1fr}.topbar{display:block}.topnav{margin-top:10px}}
+</style>
+<script src="{% static 'js/settings.js' %}"></script>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<a class="side-logo" href="{% url 'core:home' %}"><img src="{% static 'img/reference/logo.png' %}" alt="Smart Learning"></a>
+<nav class="menu">
+<a href="{% url 'core:home' %}"><span class="mi">🏠</span>Home</a>
+<a href="{% url 'rhymes:list' %}"><span class="mi">🎵</span>Rhymes</a>
+<a href="{% url 'core:videos' %}"><span class="mi">📺</span>Videos &amp; Stories</a>
+<a class="active" href="{% url 'core:games' %}"><span class="mi">🎮</span>Games</a>
+<a href="{% url 'quizzes:list' %}"><span class="mi">🏆</span>Quiz</a>
+<a href="{% url 'core:profile' %}"><span class="mi">👤</span>Profile</a>
+<a href="{% url 'core:settings' %}"><span class="mi">⚙️</span>Settings</a>
+</nav>
+<div class="side-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Happy child learning"></div>
+</aside>
+<main class="main">
+<header class="topbar"><nav class="topnav"><a href="{% url 'core:home' %}">🏠 Home</a><a href="{% url 'rhymes:list' %}">🎵 Rhymes</a><a href="{% url 'core:videos' %}">📺 Videos &amp; Stories</a><a href="{% url 'core:games' %}">🎮 Games</a><a href="{% url 'quizzes:list' %}">🏆 Quiz</a><a href="{% url 'core:profile' %}">👤 Profile</a><a href="{% url 'core:settings' %}">⚙️ Settings</a></nav></header>
+<section class="hero"><div><h1>🎮 Games Corner</h1><p>Play, explore and learn with fun mini-games!</p></div><div class="hero-icon">🧩</div></section>
+<section class="grid">
+<div class="game"><h2>🎨 Color Match</h2><p>Find the color that matches the target.</p><div class="play-area"><div><strong id="target">Target: 🔴 Red</strong><div class="colors"><button class="dot" data-color="red" aria-label="Red" style="background:#ef4444"></button><button class="dot" data-color="blue" aria-label="Blue" style="background:#3b82f6"></button><button class="dot" data-color="yellow" aria-label="Yellow" style="background:#facc15"></button><button class="dot" data-color="green" aria-label="Green" style="background:#22c55e"></button></div><div class="message" id="colorMsg"></div></div></div></div>
+<div class="game"><h2>🧩 Quick Puzzle</h2><p>Choose the answer that completes the learning pattern.</p><div class="play-area"><div><div style="font-size:34px;margin-bottom:12px">🐶 🐱 🐶 🐱 ?</div><button onclick="checkPuzzle('🐶')">🐶</button> <button onclick="checkPuzzle('🐭')">🐭</button> <button onclick="checkPuzzle('🐱')">🐱</button><div class="message" id="puzzleMsg"></div></div></div></div>
+</section>
+</main></div>
+<script>
+const colors=['red','blue','yellow','green'];let target='red';
+function newTarget(){target=colors[Math.floor(Math.random()*colors.length)];document.getElementById('target').textContent='Target: '+target.charAt(0).toUpperCase()+target.slice(1);}
+document.querySelectorAll('.dot').forEach(b=>b.addEventListener('click',()=>{const m=document.getElementById('colorMsg');if(b.dataset.color===target){m.textContent='🎉 Great job!';setTimeout(()=>{m.textContent='';newTarget()},700)}else m.textContent='Try again! 😊'}));
+function checkPuzzle(v){document.getElementById('puzzleMsg').textContent=v==='🐶'?'⭐ Correct! You found the pattern!':'Almost! Look at the repeating pattern.'}
+</script>
+</body></html>

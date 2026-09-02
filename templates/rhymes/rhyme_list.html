@@ -105,6 +105,7 @@
 @media(max-width:800px){.app{display:block}.sidebar{position:static;height:auto;margin:8px;padding:12px}.side-logo{max-width:250px;margin:0 auto 12px}.menu{display:grid;grid-template-columns:repeat(2,1fr)}.side-child{display:none}.streak{margin-top:12px}.main{padding:8px 12px 140px}.topbar{height:auto}.topnav{overflow:auto;justify-content:flex-start}.topnav a{font-size:11px;padding:10px}.top-actions{position:absolute;right:14px;top:10px}.bell{width:48px;height:48px}.search{width:100%;flex-basis:100%;margin-left:0}.gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.audio-player-bar{padding:8px 12px;gap:10px}.ap-now{min-width:0;max-width:150px}.ap-now-copy small{display:none}}
 @media(max-width:520px){.menu{grid-template-columns:1fr}.topbar{display:block}.top-actions{right:4px}.topnav{padding-right:80px}.heading-icon{width:46px;height:46px;font-size:22px}.heading h1,.heading-copy h1{font-size:28px}.pills{overflow:auto;flex-wrap:nowrap;padding-bottom:4px}.pill{white-space:nowrap}.gallery{grid-template-columns:1fr}.art{height:190px}.footer-note{padding:0 10px}.ap-progress-row{display:none}.ap-play{width:40px;height:40px}}
 </style>
+<script src="{% static 'js/settings.js' %}"></script>
 </head>
 <body>
 <div class="app">
@@ -115,9 +116,9 @@
     <a class="active" href="{% url 'rhymes:list' %}"><span class="mi">🎵</span>Rhymes</a>
     <a href="{% url 'core:videos' %}"><span class="mi">📺</span><span>Animated<br>Videos/Stories</span></a>
     <a href="{% url 'rhymes:list' %}"><span class="mi">🎮</span>Games</a>
-    <a href="{% url 'rhymes:list' %}"><span class="mi">🏆</span>Quiz</a>
-    <a href="{% url 'core:profile' %}"><span class="mi">👤</span>Profile</a>
-    <a href="#"><span class="mi">⚙️</span>Settings</a>
+    <a href="{% url 'quizzes:list' %}"><span class="mi">🏆</span>Quiz</a>
+    <a href="#"><span class="mi">👤</span>Profile</a>
+    <a href="{% url 'core:settings' %}"><span class="mi">⚙️</span>Settings</a>
   </nav>
   <div class="side-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Child learning with a book"></div>
   <div class="streak"><small>🔥 Daily Streak</small><strong>7 Days</strong><span>Keep it up! ✨</span></div>
@@ -130,7 +131,7 @@
     <a class="active" href="{% url 'rhymes:list' %}">🎵 Rhymes</a>
     <a href="{% url 'core:videos' %}">📺 Animated<br>Videos/Stories</a>
     <a href="{% url 'rhymes:list' %}">🎮 Games</a>
-    <a href="{% url 'rhymes:list' %}">🏆 Quiz</a>
+    <a href="{% url 'quizzes:list' %}">🏆 Quiz</a>
   </nav>
   <div class="top-actions">
     <div class="bell" aria-label="Notifications">♧<span class="badge">3</span></div>
@@ -391,6 +392,8 @@
   const apTimeTotal = document.getElementById('ap-time-total');
   const apMute = document.getElementById('ap-mute');
   const apVolume = document.getElementById('ap-volume');
+  const slSettings = () => window.SmartLearningSettings ? window.SmartLearningSettings.get() : {};
+  const applyRhymeVolume = () => { const s=slSettings(); const volume=Math.max(0, Math.min(1, Math.min(Number(s.master_volume ?? 100), Number(s.music_volume ?? 100))/100)); audio.volume=volume; apVolume.value=volume; };
 
   let currentItem = RHYMES[0] || null;
   let isPlaying = false;
@@ -423,6 +426,7 @@
 
     const saved = progressMap[item.id];
     audio.src = item.audio;
+    applyRhymeVolume();
     audio.load();
 
     audio.onloadedmetadata = () => {
@@ -527,9 +531,12 @@
   });
   apVolume.addEventListener('input', () => {
     audio.volume = Number(apVolume.value);
+    window.SmartLearningSettings.set({master_volume: Math.round(audio.volume * 100), music_volume: Math.round(audio.volume * 100)});
     audio.muted = false;
     apMute.textContent = '🔊';
   });
+
+  window.addEventListener('sl-settings-changed', applyRhymeVolume);
 
   function saveProgress() {
     if (!currentItem || !audio.duration) return;

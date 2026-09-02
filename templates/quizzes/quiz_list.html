@@ -1,0 +1,345 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Quiz • Smart Learning</title>
+
+<script src="{% static 'js/settings.js' %}"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, system-ui, sans-serif;
+    background: #f6f7ff;
+    color: #22223b;
+}
+
+.app {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+}
+
+.sidebar {
+    background: #fff;
+    border-right: 1px solid #e6e5f1;
+    padding: 18px 12px;
+}
+
+.side-logo img {
+    width: 100%;
+    max-width: 190px;
+    display: block;
+    margin: auto;
+}
+
+.menu {
+    display: grid;
+    gap: 7px;
+    margin-top: 24px;
+}
+
+.menu a {
+    padding: 12px;
+    border-radius: 13px;
+    text-decoration: none;
+    color: #55556d;
+    font-weight: 800;
+}
+
+.menu a.active,
+.menu a:hover {
+    background: #eeeaff;
+    color: #6046d8;
+}
+
+.mi {
+    display: inline-block;
+    width: 25px;
+}
+
+.main {
+    padding: 20px 30px;
+}
+
+.topnav {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.topnav a {
+    padding: 9px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #5b5b70;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.hero {
+    background: linear-gradient(110deg, #6754df, #e45a9d);
+    color: #fff;
+    border-radius: 24px;
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
+.hero h1 {
+    margin: 0 0 8px;
+    font-size: 32px;
+}
+
+.hero p {
+    margin: 0;
+    opacity: .92;
+}
+
+.quiz-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(260px, 1fr)
+    );
+    gap: 18px;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #e6e5f1;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(45,35,100,.07);
+}
+
+.badge {
+    display: inline-block;
+    background: #f0ecff;
+    color: #6247d9;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.card h2 {
+    margin: 14px 0 7px;
+}
+
+.card p {
+    color: #6b6b7e;
+    min-height: 40px;
+}
+
+.start {
+    display: inline-block;
+    background: #6754df;
+    color: #fff;
+    text-decoration: none;
+    padding: 11px 16px;
+    border-radius: 12px;
+    font-weight: 900;
+}
+
+.empty {
+    background: #fff;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    color: #68687b;
+}
+
+@media (max-width: 800px) {
+
+    .app {
+        display: block;
+    }
+
+    .main {
+        padding: 12px;
+    }
+
+    .sidebar {
+        border-right: 0;
+    }
+
+    .side-child {
+        display: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <a class="side-logo" href="{% url 'core:home' %}">
+            <img
+                src="{% static 'img/reference/logo.png' %}"
+                alt="Smart Learning"
+            >
+        </a>
+
+        <nav class="menu">
+
+            <a href="{% url 'core:home' %}">
+                <span class="mi">🏠</span>
+                Home
+            </a>
+
+            <a href="{% url 'rhymes:list' %}">
+                <span class="mi">🎵</span>
+                Rhymes
+            </a>
+
+            <a href="{% url 'core:videos' %}">
+                <span class="mi">📺</span>
+                Videos &amp; Stories
+            </a>
+
+            <a href="{% url 'core:games' %}">
+                <span class="mi">🎮</span>
+                Games
+            </a>
+
+            <a
+                class="active"
+                href="{% url 'quizzes:list' %}"
+            >
+                <span class="mi">🏆</span>
+                Quiz
+            </a>
+
+            <a href="{% url 'core:profile' %}">
+                <span class="mi">👤</span>
+                Profile
+            </a>
+
+            <a href="{% url 'core:settings' %}">
+                <span class="mi">⚙️</span>
+                Settings
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <main class="main">
+
+        <nav class="topnav">
+
+            <a href="{% url 'core:home' %}">
+                🏠 Home
+            </a>
+
+            <a href="{% url 'rhymes:list' %}">
+                🎵 Rhymes
+            </a>
+
+            <a href="{% url 'core:videos' %}">
+                📺 Videos
+            </a>
+
+            <a href="{% url 'core:games' %}">
+                🎮 Games
+            </a>
+
+            <a href="{% url 'quizzes:list' %}">
+                🏆 Quiz
+            </a>
+
+            <a href="{% url 'core:profile' %}">
+                👤 Profile
+            </a>
+
+            <a href="{% url 'core:settings' %}">
+                ⚙️ Settings
+            </a>
+
+        </nav>
+
+
+        <section class="hero">
+
+            <h1>
+                🏆 Quiz Challenge
+            </h1>
+
+            <p>
+                Test what you learned and collect stars!
+            </p>
+
+        </section>
+
+
+        {% if quizzes %}
+
+            <div class="quiz-grid">
+
+                {% for quiz in quizzes %}
+
+                    <article class="card">
+
+                        <span class="badge">
+                            {{ quiz.rhyme.category.name|default:'Learning' }}
+                        </span>
+
+                        <h2>
+                            {{ quiz.title }}
+                        </h2>
+
+                        <p>
+                            {{ quiz.rhyme.title }}
+                            •
+                            {{ quiz.question_count }}
+                            questions
+                        </p>
+
+                        <a
+                            class="start"
+                            href="{% url 'quizzes:start' slug=quiz.rhyme.slug %}"
+                        >
+                            Start Quiz →
+                        </a>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+
+                <h2>
+                    No quizzes available yet
+                </h2>
+
+                <p>
+                    Add a Quiz to a published rhyme from
+                    the Django admin, then it will appear here.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </main>
+
+</div>
+
+</body>
+</html>
