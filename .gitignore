@@ -1,7 +1,1 @@
-.env 
-__pycache__/ 
-venv/ 
-"db.sqlite3" 
-"smart_learning1/" 
-"static/videos/" 
-"static/audio/rhymes/*.mp4" 
+# empty 
