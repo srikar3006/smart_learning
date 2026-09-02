@@ -8,6 +8,6 @@ urlpatterns = [
     path("", views.landing, name="landing"),
     path("home/", views.home, name="home"),
     path("videos/", views.videos, name="videos"),
-    path("profile/", views.profile_redirect, name="profile"),
+    path("profile/", views.profile, name="profile"),
 ]
  

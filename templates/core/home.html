@@ -17,8 +17,8 @@
     <a class="active" href="{% url 'core:home' %}"><span class="mi">🏠</span>Home</a>
     <a href="{% url 'rhymes:list' %}"><span class="mi">🎵</span>Rhymes</a>
     <a href="{% url 'core:videos' %}"><span class="mi">📺</span><span>Animated<br>Videos/Stories</span></a>
-    <a href="#games"><span class="mi">🎮</span>Games</a>
-    <a href="{% url 'rhymes:list' %}"><span class="mi">🏆</span>Quiz</a>
+    <a href="{% url 'games:list' %}"><span class="mi">🎮</span>Games</a>
+    <a href="{% url 'quiz_challenge:dashboard' %}"><span class="mi">🏆</span>Quiz</a>
     <a href="{% url 'core:profile' %}"><span class="mi">👤</span>Profile</a>
     <a href="#"><span class="mi">⚙️</span>Settings</a>
   </nav>
@@ -30,8 +30,8 @@
     <a class="active" href="{% url 'core:home' %}">🏠 Home</a>
     <a href="{% url 'rhymes:list' %}">🎵 Rhymes</a>
     <a href="{% url 'core:videos' %}">📺 Animated<br>Videos/Stories</a>
-    <a href="#games">🎮 Games</a>
-    <a href="{% url 'rhymes:list' %}">🏆 Quiz</a>
+    <a href="{% url 'games:list' %}">🎮 Games</a>
+    <a href="{% url 'quiz_challenge:dashboard' %}">🏆 Quiz</a>
   </nav>
   <div class="top-actions">
     <div class="bell">♧<span class="badge">3</span></div>
@@ -47,8 +47,8 @@
 <section class="quick">
   <a class="qcard" href="{% url 'rhymes:list' %}"><div class="qicon purple">🎵</div><div><h3>Rhymes</h3><p>Fun songs for kids</p></div><span class="arrow">→</span></a>
   <a class="qcard" href="{% url 'core:videos' %}"><div class="qicon green">📺</div><div><h3>Animated<br>Videos/Stories</h3><p>Watch, Learn & Enjoy</p></div><span class="arrow">→</span></a>
-  <a class="qcard" id="games" href="#games"><div class="qicon purple">🎮</div><div><h3>Games</h3><p>Play & Learn</p></div><span class="arrow">→</span></a>
-  <a class="qcard" href="{% url 'rhymes:list' %}"><div class="qicon pink">🏆</div><div><h3>Quiz</h3><p>Test & Learn</p></div><span class="arrow">→</span></a>
+  <a class="qcard" href="{% url 'games:list' %}"><div class="qicon purple">🎮</div><div><h3>Games</h3><p>Play & Learn</p></div><span class="arrow">→</span></a>
+  <a class="qcard" href="{% url 'quiz_challenge:dashboard' %}"><div class="qicon pink">🏆</div><div><h3>Quiz</h3><p>Test & Learn</p></div><span class="arrow">→</span></a>
 </section>
 <section class="lower">
   <div class="panel"><div class="title"><h2>🎵 Popular Rhymes</h2><a class="view" href="{% url 'rhymes:list' %}">View All →</a></div><div class="rhyme-grid">
@@ -60,8 +60,8 @@
     <a class="card" href="{% url 'rhymes:list' %}"><div class="art"><img src="{% static 'img/reference/baa-baa.png' %}" alt="Baa Baa Black Sheep"><span class="play">▶</span></div><div class="info"><h3>Baa Baa Black Sheep</h3><p>Farmyard rhyme</p><div class="meta"><span class="stars">★ 4.7</span><span class="playnow">Play Now</span></div></div></a>
     {% endfor %}
   </div></div>
-  <div class="panel"><div class="title"><h2>🎮 Games Corner</h2><a class="view" href="#games">View All →</a></div><div class="game-grid"><div><div class="game-img"><img src="{% static 'img/reference/coloring.png' %}" alt="Coloring Fun"></div><div class="game-name">Coloring Fun</div><div class="game-desc">Color and create</div></div><div><div class="game-img"><img src="{% static 'img/reference/puzzle.png' %}" alt="Puzzle Time"></div><div class="game-name">Puzzle Time</div><div class="game-desc">Solve the puzzle</div></div></div></div>
-  <div class="panel quiz"><div class="title"><h2>🏆 Quiz Challenge</h2><a class="quiz-btn" href="{% url 'rhymes:list' %}">Start Quiz</a></div><div class="quiz-body"><h4>Which animal says<br>“Meow Meow”?</h4><div class="option">🐶 Dog</div><div class="option correct">🐱 Cat ✓</div><div class="option">🐘 Elephant</div></div><img class="quiz-child" src="{% static 'img/reference/quiz-child.png' %}" alt="Child thinking about a quiz"></div>
+  <div class="panel"><div class="title"><h2>🎮 Games Corner</h2><a class="view" href="{% url 'games:list' %}">View All →</a></div><div class="game-grid"><div><div class="game-img"><img src="{% static 'img/reference/coloring.png' %}" alt="Coloring Fun"></div><div class="game-name">Coloring Fun</div><div class="game-desc">Color and create</div></div><div><div class="game-img"><img src="{% static 'img/reference/puzzle.png' %}" alt="Puzzle Time"></div><div class="game-name">Puzzle Time</div><div class="game-desc">Solve the puzzle</div></div></div></div>
+  <div class="panel quiz"><div class="title"><h2>🏆 Quiz Challenge</h2><a class="quiz-btn" href="{% url 'quiz_challenge:dashboard' %}">Start Quiz</a></div><div class="quiz-body"><h4>Which animal says<br>“Meow Meow”?</h4><div class="option">🐶 Dog</div><div class="option correct">🐱 Cat ✓</div><div class="option">🐘 Elephant</div></div><img class="quiz-child" src="{% static 'img/reference/quiz-child.png' %}" alt="Child thinking about a quiz"></div>
 </section>
 <div class="voice"><div class="mic">🎙</div><div class="voice-text"><strong>Voice Learning:</strong> &nbsp; Speak a rhyme or ask a question...</div><div class="waves">〰〰〰〰〰〰〰〰〰</div><div class="mic endmic">🎙</div></div>
 </main>

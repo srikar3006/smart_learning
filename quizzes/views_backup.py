@@ -26,28 +26,6 @@ from .level_data import CATEGORIES, LEVELS, get_level, stars_for_percentage
 # 50 LEVEL QUIZ CHALLENGE
 # ============================================================
 
-def _get_category_questions(data, category=None):
-    """
-    Return only questions belonging to the selected category.
-
-    If no category is selected, return all questions.
-    Category comparison is case-insensitive.
-    """
-
-    questions = data.get("questions_data", [])
-
-    if not category:
-        return questions
-
-    category = category.strip().casefold()
-
-    return [
-        question
-        for question in questions
-        if question.get("category", "").strip().casefold() == category
-    ]
-
-
 @learner_required
 def quiz_dashboard(request):
     """Main 50-level Quiz Challenge page."""
@@ -83,15 +61,6 @@ def quiz_dashboard(request):
         level_number = level["level"]
         row = progress_rows.get(level_number)
 
-        # Get all categories available inside this level.
-        level_categories = sorted(
-            {
-                question.get("category", "").strip()
-                for question in level.get("questions_data", [])
-                if question.get("category")
-            }
-        )
-
         display_levels.append(
             {
                 **level,
@@ -101,23 +70,10 @@ def quiz_dashboard(request):
                     row.best_percentage if row else 0
                 ),
                 "stars": row.stars if row else 0,
-
-                # Used by dashboard category filtering.
-                "categories_for_filter": level_categories,
-                "category_filter": "|".join(level_categories),
             }
         )
 
     current_config = get_level(current_level)
-
-    continue_level = next(
-        (
-            item
-            for item in display_levels
-            if item["unlocked"] and not item["completed"]
-        ),
-        None,
-    )
 
     return render(
         request,
@@ -125,8 +81,6 @@ def quiz_dashboard(request):
         {
             "levels": display_levels,
             "categories": CATEGORIES,
-
-            # Existing context names.
             "completed_count": completed_count,
             "total_stars": total_stars,
             "overall_percentage": round(
@@ -134,13 +88,6 @@ def quiz_dashboard(request):
             ),
             "current_level": current_level,
             "current_config": current_config,
-
-            # Extra aliases for dashboard template compatibility.
-            "completed_levels": completed_count,
-            "progress_percentage": round(
-                completed_count / 50 * 100
-            ),
-            "continue_level": continue_level,
         },
     )
 
@@ -163,12 +110,7 @@ def _level_is_unlocked(user, level_number):
 
 @learner_required
 def quiz_level(request, level):
-    """
-    Display questions for one of the 50 challenge levels.
-
-    If ?category=Animals is present, only Animals questions
-    are displayed.
-    """
+    """Display questions for one of the 50 challenge levels."""
 
     data = get_level(level)
 
@@ -177,29 +119,6 @@ def quiz_level(request, level):
 
     if not _level_is_unlocked(request.user, data["level"]):
         return redirect("quiz_challenge:dashboard")
-
-    # Read selected category from URL.
-    category = (request.GET.get("category") or "").strip()
-
-    # Filter questions according to selected category.
-    questions = _get_category_questions(
-        data,
-        category,
-    )
-
-    # If selected category has no questions in this level,
-    # return to dashboard.
-    if category and not questions:
-        return redirect("quiz_challenge:dashboard")
-
-    # Build a level_data object containing ONLY the filtered
-    # questions. This is what the quiz page receives.
-    level_data = {
-        **data,
-        "questions_data": questions,
-        "questions": len(questions),
-        "selected_category": category,
-    }
 
     row = QuizLevelProgress.objects.filter(
         user=request.user,
@@ -210,68 +129,37 @@ def quiz_level(request, level):
         request,
         "quizzes/quiz_level.html",
         {
-            "level_data": level_data,
+            "level_data": data,
             "level_progress": row,
-
-            # IMPORTANT:
-            # Send only filtered questions to JavaScript.
-            "questions_json": json.dumps(questions),
-
-            # Used by template/JavaScript.
-            "selected_category": category,
+            "questions_json": json.dumps(
+                data["questions_data"]
+            ),
         },
     )
 
 
 @learner_required
 def quiz_level_result(request, level):
-    """
-    Display the result page after completing a challenge level.
-
-    Category-specific result is supported.
-    """
+    """Display the result page after completing a challenge level."""
 
     data = get_level(level)
 
     if not data:
         return redirect("quiz_challenge:dashboard")
 
-    category = (request.GET.get("category") or "").strip()
-
-    # Category-specific session key.
-    if category:
-        result_key = (
-            f"quiz_level_result_{data['level']}_"
-            f"{category.casefold()}"
-        )
-    else:
-        result_key = f"quiz_level_result_{data['level']}"
-
-    result = request.session.get(result_key)
+    result = request.session.get(
+        f"quiz_level_result_{data['level']}"
+    )
 
     if not result:
         return redirect("quiz_challenge:dashboard")
-
-    # Show filtered questions on result page as well.
-    questions = _get_category_questions(
-        data,
-        category,
-    )
-
-    level_data = {
-        **data,
-        "questions_data": questions,
-        "questions": len(questions),
-        "selected_category": category,
-    }
 
     return render(
         request,
         "quizzes/quiz_level_result.html",
         {
-            "level_data": level_data,
+            "level_data": data,
             "result": result,
-            "selected_category": category,
         },
     )
 
@@ -283,9 +171,8 @@ def api_submit_level(request, level):
     Receive answers from the 50-level quiz page.
 
     IMPORTANT:
-    The server decides which questions belong to the selected
-    category and calculates the final score from those questions.
-    Client-side JavaScript cannot change the final score.
+    Answers are validated against the server-side level_data.
+    Client-side JavaScript cannot decide the final score.
     """
 
     data = get_level(level)
@@ -316,15 +203,7 @@ def api_submit_level(request, level):
             request.body.decode("utf-8")
         )
 
-        answers = payload.get(
-            "answers",
-            {},
-        )
-
-        # Category sent by quiz JavaScript.
-        category = (
-            payload.get("category") or ""
-        ).strip()
+        answers = payload.get("answers", {})
 
     except (
         json.JSONDecodeError,
@@ -347,39 +226,14 @@ def api_submit_level(request, level):
             status=400,
         )
 
-    # ========================================================
-    # CATEGORY FILTER
-    # ========================================================
-
-    questions = _get_category_questions(
-        data,
-        category,
-    )
-
-    if category and not questions:
-        return JsonResponse(
-            {
-                "ok": False,
-                "error": "Selected category lo questions levu.",
-            },
-            status=400,
-        )
-
-    # ========================================================
-    # SCORE ONLY SELECTED CATEGORY QUESTIONS
-    # ========================================================
-
     correct = 0
     normalized = {}
 
-    for question in questions:
+    for question in data["questions_data"]:
         question_id = question["id"]
 
         chosen = str(
-            answers.get(
-                question_id,
-                "",
-            )
+            answers.get(question_id, "")
         )
 
         normalized[question_id] = chosen
@@ -387,7 +241,7 @@ def api_submit_level(request, level):
         if chosen == question["correctAnswer"]:
             correct += 1
 
-    total = len(questions)
+    total = len(data["questions_data"])
 
     percentage = (
         round(correct / total * 100)
@@ -452,7 +306,6 @@ def api_submit_level(request, level):
         "best_stars": row.stars,
         "passed": passed,
         "level_completed": row.completed,
-        "category": category,
         "next_level": (
             data["level"] + 1
             if passed and data["level"] < 50
@@ -460,27 +313,12 @@ def api_submit_level(request, level):
         ),
     }
 
-    # ========================================================
-    # SAVE CATEGORY-SPECIFIC RESULT
-    # ========================================================
-
-    if category:
-        result_key = (
-            f"quiz_level_result_{data['level']}_"
-            f"{category.casefold()}"
-        )
-    else:
-        result_key = (
-            f"quiz_level_result_{data['level']}"
-        )
-
-    request.session[result_key] = result
+    # Save result in session so result page can display it.
+    request.session[
+        f"quiz_level_result_{data['level']}"
+    ] = result
 
     request.session.modified = True
-
-    # ========================================================
-    # RESULT URL
-    # ========================================================
 
     result_url = reverse(
         "quiz_challenge:level_result",
@@ -488,12 +326,6 @@ def api_submit_level(request, level):
             "level": data["level"],
         },
     )
-
-    if category:
-        result_url = (
-            f"{result_url}?category="
-            f"{category}"
-        )
 
     return JsonResponse(
         {

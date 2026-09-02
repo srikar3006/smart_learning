@@ -42,6 +42,7 @@ class User(AbstractUser):
         limit_choices_to={"account_type": "parent"},
     )
     is_child_learner = models.BooleanField(default=True)
+    interests = models.JSONField(default=list, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

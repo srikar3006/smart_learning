@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile • Smart Learning</title>
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="Learner navigation">
+    <a class="side-logo" href="{% url 'core:home' %}"><img src="{% static 'img/reference/logo.png' %}" alt="Smart Learning Through Tunes & Cartoons"></a>
+    <nav class="menu">
+      <a href="{% url 'core:home' %}"><span class="mi">🏠</span>Home</a>
+      <a href="{% url 'rhymes:list' %}"><span class="mi">🎵</span>Rhymes</a>
+      <a href="{% url 'core:videos' %}"><span class="mi">📺</span><span>Animated<br>Videos &amp; Stories</span></a>
+      <a href="#games"><span class="mi">🎮</span>Games</a>
+      <a href="{% url 'rhymes:list' %}"><span class="mi">🏆</span>Quiz</a>
+      <a class="active" aria-current="page" href="{% url 'core:profile' %}"><span class="mi">👤</span>Profile</a>
+    </nav>
+    <div class="side-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Happy child learning"></div>
+    <div class="streak"><small>🔥 Watch Streak</small><strong id="streakValue">Calculating…</strong><span>Amazing! Keep it up!</span></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <nav class="topnav" aria-label="Primary navigation">
+        <a href="{% url 'core:home' %}">🏠 Home</a>
+        <a href="{% url 'rhymes:list' %}">🎵 Rhymes</a>
+        <a href="{% url 'core:videos' %}">📺 Animated Videos &amp; Stories</a>
+        <a href="#games">🎮 Games</a>
+        <a href="{% url 'rhymes:list' %}">🏆 Quiz</a>
+        <a class="active" aria-current="page" href="{% url 'core:profile' %}">👤 Profile</a>
+      </nav>
+      <div class="top-actions">
+        <div class="bell" aria-label="Notifications">🔔<span class="bell-badge">3</span></div>
+        <div class="top-profile">
+          <div class="top-avatar">{{ avatar_emoji }}</div>
+          <div><strong>Hi, {{ profile_user.first_name|default:profile_user.username }}!</strong><small>Keep Learning! 🌟</small></div>
+          <span>⌄</span>
+        </div>
+      </div>
+    </header>
+
+    {% if messages %}<div aria-live="polite">{% for message in messages %}<div class="card" style="margin-bottom:12px;color:#237245;background:#effaf3">{{ message }}</div>{% endfor %}</div>{% endif %}
+
+    <section class="hero" aria-labelledby="profile-title">
+      <img class="hero-art" src="{% static 'img/reference/hero-character.png' %}" alt="Friendly educational character illustration">
+      <div class="hero-copy">
+        <span class="eyebrow">✨ LEARNER PROFILE</span>
+        <h1 id="profile-title">My Profile</h1>
+        <p>Manage your profile and track your learning journey.</p>
+        <div class="hero-avatar" aria-label="Current profile avatar">{{ avatar_emoji }}</div>
+        <div class="name-row"><span class="name">{{ profile_user.first_name|default:profile_user.username }}</span><button class="edit-btn" type="button" data-open-edit aria-label="Edit profile">✎</button></div>
+        <div class="badges-row"><span class="pill level">⭐ Level {{ level }}</span><span class="pill star">🏅 {{ badges|length }} Badge{{ badges|length|pluralize }}</span></div>
+      </div>
+    </section>
+
+    <section class="meta-strip" aria-label="Profile details">
+      <div class="meta-item"><small>Age Group</small><strong>{{ profile_user.get_age_group_display|default:"Not set" }}</strong></div>
+      <div class="meta-item"><small>Class / Grade</small><strong>Not set</strong></div>
+      <div class="meta-item"><small>Member Since</small><strong>{{ profile_user.created_at|date:"M Y" }}</strong></div>
+      <div class="meta-item"><small>User ID</small><strong>SL{{ profile_user.id|stringformat:"06d" }}</strong></div>
+    </section>
+
+    <div class="layout">
+      <div class="left">
+        <section class="card">
+          <div class="title"><h2><span>📚</span>Learning Progress</h2><a class="view" href="{% url 'progress:dashboard' %}">View All Progress →</a></div>
+          <div class="progress-row"><div class="progress-icon">🎵</div><div class="progress-main"><div class="progress-name"><span>Rhymes</span><span class="progress-pct" id="rhymePct">{% if total_rhymes %}{% widthratio completed_rhymes total_rhymes 100 %}%{% else %}0%{% endif %}</span></div><div class="bar"><span id="rhymeBar" style="width:{% if total_rhymes %}{% widthratio completed_rhymes total_rhymes 100 %}{% else %}0{% endif %}%"></span></div></div><span class="count">{{ completed_rhymes }} / {{ total_rhymes }}</span></div>
+          <div class="progress-row"><div class="progress-icon">📺</div><div class="progress-main"><div class="progress-name"><span>Animated Videos &amp; Stories</span><span class="progress-pct" id="videoPct">0%</span></div><div class="bar"><span id="videoBar" style="width:0%"></span></div></div><span class="count" id="videoCount">0 / {{ videos|length }}</span></div>
+          <div class="progress-row"><div class="progress-icon">🎮</div><div class="progress-main"><div class="progress-name"><span>Games</span><span class="progress-pct">0%</span></div><div class="bar"><span style="width:0%"></span></div></div><span class="count">Not tracked</span></div>
+          <div class="progress-row"><div class="progress-icon">🏆</div><div class="progress-main"><div class="progress-name"><span>Quizzes</span><span class="progress-pct">{% if total_quizzes %}{% widthratio quizzes_completed total_quizzes 100 %}%{% else %}0%{% endif %}</span></div><div class="bar"><span style="width:{% if total_quizzes %}{% widthratio quizzes_completed total_quizzes 100 %}{% else %}0{% endif %}%"></span></div></div><span class="count">{{ quizzes_completed }} / {{ total_quizzes }}</span></div>
+        </section>
+
+        <section class="card">
+          <div class="title"><h2><span>🏅</span>My Badges</h2><span class="view">View All</span></div>
+          {% if badges %}<div class="badge-grid">{% for item in badges|slice:":4" %}<div class="badge-card"><div class="badge-icon">{{ item.badge.icon_emoji }}</div><strong>{{ item.badge.name }}</strong><small>{{ item.badge.description }}</small></div>{% endfor %}</div>{% else %}<div class="empty">No badges yet. Complete a rhyme or quiz to start earning achievements! 🌟</div>{% endif %}
+        </section>
+
+        <section class="card">
+          <div class="title"><h2><span>🕘</span>Recent Activity</h2><a class="view" href="{% url 'progress:dashboard' %}">View All →</a></div>
+          {% if activities %}<div class="activity-list">{% for activity in activities %}<div class="activity"><div class="activity-icon">{{ activity.icon }}</div><div><strong>{{ activity.title }}</strong><small>{{ activity.description }}</small></div><time datetime="{{ activity.when|date:'c' }}">{{ activity.when|date:"d M Y, H:i" }}</time></div>{% endfor %}</div>{% else %}<div class="empty">No activity yet. Your completed lessons and quizzes will appear here.</div>{% endif %}
+        </section>
+
+        <section class="card">
+          <div class="title"><h2><span>💗</span>My Interests</h2><button class="edit-interests" type="button" data-open-edit>Edit</button></div>
+          <div class="interests">{% for key,icon,label in interests %}{% if key in selected_interests %}<div class="interest">{{ icon }} {{ label }}</div>{% endif %}{% endfor %}{% if not selected_interests %}<div class="empty" style="width:100%">Choose a few interests to personalize your learning journey.</div>{% endif %}</div>
+        </section>
+      </div>
+
+      <aside class="right">
+        <section class="card">
+          <div class="title"><h2><span>📊</span>Learning Summary</h2></div>
+          <div class="summary-row"><span class="summary-icon">🏆</span><span>Quizzes Completed</span><strong>{{ quizzes_completed }}</strong></div>
+          <div class="summary-row"><span class="summary-icon">🎮</span><span>Games Played</span><strong>0</strong></div>
+          <div class="summary-row"><span class="summary-icon">📺</span><span>Videos Watched</span><strong id="summaryVideos">0</strong></div>
+          <div class="summary-row"><span class="summary-icon">🎵</span><span>Rhymes Watched</span><strong>{{ completed_rhymes }}</strong></div>
+          <div class="summary-row"><span class="summary-icon">📖</span><span>Stories Read</span><strong id="summaryStories">0</strong></div>
+          <a class="report" href="{% url 'progress:dashboard' %}">View Detailed Report</a>
+        </section>
+
+        <section class="card achievement">
+          <div class="title"><h2><span>🏆</span>Achievements</h2><span class="view">View All</span></div>
+          <div class="trophy">🏆</div><p>You're doing amazing! Keep it up!</p><div class="points"><span>⭐</span> {{ total_stars }} <small>Total Points</small></div>
+        </section>
+
+        <section class="card settings-card">
+          <div class="title"><h2><span>⚙️</span>Account Settings</h2></div>
+          <div class="settings">
+            <button class="setting" type="button" data-open-edit><span class="setting-icon">👤</span><span class="setting-copy"><strong>Edit Profile</strong><small>Name, avatar, age group &amp; interests</small></span><span class="arrow">›</span></button>
+            <a class="setting" href="{% url 'accounts:password_reset' %}"><span class="setting-icon">🔒</span><span class="setting-copy"><strong>Change Password</strong><small>Use the existing secure password flow</small></span><span class="arrow">›</span></a>
+            <button class="setting" type="button" id="privacyBtn"><span class="setting-icon">🛡️</span><span class="setting-copy"><strong>Privacy Settings</strong><small>Manage profile visibility on this device</small></span><span class="arrow">›</span></button>
+            <a class="logout" href="{% url 'accounts:logout' %}">↪ Logout</a>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<div class="modal" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+  <div class="modal-card">
+    <div class="modal-head"><h2 id="editTitle">Edit Profile</h2><button class="close" type="button" data-close-edit aria-label="Close">×</button></div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="field"><label for="first_name">Display name</label><input id="first_name" name="first_name" value="{{ profile_user.first_name }}" maxlength="150" required></div>
+      <div class="field"><label>Avatar</label><div class="avatar-options">{% for value,label in profile_user.AVATAR_CHOICES %}<div class="choice"><input id="avatar-{{ value }}" type="radio" name="avatar" value="{{ value }}" {% if profile_user.avatar == value %}checked{% endif %}><label for="avatar-{{ value }}">{{ label }}</label></div>{% endfor %}</div></div>
+      <div class="field"><label for="age_group">Age group</label><select id="age_group" name="age_group">{% for value,label in profile_user.AGE_GROUP_CHOICES %}<option value="{{ value }}" {% if profile_user.age_group == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+      <div class="field"><label>Interests</label><div class="interest-options">{% for key,icon,label in interests %}<div class="choice"><input id="interest-{{ key }}" type="checkbox" name="interests" value="{{ key }}" {% if key in selected_interests %}checked{% endif %}><label for="interest-{{ key }}">{{ icon }} {{ label }}</label></div>{% endfor %}</div></div>
+      <button class="save" type="submit">Save Changes</button>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="privacyModal" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+  <div class="modal-card">
+    <div class="modal-head"><h2 id="privacyTitle">Privacy Settings</h2><button class="close" type="button" data-close-privacy aria-label="Close">×</button></div>
+    <p style="font-size:12px;color:#66708e;line-height:1.6">These preferences control profile details shown on this browser. Your account data remains protected by the existing Django authentication system.</p>
+    <label class="setting"><span class="setting-copy"><strong>Show learner name in the welcome card</strong><small>Saved on this device.</small></span><input id="privacyName" type="checkbox" checked></label>
+    <label class="setting"><span class="setting-copy"><strong>Show profile avatar</strong><small>Saved on this device.</small></span><input id="privacyAvatar" type="checkbox" checked></label>
+    <button class="save" type="button" id="savePrivacy">Save Privacy Settings</button>
+  </div>
+</div>
+<div class="toast" id="toast" aria-live="polite"></div>
+{{ videos|json_script:"profileVideos" }}
+{{ activity_dates|json_script:"profileActivityDates" }}
+
+<script>
+const videoData = JSON.parse(document.getElementById('profileVideos').textContent);
+const readStore=(key,fallback)=>{try{const v=JSON.parse(localStorage.getItem(key));return v??fallback}catch(e){return fallback}};
+const history=readStore('sl_video_history',[]);
+const uniqueIds=[...new Set(history.map(x=>String(x.id)))];
+const totalVideos=videoData.length||1;
+const videoCount=Math.min(uniqueIds.length,videoData.length);
+document.getElementById('videoPct').textContent=Math.round(videoCount/totalVideos*100)+'%';
+document.getElementById('videoBar').style.width=Math.min(100,Math.round(videoCount/totalVideos*100))+'%';
+document.getElementById('videoCount').textContent=videoCount+' / '+videoData.length;
+document.getElementById('summaryVideos').textContent=videoCount;
+const storyIds=new Set(videoData.filter(v=>v.category==='stories').map(v=>String(v.id)));
+document.getElementById('summaryStories').textContent=uniqueIds.filter(id=>storyIds.has(id)).length;
+const open=(id)=>document.getElementById(id).classList.add('open');
+const close=(id)=>document.getElementById(id).classList.remove('open');
+document.querySelectorAll('[data-open-edit]').forEach(b=>b.addEventListener('click',()=>open('editModal')));
+document.querySelector('[data-close-edit]').addEventListener('click',()=>close('editModal'));
+document.querySelector('#privacyBtn').addEventListener('click',()=>open('privacyModal'));
+document.querySelector('[data-close-privacy]').addEventListener('click',()=>close('privacyModal'));
+[document.getElementById('editModal'),document.getElementById('privacyModal')].forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+const privacy={name:localStorage.getItem('sl_privacy_name')!=='0',avatar:localStorage.getItem('sl_privacy_avatar')!=='0'};
+document.getElementById('privacyName').checked=privacy.name;document.getElementById('privacyAvatar').checked=privacy.avatar;
+document.getElementById('savePrivacy').addEventListener('click',()=>{localStorage.setItem('sl_privacy_name',document.getElementById('privacyName').checked?'1':'0');localStorage.setItem('sl_privacy_avatar',document.getElementById('privacyAvatar').checked?'1':'0');close('privacyModal');const t=document.getElementById('toast');t.textContent='Privacy settings saved.';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)});
+const days=new Set();
+const today=new Date();
+for(const h of history){const d=new Date(h.playedAt);if(!isNaN(d))days.add(d.toDateString())}
+for(const value of JSON.parse(document.getElementById('profileActivityDates').textContent)){const d=new Date(value);if(!isNaN(d))days.add(d.toDateString())}
+let streak=0;for(let i=0;i<365;i++){const d=new Date(today);d.setHours(0,0,0,0);d.setDate(d.getDate()-i);if(days.has(d.toDateString()))streak++;else if(i>0)break}
+document.getElementById('streakValue').textContent=streak+' Day'+(streak===1?'':'s');
+</script>
+</body>
+</html>

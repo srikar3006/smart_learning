@@ -1,0 +1,89 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Games | Smart Learning</title>
+<link rel="stylesheet" href="{% static 'games/games.css' %}">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand-mini">📚</div>
+    <nav>
+      <a href="{% url 'core:home' %}">🏠 <span>Home</span></a>
+      <a href="{% url 'rhymes:list' %}">🎵 <span>Rhymes</span></a>
+      <a href="{% url 'core:videos' %}">📺 <span>Animated<br>Videos &amp; Stories</span></a>
+      <a class="active" href="{% url 'games:list' %}">🎮 <span>Games</span></a>
+      <a href="{% url 'rhymes:list' %}">🏆 <span>Quiz</span></a>
+      <a href="{% url 'core:profile' %}">👤 <span>Profile</span></a>
+    </nav>
+    <div class="streak"><b>⭐ 7 Days</b><small>Amazing! Keep it up!</small></div>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <div class="logo"><span>🎵</span><div><strong>Smart Learning</strong><small>Through Tunes &amp; Cartoons</small></div></div>
+      <nav class="topnav">
+        <a href="{% url 'core:home' %}">⌂ Home</a>
+        <a href="{% url 'rhymes:list' %}">♫ Rhymes</a>
+        <a href="{% url 'core:videos' %}">📺 Animated<br>Videos &amp; Stories</a>
+        <a class="active" href="{% url 'games:list' %}">🎮 Games</a>
+        <a href="{% url 'rhymes:list' %}">🏆 Quiz</a>
+      </nav>
+      <div class="learner">🔔 <span>🧒</span><div><b>Hi, Learner!</b><small>Happy Learning! 🎉</small></div>⌄</div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy"><div class="hero-icon">🎮</div><div><h1>Let's Play &amp; Learn!</h1><p>Fun games to improve your skills while you enjoy!</p></div></div>
+      <div class="castle">🐘 🏰</div>
+      <div class="filters" id="filters">
+        <button class="filter active" data-category="All">🌈 All</button>
+        <button class="filter" data-category="Cognitive">🧠 Cognitive</button>
+        <button class="filter" data-category="Creativity">💡 Creativity</button>
+        <button class="filter" data-category="Maths">🔢 Maths</button>
+        <button class="filter" data-category="Language">🔤 Language</button>
+        <button class="filter" data-category="General">⭐ General</button>
+      </div>
+    </section>
+
+    <section class="games-section">
+      <div class="section-head"><h2>🎮 Game Categories</h2><label class="search">⌕ <input id="search" type="search" placeholder="Search games..." autocomplete="off"></label></div>
+      <div id="gameGrid" class="game-grid">
+        <article class="game-card" data-category="Creativity" data-game="coloring" data-name="Coloring Fun">
+          <div class="art art-purple">🎨🖌️</div><div class="card-body"><h3>Coloring Fun</h3><p>Coloring &amp; painting<br>with fun</p><button class="play" data-play="coloring">▶ Play Now</button></div>
+        </article>
+        <article class="game-card" data-category="Cognitive" data-game="puzzle" data-name="Puzzle Time">
+          <div class="art art-yellow">🧩🧩</div><div class="card-body"><h3>Puzzle Time</h3><p>Jigsaw puzzles to<br>improve thinking</p><button class="play" data-play="puzzle">▶ Play Now</button></div>
+        </article>
+        <article class="game-card" data-category="Cognitive" data-game="shape" data-name="Shape Builder">
+          <div class="art art-cream">🔴 🔺 🟦 ⭐</div><div class="card-body"><h3>Shape Builder</h3><p>Learn shapes by<br>building &amp; matching</p><button class="play" data-play="shape">▶ Play Now</button></div>
+        </article>
+        <article class="game-card" data-category="Maths" data-game="number" data-name="Number Match">
+          <div class="art art-blue">1️⃣2️⃣3️⃣</div><div class="card-body"><h3>Number Match</h3><p>Match numbers and<br>have fun</p><button class="play" data-play="number">▶ Play Now</button></div>
+        </article>
+        <article class="game-card" data-category="Cognitive" data-game="memory" data-name="Memory Game">
+          <div class="art art-sky">🃏 🐘 🃏 🐘</div><div class="card-body"><h3>Memory Game</h3><p>Improve memory<br>with matching cards</p><button class="play" data-play="memory">▶ Play Now</button></div>
+        </article>
+        <article class="game-card" data-category="Language" data-game="word" data-name="Word Builder">
+          <div class="art art-green">A B C</div><div class="card-body"><h3>Word Builder</h3><p>Make words and<br>learn spellings</p><button class="play" data-play="word">▶ Play Now</button></div>
+        </article>
+        <article class="game-card" data-category="Cognitive" data-game="difference" data-name="Spot the Difference">
+          <div class="art art-pink">🌳 🌳<br>🔎</div><div class="card-body"><h3>Spot the Difference</h3><p>Find the differences<br>in pictures</p><button class="play" data-play="difference">▶ Play Now</button></div>
+        </article>
+        <article class="game-card" data-category="General" data-game="maze" data-name="Maze Adventure">
+          <div class="art art-maze">🧱 🟦 🏁</div><div class="card-body"><h3>Maze Adventure</h3><p>Solve mazes and<br>reach the goal</p><button class="play" data-play="maze">▶ Play Now</button></div>
+        </article>
+      </div>
+      <div id="empty" class="empty" hidden>No games found. Try another search or category.</div>
+    </section>
+
+    <section class="keep-playing"><div><h2>Keep Playing</h2><p id="keepText">Pick a game above to start learning through play.</p></div><div class="quick-links"><span>💗 My List</span><span>⇩ Downloads</span><span>↺ History</span><span>🏅 Achievements</span></div></section>
+  </main>
+</div>
+
+<div class="modal" id="gameModal" aria-hidden="true"><div class="modal-card"><button class="close" id="closeGame">×</button><div id="gameMount"></div></div></div>
+<script src="{% static 'games/games.js' %}"></script>
+</body>
+</html>

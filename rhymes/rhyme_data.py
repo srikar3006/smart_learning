@@ -68,7 +68,7 @@ RHYMES = [
         "category": "Nursery",
         "duration": "02:15",
         "rating": 4.8,
-        "thumbnail": "images/rhymes/humpty-dumpty.svg",
+        "thumbnail": "images/reference/humpty.png",
         "audio": "audio/rhymes/humpty-dumpty.mp3",
     },
     {
@@ -78,7 +78,7 @@ RHYMES = [
         "category": "Nature",
         "duration": "01:45",
         "rating": 4.9,
-        "thumbnail": "images/rhymes/twinkle-twinkle.svg",
+        "thumbnail": "images/reference/twinkle.png",
         "audio": "audio/rhymes/twinkle-twinkle.mp4",
     },
     {
@@ -88,7 +88,7 @@ RHYMES = [
         "category": "Animals",
         "duration": "01:30",
         "rating": 4.7,
-        "thumbnail": "images/rhymes/baa-baa-black-sheep.svg",
+        "thumbnail": "images/reference/baa-baa.png",
         "audio": "audio/rhymes/baa-baa-black-sheep.mp3",
     },
     {

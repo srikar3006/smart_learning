@@ -1,12 +1,15 @@
 from django.contrib.auth.decorators import login_required
 
-from django.db.models import Count, Q
+from django.contrib import messages
+
+from django.db.models import Count, Q, Sum
 
 from django.shortcuts import redirect, render
 
 from django.templatetags.static import static
 
 from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_http_methods
 
 from accounts.decorators import parent_required, learner_required
 
@@ -15,8 +18,9 @@ from accounts.forms import ChildCreationForm
 from .video_data import CATEGORIES, VIDEOS
 
 from progress.services import get_progress_summary
+from progress.models import RhymeProgress, UserBadge
 
-from quizzes.models import QuizAttempt
+from quizzes.models import Quiz, QuizAttempt
 
 from rhymes.models import Category, Rhyme
 
@@ -422,20 +426,119 @@ def add_child(request):
 
 
 # ============================================================
-# PROFILE REDIRECT
+# LEARNER PROFILE
 # ============================================================
 
-@login_required(
-    login_url="accounts:login"
-)
-def profile_redirect(request):
+PROFILE_INTERESTS = [
+    ("animals", "🦁", "Animals"),
+    ("music", "🎵", "Music"),
+    ("stories", "📖", "Stories"),
+    ("puzzles", "🧩", "Puzzles"),
+    ("colors", "🎨", "Colors"),
+]
 
+
+@never_cache
+@login_required(login_url="accounts:login")
+@require_http_methods(["GET", "POST"])
+def profile(request):
     if request.user.is_parent:
+        return redirect("parent:dashboard")
 
-        return redirect(
-            "parent:dashboard"
-        )
+    user = request.user
 
-    return redirect(
-        "core:home"
+    if request.method == "POST":
+        user.first_name = request.POST.get("first_name", "").strip()
+        avatar = request.POST.get("avatar", user.avatar)
+        age_group = request.POST.get("age_group", user.age_group)
+
+        valid_avatars = {value for value, _ in user.AVATAR_CHOICES}
+        valid_age_groups = {value for value, _ in user.AGE_GROUP_CHOICES}
+        if avatar in valid_avatars:
+            user.avatar = avatar
+        if age_group in valid_age_groups:
+            user.age_group = age_group
+
+        user.interests = [
+            value for value, _, _ in PROFILE_INTERESTS
+            if value in request.POST.getlist("interests")
+        ]
+        user.save(update_fields=["first_name", "avatar", "age_group", "interests"])
+        messages.success(request, "Your profile was updated successfully. ✨")
+        return redirect("core:profile")
+
+    rhyme_progress = list(
+        RhymeProgress.objects.filter(user=user)
+        .select_related("rhyme", "rhyme__category")
+        .order_by("-last_played", "-first_completed_at")
     )
+    completed_rhymes = sum(1 for item in rhyme_progress if item.completed)
+
+    from rhymes.models import Rhyme
+    total_rhymes = Rhyme.objects.filter(is_published=True).count()
+
+    quiz_attempts = list(
+        QuizAttempt.objects.filter(user=user, completed_at__isnull=False)
+        .select_related("quiz", "quiz__rhyme")
+        .order_by("-completed_at")
+    )
+    quizzes_completed = len(quiz_attempts)
+    total_quizzes = Quiz.objects.count()
+
+    badges = list(
+        UserBadge.objects.filter(user=user)
+        .select_related("badge")
+        .order_by("-earned_at")
+    )
+
+    total_stars = QuizAttempt.objects.filter(
+        user=user, completed_at__isnull=False
+    ).aggregate(total=Sum("stars"))["total"] or 0
+
+    activities = []
+    for item in rhyme_progress:
+        if item.last_played:
+            activities.append({
+                "icon": "🎵",
+                "title": f"Watched: {item.rhyme.title}",
+                "description": "Rhyme",
+                "when": item.last_played,
+            })
+    for attempt in quiz_attempts:
+        activities.append({
+            "icon": "🏆",
+            "title": f"Completed Quiz: {attempt.quiz.title}",
+            "description": f"Score {attempt.score}/{attempt.total_questions}",
+            "when": attempt.completed_at,
+        })
+    activities.sort(key=lambda item: item["when"], reverse=True)
+    activities = activities[:8]
+
+    level = max(1, min(10, 1 + (completed_rhymes + quizzes_completed) // 5))
+
+    return render(
+        request,
+        "core/profile.html",
+        {
+            "profile_user": user,
+            "activities": activities,
+            "badges": badges,
+            "interests": PROFILE_INTERESTS,
+            "selected_interests": set(user.interests or []),
+            "videos": VIDEOS,
+            "completed_rhymes": completed_rhymes,
+            "total_rhymes": total_rhymes,
+            "quizzes_completed": quizzes_completed,
+            "total_quizzes": total_quizzes,
+            "total_stars": total_stars,
+            "level": level,
+            "avatar_emoji": user.avatar_emoji(),
+            "activity_dates": [item["when"].isoformat() for item in activities],
+        },
+    )
+
+
+# Existing code can continue using this function name.
+@login_required(login_url="accounts:login")
+def profile_redirect(request):
+    return profile(request)
