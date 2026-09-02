@@ -65,7 +65,8 @@ def rhyme_list(request):
         {
             **item,
             "thumbnail": static(item["thumbnail"]),
-            "audio": static(item["audio"]),
+            "audio": static(item["audio"]) if item.get("audio") else "",
+            "video": static(item["video"]) if item.get("video") else "",
         }
         for item in RHYMES
     ]

@@ -1,50 +1,4 @@
-# ============================================================
-# RHYMES — CONTENT CONFIG
-# ============================================================
-#
-# This is the ONE file you need to edit to add, remove or update
-# a rhyme on the "Rhymes" page. It works exactly the same way as
-# core/video_data.py does for the "Animated Videos & Stories" page.
-#
-# HOW TO ADD A NEW RHYME
-# -----------------------------------------------------------
-# 1. Copy one of the dictionaries below and paste it at the end
-#    of the RHYMES list.
-# 2. Give it a new unique "id" (just the next number).
-# 3. Set "category" to one of the values in CATEGORIES below
-#    (the value must match exactly, e.g. "Animals").
-# 4. Drop your audio file and thumbnail image here:
-#
-#       PUT RHYME AUDIO FILES HERE:      static/audio/rhymes/<your-file>.mp3
-#       PUT RHYME THUMBNAILS HERE:       static/images/rhymes/<your-file>.jpg
-#
-#    then point "audio" / "thumbnail" at those filenames.
-# 5. That's it — no other file needs to change. The Rhymes page
-#    reads this list automatically.
-#
-# NOTE ON AUDIO/THUMBNAIL FILES
-# -----------------------------------------------------------
-# Each rhyme currently points at a simple hand-drawn .svg
-# thumbnail (already included in static/images/rhymes/) so the
-# page looks complete out of the box. Swap any of them out for
-# your own .jpg/.png photo any time — just replace the file and
-# update the "thumbnail" value below to match your filename.
-#
-# There are no placeholder audio files (only you can legally
-# supply the rhyme recordings). Until a real .mp3 is added in
-# static/audio/rhymes/, the bottom player will show a friendly
-# "audio coming soon" message instead of failing.
-#
-# ONLY LOCAL FILES ARE USED ON THIS PAGE.
-# No YouTube, Spotify or any other external service is used for
-# rhyme audio or thumbnails — everything is served from this
-# project's own /static/ folder.
-# ============================================================
-
-
-# Categories shown as filter pills at the top of the page.
-# "slug" is used internally for filtering, "label" is shown to the user.
-CATEGORIES = [
+﻿CATEGORIES = [
     {"slug": "all", "label": "All Rhymes", "icon": "🎵"},
     {"slug": "Animals", "label": "Animals", "icon": "🐾"},
     {"slug": "Nursery", "label": "Nursery", "icon": "🧸"},
@@ -53,13 +7,6 @@ CATEGORIES = [
     {"slug": "Festival", "label": "Festival", "icon": "🎁"},
 ]
 
-
-# ------------------------------------------------------------
-# RHYME LIBRARY
-# ADD NEW RHYMES HERE — add new entries below this line, keep
-# the same shape (id, title, description, category, duration,
-# rating, thumbnail, audio).
-# ------------------------------------------------------------
 RHYMES = [
     {
         "id": 1,
@@ -70,6 +17,7 @@ RHYMES = [
         "rating": 4.8,
         "thumbnail": "images/reference/humpty.png",
         "audio": "audio/rhymes/humpty-dumpty.mp3",
+        "video": "videos/rhymes/humpty-dumpty.mp4",
     },
     {
         "id": 2,
@@ -79,7 +27,8 @@ RHYMES = [
         "duration": "01:45",
         "rating": 4.9,
         "thumbnail": "images/reference/twinkle.png",
-        "audio": "audio/rhymes/twinkle-twinkle.mp4",
+        "audio": "audio/rhymes/twinkle-twinkle.mp3",
+        "video": "videos/rhymes/twinkle-twinkle.mp4",
     },
     {
         "id": 3,
@@ -90,6 +39,7 @@ RHYMES = [
         "rating": 4.7,
         "thumbnail": "images/reference/baa-baa.png",
         "audio": "audio/rhymes/baa-baa-black-sheep.mp3",
+        "video": "videos/rhymes/baa-baa-black-sheep.mp4",
     },
     {
         "id": 4,
@@ -100,6 +50,7 @@ RHYMES = [
         "rating": 4.6,
         "thumbnail": "images/rhymes/wheels-on-the-bus.svg",
         "audio": "audio/rhymes/wheels-on-the-bus.mp3",
+        "video": "videos/rhymes/wheels-on-the-bus.mp4",
     },
     {
         "id": 5,
@@ -110,6 +61,7 @@ RHYMES = [
         "rating": 4.7,
         "thumbnail": "images/rhymes/mary-had-a-little-lamb.svg",
         "audio": "audio/rhymes/mary-had-a-little-lamb.mp3",
+        "video": "videos/rhymes/mary-had-a-little-lamb.mp4",
     },
     {
         "id": 6,
@@ -120,6 +72,7 @@ RHYMES = [
         "rating": 4.5,
         "thumbnail": "images/rhymes/rain-rain-go-away.svg",
         "audio": "audio/rhymes/rain-rain-go-away.mp3",
+        "video": "videos/rhymes/rain-rain-go-away.mp4",
     },
     {
         "id": 7,
@@ -130,16 +83,17 @@ RHYMES = [
         "rating": 4.8,
         "thumbnail": "images/rhymes/if-youre-happy.svg",
         "audio": "audio/rhymes/if-youre-happy.mp3",
+        "video": "videos/rhymes/if-youre-happy.mp4",
     },
     {
         "id": 8,
         "title": "Jingle Bells",
         "description": "Festival rhyme",
-        "category": "Festival",
         "duration": "02:10",
+        "category": "Festival",
         "rating": 4.9,
         "thumbnail": "images/rhymes/jingle-bells.svg",
         "audio": "audio/rhymes/jingle-bells.mp3",
+        "video": "videos/rhymes/jingle-bells.mp4",
     },
-    # ---- add new rhymes above this line -----------------------
 ]
