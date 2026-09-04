@@ -1,10 +1,11 @@
-
+from datetime import timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 
 from django.db.models import Count, Q, Sum
+from django.utils import timezone
 
 from django.shortcuts import redirect, render
 
@@ -136,6 +137,56 @@ def home(request):
     )
 
     # ========================================================
+    # NOTIFICATIONS (real, derived from the learner's own
+    # recent rhyme/quiz/badge activity — same source of truth
+    # used on the Profile page, no fake/demo data)
+    # ========================================================
+
+    notifications = []
+
+    for item in (
+        RhymeProgress.objects.filter(user=request.user, last_played__isnull=False)
+        .select_related("rhyme")
+        .order_by("-last_played")[:5]
+    ):
+        notifications.append({
+            "icon": "🎵",
+            "title": f"Watched: {item.rhyme.title}",
+            "description": "Rhyme",
+            "when": item.last_played,
+        })
+
+    for attempt in (
+        QuizAttempt.objects.filter(user=request.user, completed_at__isnull=False)
+        .select_related("quiz")
+        .order_by("-completed_at")[:5]
+    ):
+        notifications.append({
+            "icon": "🏆",
+            "title": f"Completed Quiz: {attempt.quiz.title}",
+            "description": f"Score {attempt.score}/{attempt.total_questions}",
+            "when": attempt.completed_at,
+        })
+
+    for user_badge in (
+        UserBadge.objects.filter(user=request.user)
+        .select_related("badge")
+        .order_by("-earned_at")[:5]
+    ):
+        notifications.append({
+            "icon": user_badge.badge.icon_emoji,
+            "title": f"Badge earned: {user_badge.badge.name}",
+            "description": user_badge.badge.description,
+            "when": user_badge.earned_at,
+        })
+
+    notifications.sort(key=lambda item: item["when"], reverse=True)
+    notifications = notifications[:6]
+
+    recent_cutoff = timezone.now() - timedelta(days=7)
+    unread_notifications = sum(1 for item in notifications if item["when"] >= recent_cutoff)
+
+    # ========================================================
     # FEATURED RHYMES
     # ========================================================
 
@@ -167,6 +218,12 @@ def home(request):
 
         "summary":
             summary,
+
+        "notifications":
+            notifications,
+
+        "unread_notifications":
+            unread_notifications,
     }
 
     # ========================================================
@@ -517,6 +574,12 @@ def profile(request):
     activities.sort(key=lambda item: item["when"], reverse=True)
     activities = activities[:8]
 
+    # Real, derived notification feed for the logged-in user: their own
+    # recent rhyme/quiz activity (no separate notifications table needed,
+    # no fake data — same records already shown in "Recent Activity").
+    recent_cutoff = timezone.now() - timedelta(days=7)
+    unread_notifications = sum(1 for item in activities if item["when"] and item["when"] >= recent_cutoff)
+
     level = max(1, min(10, 1 + (completed_rhymes + quizzes_completed) // 5))
 
     return render(
@@ -537,6 +600,7 @@ def profile(request):
             "level": level,
             "avatar_emoji": user.avatar_emoji(),
             "activity_dates": [item["when"].isoformat() for item in activities],
+            "unread_notifications": unread_notifications,
         },
     )
 

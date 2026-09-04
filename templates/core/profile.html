@@ -37,11 +37,34 @@
         <a href="{% url 'core:settings' %}">⚙️ Settings</a>
       </nav>
       <div class="top-actions">
-        <div class="bell" aria-label="Notifications">🔔<span class="bell-badge">3</span></div>
-        <div class="top-profile">
-          <div class="top-avatar">{{ avatar_emoji }}</div>
-          <div><strong>Hi, {{ profile_user.first_name|default:profile_user.username }}!</strong><small>Keep Learning! 🌟</small></div>
-          <span>⌄</span>
+        <div class="dropdown-wrap">
+          <button class="bell" type="button" id="bellBtn" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">🔔{% if unread_notifications %}<span class="bell-badge">{{ unread_notifications }}</span>{% endif %}</button>
+          <div class="dropdown-panel notif-panel" id="notifPanel" role="menu" aria-hidden="true">
+            <div class="dropdown-title">Notifications</div>
+            {% if activities %}
+              <div class="notif-list">
+                {% for activity in activities|slice:":6" %}
+                <div class="notif-item"><div class="activity-icon">{{ activity.icon }}</div><div><strong>{{ activity.title }}</strong><small>{{ activity.description }}</small><time datetime="{{ activity.when|date:'c' }}">{{ activity.when|date:"d M Y, H:i" }}</time></div></div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="empty">No notifications yet. Complete a rhyme or quiz to see updates here! 🌟</div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="dropdown-wrap">
+          <button class="top-profile" type="button" id="profileBtn" aria-haspopup="true" aria-expanded="false">
+            <div class="top-avatar">{{ avatar_emoji }}</div>
+            <div><strong>Hi, {{ profile_user.first_name|default:profile_user.username }}!</strong><small>Keep Learning! 🌟</small></div>
+            <span>⌄</span>
+          </button>
+          <div class="dropdown-panel profile-panel" id="profilePanel" role="menu" aria-hidden="true">
+            <a class="dropdown-item active" href="{% url 'core:profile' %}" role="menuitem">👤 My Profile</a>
+            <button class="dropdown-item" type="button" data-open-edit role="menuitem">✎ Edit Profile</button>
+            <button class="dropdown-item" type="button" data-open-password role="menuitem">🔒 Change Password</button>
+            <a class="dropdown-item" href="{% url 'core:settings' %}" role="menuitem">⚙️ Settings</a>
+            <a class="dropdown-item logout-item" href="{% url 'accounts:logout' %}" role="menuitem">↪ Logout</a>
+          </div>
         </div>
       </div>
     </header>
@@ -78,7 +101,7 @@
         </section>
 
         <section class="card">
-          <div class="title"><h2><span>🏅</span>My Badges</h2><span class="view">View All</span></div>
+          <div class="title"><h2><span>🏅</span>My Badges</h2><button class="view" type="button" data-open-achievements>View All</button></div>
           {% if badges %}<div class="badge-grid">{% for item in badges|slice:":4" %}<div class="badge-card"><div class="badge-icon">{{ item.badge.icon_emoji }}</div><strong>{{ item.badge.name }}</strong><small>{{ item.badge.description }}</small></div>{% endfor %}</div>{% else %}<div class="empty">No badges yet. Complete a rhyme or quiz to start earning achievements! 🌟</div>{% endif %}
         </section>
 
@@ -105,7 +128,7 @@
         </section>
 
         <section class="card achievement">
-          <div class="title"><h2><span>🏆</span>Achievements</h2><span class="view">View All</span></div>
+          <div class="title"><h2><span>🏆</span>Achievements</h2><button class="view" type="button" data-open-achievements>View All</button></div>
           <div class="trophy">🏆</div><p>You're doing amazing! Keep it up!</p><div class="points"><span>⭐</span> {{ total_stars }} <small>Total Points</small></div>
         </section>
 
@@ -113,7 +136,7 @@
           <div class="title"><h2><span>⚙️</span>Account Settings</h2></div>
           <div class="settings">
             <button class="setting" type="button" data-open-edit><span class="setting-icon">👤</span><span class="setting-copy"><strong>Edit Profile</strong><small>Name, avatar, age group &amp; interests</small></span><span class="arrow">›</span></button>
-            <a class="setting" href="{% url 'accounts:password_reset' %}"><span class="setting-icon">🔒</span><span class="setting-copy"><strong>Change Password</strong><small>Use the existing secure password flow</small></span><span class="arrow">›</span></a>
+            <button class="setting" type="button" data-open-password><span class="setting-icon">🔒</span><span class="setting-copy"><strong>Change Password</strong><small>Update your account password securely</small></span><span class="arrow">›</span></button>
             <button class="setting" type="button" id="privacyBtn"><span class="setting-icon">🛡️</span><span class="setting-copy"><strong>Privacy Settings</strong><small>Manage profile visibility on this device</small></span><span class="arrow">›</span></button>
             <a class="logout" href="{% url 'accounts:logout' %}">↪ Logout</a>
           </div>
@@ -137,6 +160,45 @@
   </div>
 </div>
 
+<div class="modal" id="passwordModal" role="dialog" aria-modal="true" aria-labelledby="passwordTitle">
+  <div class="modal-card password-modal-card">
+    <div class="modal-head"><h2 id="passwordTitle">Change Password</h2><button class="close" type="button" data-close-password aria-label="Close">×</button></div>
+    <p class="password-intro">Keep your account secure by choosing a new password.</p>
+    <form method="post" action="{% url 'accounts:change_password' %}" autocomplete="off">
+      {% csrf_token %}
+      <div class="field password-field">
+        <label for="currentPassword">Enter Current Password</label>
+        <div class="password-input-wrap">
+          <input id="currentPassword" name="old_password" type="password" required autocomplete="current-password">
+          <button class="password-toggle" type="button" data-password-toggle="currentPassword" aria-label="Show current password">◉</button>
+        </div>
+      </div>
+
+      <div class="forgot-password-row">
+        <a href="{% url 'accounts:password_reset' %}">Forgot Password?</a>
+      </div>
+
+      <div class="field password-field">
+        <label for="newPassword">Enter New Password</label>
+        <div class="password-input-wrap">
+          <input id="newPassword" name="new_password1" type="password" required autocomplete="new-password">
+          <button class="password-toggle" type="button" data-password-toggle="newPassword" aria-label="Show new password">◉</button>
+        </div>
+      </div>
+
+      <div class="field password-field">
+        <label for="confirmPassword">Confirm New Password</label>
+        <div class="password-input-wrap">
+          <input id="confirmPassword" name="new_password2" type="password" required autocomplete="new-password">
+          <button class="password-toggle" type="button" data-password-toggle="confirmPassword" aria-label="Show confirmed password">◉</button>
+        </div>
+      </div>
+
+      <button class="save password-submit" type="submit">Change Password</button>
+    </form>
+  </div>
+</div>
+
 <div class="modal" id="privacyModal" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
   <div class="modal-card">
     <div class="modal-head"><h2 id="privacyTitle">Privacy Settings</h2><button class="close" type="button" data-close-privacy aria-label="Close">×</button></div>
@@ -146,6 +208,23 @@
     <button class="save" type="button" id="savePrivacy">Save Privacy Settings</button>
   </div>
 </div>
+
+<div class="modal" id="achievementsModal" role="dialog" aria-modal="true" aria-labelledby="achievementsTitle">
+  <div class="modal-card">
+    <div class="modal-head"><h2 id="achievementsTitle">🏆 All Achievements</h2><button class="close" type="button" data-close-achievements aria-label="Close">×</button></div>
+    {% if badges %}
+      <p style="font-size:11px;color:#7b849f;margin:-4px 0 14px">{{ badges|length }} badge{{ badges|length|pluralize }} earned by {{ profile_user.first_name|default:profile_user.username }}.</p>
+      <div class="badge-grid">
+        {% for item in badges %}
+        <div class="badge-card"><div class="badge-icon">{{ item.badge.icon_emoji }}</div><strong>{{ item.badge.name }}</strong><small>{{ item.badge.description }}</small><small style="display:block;margin-top:6px;color:#a3a9bf">{{ item.earned_at|date:"d M Y" }}</small></div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">No achievements yet. Complete rhymes and quizzes to start earning badges! 🌟</div>
+    {% endif %}
+  </div>
+</div>
+
 <div class="toast" id="toast" aria-live="polite"></div>
 {{ videos|json_script:"profileVideos" }}
 {{ activity_dates|json_script:"profileActivityDates" }}
@@ -165,11 +244,52 @@ const storyIds=new Set(videoData.filter(v=>v.category==='stories').map(v=>String
 document.getElementById('summaryStories').textContent=uniqueIds.filter(id=>storyIds.has(id)).length;
 const open=(id)=>document.getElementById(id).classList.add('open');
 const close=(id)=>document.getElementById(id).classList.remove('open');
-document.querySelectorAll('[data-open-edit]').forEach(b=>b.addEventListener('click',()=>open('editModal')));
+if(new URLSearchParams(window.location.search).get('change_password')==='1'){open('passwordModal');}
+document.querySelectorAll('[data-open-edit]').forEach(b=>b.addEventListener('click',()=>{closeDropdowns();open('editModal')}));
 document.querySelector('[data-close-edit]').addEventListener('click',()=>close('editModal'));
+document.querySelectorAll('[data-open-password]').forEach(b=>b.addEventListener('click',()=>{closeDropdowns();open('passwordModal')}));
+document.querySelector('[data-close-password]').addEventListener('click',()=>close('passwordModal'));
+document.querySelectorAll('[data-password-toggle]').forEach(btn=>btn.addEventListener('click',()=>{const input=document.getElementById(btn.dataset.passwordToggle);const showing=input.type==='text';input.type=showing?'password':'text';btn.textContent=showing?'◉':'◉';btn.setAttribute('aria-label',showing?'Show password':'Hide password')}));
+const passwordModal=document.getElementById('passwordModal');
+passwordModal.addEventListener('click',e=>{if(e.target===passwordModal)passwordModal.classList.remove('open')});
 document.querySelector('#privacyBtn').addEventListener('click',()=>open('privacyModal'));
 document.querySelector('[data-close-privacy]').addEventListener('click',()=>close('privacyModal'));
-[document.getElementById('editModal'),document.getElementById('privacyModal')].forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+document.querySelectorAll('[data-open-achievements]').forEach(b=>b.addEventListener('click',()=>{closeDropdowns();open('achievementsModal')}));
+document.querySelector('[data-close-achievements]').addEventListener('click',()=>close('achievementsModal'));
+[document.getElementById('editModal'),document.getElementById('privacyModal'),document.getElementById('achievementsModal')].forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+
+/* Profile / notification dropdowns — same open-toggle-close-on-outside-click
+   pattern used for the modals above. */
+const dropdowns=[
+  {btn:document.getElementById('bellBtn'),panel:document.getElementById('notifPanel')},
+  {btn:document.getElementById('profileBtn'),panel:document.getElementById('profilePanel')},
+];
+function closeDropdowns(except){
+  dropdowns.forEach(d=>{
+    if(d.panel===except)return;
+    d.panel.classList.remove('open');
+    d.btn.setAttribute('aria-expanded','false');
+    d.panel.setAttribute('aria-hidden','true');
+  });
+}
+dropdowns.forEach(d=>{
+  d.btn.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    const willOpen=!d.panel.classList.contains('open');
+    closeDropdowns();
+    if(willOpen){
+      d.panel.classList.add('open');
+      d.btn.setAttribute('aria-expanded','true');
+      d.panel.setAttribute('aria-hidden','false');
+    }
+  });
+});
+document.addEventListener('click',(e)=>{
+  const insideDropdown=dropdowns.some(d=>d.panel.contains(e.target)||d.btn.contains(e.target));
+  if(!insideDropdown)closeDropdowns();
+});
+document.addEventListener('keydown',(e)=>{if(e.key==='Escape')closeDropdowns()});
+
 const privacy={name:localStorage.getItem('sl_privacy_name')!=='0',avatar:localStorage.getItem('sl_privacy_avatar')!=='0'};
 document.getElementById('privacyName').checked=privacy.name;document.getElementById('privacyAvatar').checked=privacy.avatar;
 document.getElementById('savePrivacy').addEventListener('click',()=>{localStorage.setItem('sl_privacy_name',document.getElementById('privacyName').checked?'1':'0');localStorage.setItem('sl_privacy_avatar',document.getElementById('privacyAvatar').checked?'1':'0');close('privacyModal');const t=document.getElementById('toast');t.textContent='Privacy settings saved.';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)});

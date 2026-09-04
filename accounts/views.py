@@ -1,14 +1,21 @@
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import (
+    authenticate,
+    login,
+    logout,
+    get_user_model,
+    update_session_auth_hash,
+)
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.forms import PasswordChangeForm
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
+from django.views.decorators.http import require_POST
 
 
 # IMPORTANT:
 # Project uses AUTH_USER_MODEL = "accounts.User"
-# So we MUST use get_user_model(), not django.contrib.auth.models.User
 User = get_user_model()
 
 
@@ -18,7 +25,6 @@ def landing(request):
     Logged-in users are sent to Home.
     Logged-out users see the landing page.
     """
-
     if request.user.is_authenticated:
         return redirect("core:home")
 
@@ -28,16 +34,9 @@ def landing(request):
 def login_view(request):
     """
     Login page.
-
-    Valid username + password
-        -> Home Dashboard
-
-    Invalid credentials
-        -> Stay on Login page
     """
 
-    # Always show the Login page when the user clicks Login.
-    # If an old session exists, clear it first so Login never jumps to Home.
+    # If already logged in and Login is opened, clear old session.
     if request.user.is_authenticated:
         logout(request)
 
@@ -51,16 +50,21 @@ def login_view(request):
                 request,
                 "Please enter your username."
             )
-            return render(request, "accounts/login.html")
+            return render(
+                request,
+                "accounts/login.html"
+            )
 
         if not password:
             messages.error(
                 request,
                 "Please enter your password."
             )
-            return render(request, "accounts/login.html")
+            return render(
+                request,
+                "accounts/login.html"
+            )
 
-        # Authenticate using the project's custom User model
         user = authenticate(
             request,
             username=username,
@@ -83,7 +87,73 @@ def login_view(request):
             "Invalid username or password. Please try again."
         )
 
-    return render(request, "accounts/login.html")
+    return render(
+        request,
+        "accounts/login.html"
+    )
+
+
+@login_required(login_url="accounts:login")
+@require_POST
+def change_password(request):
+    """
+    Change password for the currently authenticated user only.
+    """
+
+    form = PasswordChangeForm(
+        request.user,
+        request.POST
+    )
+
+    if form.is_valid():
+
+        new_password = form.cleaned_data["new_password1"]
+
+        # New password must be different from current password.
+        if request.user.check_password(new_password):
+
+            messages.error(
+                request,
+                "New password must be different from your current password."
+            )
+
+            return redirect(
+                "/profile/?change_password=1"
+            )
+
+        # Django securely hashes the new password.
+        form.save()
+
+        # Keep current user logged in after changing password.
+        update_session_auth_hash(
+            request,
+            request.user
+        )
+
+        messages.success(
+            request,
+            "Password changed successfully. Your new password is now active."
+        )
+
+        return redirect(
+            "core:profile"
+        )
+
+    errors = []
+
+    for field_errors in form.errors.values():
+        errors.extend(field_errors)
+
+    messages.error(
+        request,
+        errors[0]
+        if errors
+        else "Please correct the password fields and try again."
+    )
+
+    return redirect(
+        "/profile/?change_password=1"
+    )
 
 
 def register_view(request):
@@ -94,9 +164,6 @@ def register_view(request):
     - Password
     - Confirm password
     - Avatar
-
-    Email is intentionally NOT required or used
-    in the registration flow.
     """
 
     selected_role = request.GET.get(
@@ -146,7 +213,6 @@ def register_view(request):
             "selected_role": account_type
         }
 
-        # Full Name
         if not full_name:
 
             messages.error(
@@ -160,7 +226,6 @@ def register_view(request):
                 context
             )
 
-        # Username
         if not username:
 
             messages.error(
@@ -174,7 +239,6 @@ def register_view(request):
                 context
             )
 
-        # Username uniqueness
         if User.objects.filter(
             username__iexact=username
         ).exists():
@@ -190,7 +254,6 @@ def register_view(request):
                 context
             )
 
-        # Password
         if not password1:
 
             messages.error(
@@ -204,7 +267,6 @@ def register_view(request):
                 context
             )
 
-        # Confirm Password
         if password1 != password2:
 
             messages.error(
@@ -218,7 +280,6 @@ def register_view(request):
                 context
             )
 
-        # Django password validation
         try:
 
             validate_password(
@@ -232,7 +293,6 @@ def register_view(request):
         except ValidationError as exc:
 
             for error in exc.messages:
-
                 messages.error(
                     request,
                     error
@@ -244,7 +304,6 @@ def register_view(request):
                 context
             )
 
-        # Avatar validation
         allowed_avatars = {
             choice[0]
             for choice in User.AVATAR_CHOICES
@@ -253,8 +312,6 @@ def register_view(request):
         if avatar not in allowed_avatars:
             avatar = "boy"
 
-        # Create account.
-        # Email is deliberately omitted.
         User.objects.create_user(
             username=username,
             password=password1,
@@ -292,8 +349,6 @@ def register_view(request):
 def home(request):
     """
     Protected Smart Learning Dashboard.
-
-    User MUST be authenticated.
     """
 
     return render(
