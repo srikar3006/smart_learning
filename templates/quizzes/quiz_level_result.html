@@ -8,24 +8,27 @@
 </head>
 <body class="quiz-page">
 <div class="quiz-app quiz-app-result">
-<aside class="quiz-sidebar">
-  <a class="quiz-logo" href="{% url 'core:home' %}"><img src="{% static 'img/reference/logo.png' %}" alt="Smart Learning Through Tunes & Cartoons"></a>
-  <nav class="side-menu" aria-label="Main navigation"><a href="{% url 'core:home' %}"><span>⌂</span>Home</a><a href="{% url 'rhymes:list' %}"><span>♫</span>Rhymes</a><a href="{% url 'core:videos' %}"><span>▣</span><b>Animated<br>Videos &amp; Stories</b></a><a href="{% url 'core:home' %}#games"><span>♢</span>Games</a><a class="active" href="{% url 'quiz_challenge:dashboard' %}"><span>♛</span>Quiz</a><a href="{% url 'core:profile' %}"><span>♙</span>Profile</a><a href="#settings"><span>⚙</span>Settings</a></nav>
-  <div class="sidebar-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Child learning with a book"></div>
-</aside>
-<main class="quiz-main result-main">
-<header class="quiz-topbar"><button class="mobile-menu" id="mobile-menu" type="button" aria-expanded="false" aria-controls="mobile-nav">☰</button><nav class="top-menu" id="mobile-nav"><a href="{% url 'core:home' %}">⌂ Home</a><a href="{% url 'rhymes:list' %}">♫ Rhymes</a><a href="{% url 'core:videos' %}">▣ Animated Videos &amp; Stories</a><a href="{% url 'core:home' %}#games">♢ Games</a><a class="active" href="{% url 'quiz_challenge:dashboard' %}">♛ Quiz</a></nav><div class="learner-chip"><img src="{% static 'img/reference/avatar.png' %}" alt="Learner avatar"><div><strong>Hi, Learner!</strong><small>Happy Learning! 🎉</small></div></div></header>
-<section class="result-hero {% if result.passed %}passed{% else %}retry{% endif %}">
-  <div class="confetti">✦ ✧ ★ ✦ ✧</div><img src="{% static 'img/reference/quiz-child.png' %}" alt="Happy learner celebrating" class="result-art">
-  <div class="result-copy"><span class="hero-kicker">{% if result.passed %}🎉 Level Complete{% else %}💪 Keep Practising{% endif %}</span><h1>{% if result.passed %}Congratulations!{% else %}Try Again!{% endif %}</h1><p>{% if result.passed %}You did a wonderful job. The next level is ready!{% else %}You're learning every time you play. Have another go and you can do it!{% endif %}</p></div>
-</section>
-<section class="result-card-new">
-  <div class="trophy">🏆</div><span class="result-label">Level {{ level_data.level }} · {{ level_data.difficulty }}</span><div class="result-score"><strong>{{ result.score }} / {{ result.total }}</strong><span>{{ result.percentage }}% Score</span></div>
-  <div class="result-stats"><div><strong>{{ result.score }}</strong><span>Correct</span></div><div><strong>{{ result.incorrect }}</strong><span>Incorrect</span></div><div><strong>{{ result.total }}</strong><span>Total</span></div></div>
-  <div class="big-stars" aria-label="{{ result.stars }} stars earned">{% for star in "123" %}<span class="{% if forloop.counter <= result.stars %}earned{% endif %}">★</span>{% endfor %}</div>
-  {% if result.passed %}<div class="unlock-message">🔓 Next Level Unlocked! 🎉{% if result.next_level %} Level {{ result.next_level }} is ready.{% else %} You completed all 50 levels!{% endif %}</div>{% else %}<div class="unlock-message retry-message">🌟 Try Again! You can do it! 💪</div>{% endif %}
-  <div class="result-actions"><a class="primary-btn" href="{% url 'quiz_challenge:level' level_data.level %}">↻ Try Again</a>{% if result.next_level %}<a class="primary-btn next-level" href="{% url 'quiz_challenge:level' result.next_level %}">Next Level <span>→</span></a>{% endif %}<a class="secondary-btn" href="{% url 'quiz_challenge:dashboard' %}">⌂ Back to Quiz</a></div>
-</section>
-</main></div>
-<script>const b=document.getElementById('mobile-menu'),n=document.getElementById('mobile-nav');if(b&&n)b.addEventListener('click',()=>{const o=n.classList.toggle('open');b.setAttribute('aria-expanded',o);});</script>
-</body></html>
+  <aside class="quiz-sidebar">
+    <a class="quiz-logo" href="{% url 'core:home' %}"><img src="{% static 'img/reference/logo.png' %}" alt="Smart Learning Through Tunes & Cartoons"></a>
+    <nav class="side-menu" aria-label="Main navigation"><a href="{% url 'core:home' %}"><span>⌂</span><b>Home</b></a><a href="{% url 'rhymes:list' %}"><span>♫</span><b>Rhymes</b></a><a href="{% url 'core:videos' %}"><span>▣</span><b>Animated<br>Videos &amp; Stories</b></a><a href="{% url 'games:list' %}"><span>♢</span><b>Games</b></a><a class="active" href="{% url 'quiz_challenge:dashboard' %}"><span>♛</span><b>Quiz</b></a><a href="{% url 'core:profile' %}"><span>♙</span><b>Profile</b></a><a href="{% url 'core:settings' %}"><span>⚙</span><b>Settings</b></a></nav>
+    <div class="sidebar-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Child learning with a book"></div>
+  </aside>
+  <main class="quiz-main result-main">
+    <header class="quiz-topbar"><button class="mobile-menu" id="mobile-menu" type="button" aria-expanded="false" aria-controls="mobile-nav">☰</button><nav class="top-menu" id="mobile-nav" aria-label="Quick navigation"><a href="{% url 'core:home' %}">⌂ <span>Home</span></a><a href="{% url 'rhymes:list' %}">♫ <span>Rhymes</span></a><a href="{% url 'core:videos' %}">▣ <span>Animated Videos &amp; Stories</span></a><a href="{% url 'games:list' %}">♢ <span>Games</span></a><a class="active" href="{% url 'quiz_challenge:dashboard' %}">♛ <span>Quiz</span></a></nav><div class="top-actions"><button class="notification" type="button" aria-label="Notifications"><span>♧</span><i>3</i></button><div class="learner-chip"><img src="{% static 'img/reference/avatar.png' %}" alt="Learner avatar"><div><strong>Hi, Learner!</strong><small>Happy Learning! 🎉</small></div><span>⌄</span></div></div></header>
+
+    <section class="result-hero {% if result.passed %}passed{% else %}retry{% endif %}">
+      <div class="confetti">✦ ✧ ★ ✦ ✧</div><div class="result-copy"><span class="hero-kicker">{% if result.passed %}🎉 Level Complete{% else %}💪 Keep Practising{% endif %}</span><h1>{% if result.passed %}Congratulations!{% else %}Try Again!{% endif %}</h1><p>{% if result.passed %}You did a wonderful job. The next level is ready!{% else %}You're learning every time you play. Have another go and you can do it!{% endif %}</p></div><img src="{% static 'img/reference/quiz-child.png' %}" alt="Happy learner celebrating" class="result-art">
+    </section>
+
+    <section class="result-card-new">
+      <div class="trophy">🏆</div><span class="result-label">Level {{ level_data.level }} · {{ level_data.difficulty }}</span><div class="result-score"><strong>{{ result.score }} / {{ result.total }}</strong><span>{{ result.percentage }}% Score</span></div>
+      <div class="result-stats"><div class="correct-stat"><strong>{{ result.score }}</strong><span>Correct</span></div><div class="incorrect-stat"><strong>{{ result.incorrect }}</strong><span>Incorrect</span></div><div><strong>{{ result.total }}</strong><span>Total</span></div></div>
+      <div class="big-stars" aria-label="{{ result.stars }} stars earned">{% for star in "123" %}<span class="{% if forloop.counter <= result.stars %}earned{% endif %}">★</span>{% endfor %}</div>
+      {% if result.passed %}<div class="unlock-message">🔓 Next Level Unlocked! 🎉{% if result.next_level %} Level {{ result.next_level }} is ready.{% else %} You completed all 10 levels!{% endif %}</div>{% else %}<div class="unlock-message retry-message">🌟 Keep going! You can beat this score next time. 💪</div>{% endif %}
+      <div class="result-actions"><a class="primary-btn" href="{% url 'quiz_challenge:level' level_data.level %}?restart=1">↻ Try Again</a>{% if result.next_level %}<a class="primary-btn next-level" href="{% url 'quiz_challenge:level' result.next_level %}?restart=1">Next Level <span>→</span></a>{% endif %}<a class="secondary-btn" href="{% url 'quiz_challenge:dashboard' %}">⌂ Back to Quiz</a></div>
+    </section>
+  </main>
+</div>
+<script src="{% static 'js/quiz_challenge.js' %}"></script>
+</body>
+</html>

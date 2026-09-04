@@ -29,10 +29,10 @@ urlpatterns = [
         include(("games.urls", "games"), namespace="games")
     ),
 
-    # Standalone 50-level Quiz Challenge
+    # Standalone 10-level Quiz Challenge
     path(
         "quiz/",
-        include(("quizzes.urls", "quizzes"), namespace="quiz_challenge")
+        include(("quizzes.challenge_urls", "quiz_challenge"), namespace="quiz_challenge")
     ),
 
     # Quizzes

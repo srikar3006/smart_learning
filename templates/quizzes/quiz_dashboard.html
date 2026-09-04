@@ -1,787 +1,119 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Quiz Challenge</title>
-
-    <link rel="stylesheet" href="{% static 'css/quiz_challenge.css' %}">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz Challenge — Smart Learning</title>
+<link rel="stylesheet" href="{% static 'css/quiz_challenge.css' %}">
 </head>
+<body class="quiz-page">
+<div class="quiz-app">
+  <aside class="quiz-sidebar">
+    <a class="quiz-logo" href="{% url 'core:home' %}"><img src="{% static 'img/reference/logo.png' %}" alt="Smart Learning Through Tunes & Cartoons"></a>
+    <nav class="side-menu" aria-label="Main navigation">
+      <a href="{% url 'core:home' %}"><span>⌂</span><b>Home</b></a>
+      <a href="{% url 'rhymes:list' %}"><span>♫</span><b>Rhymes</b></a>
+      <a href="{% url 'core:videos' %}"><span>▣</span><b>Animated<br>Videos &amp; Stories</b></a>
+      <a href="{% url 'games:list' %}"><span>♢</span><b>Games</b></a>
+      <a class="active" aria-current="page" href="{% url 'quiz_challenge:dashboard' %}"><span>♛</span><b>Quiz</b></a>
+      <a href="{% url 'core:profile' %}"><span>♙</span><b>Profile</b></a>
+      <a href="{% url 'core:settings' %}"><span>⚙</span><b>Settings</b></a>
+    </nav>
+    <div class="sidebar-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Child learning with a book"></div>
+    <div class="streak-card"><span>⭐</span><strong>Watch Streak</strong><b>7 Days</b><small>Amazing! Keep it up!</small></div>
+  </aside>
 
-<body>
+  <main class="quiz-main">
+    <header class="quiz-topbar">
+      <button class="mobile-menu" id="mobile-menu" type="button" aria-expanded="false" aria-controls="mobile-nav">☰</button>
+      <nav class="top-menu" id="mobile-nav" aria-label="Quick navigation">
+        <a href="{% url 'core:home' %}">⌂ <span>Home</span></a>
+        <a href="{% url 'rhymes:list' %}">♫ <span>Rhymes</span></a>
+        <a href="{% url 'core:videos' %}">▣ <span>Animated Videos &amp; Stories</span></a>
+        <a href="{% url 'games:list' %}">♢ <span>Games</span></a>
+        <a class="active" href="{% url 'quiz_challenge:dashboard' %}">♛ <span>Quiz</span></a>
+      </nav>
+      <div class="top-actions">
+        <button class="notification" type="button" aria-label="Notifications"><span>♧</span><i>3</i></button>
+        <div class="learner-chip"><img src="{% static 'img/reference/avatar.png' %}" alt="Learner avatar"><div><strong>Hi, Learner!</strong><small>Happy Learning! 🎉</small></div><span>⌄</span></div>
+      </div>
+    </header>
 
-<div class="quiz-page">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-
-        <div class="logo">
-            🧠 <span>Smart Learning</span>
+    <section class="quiz-hero">
+      <div class="hero-copy">
+        <div class="hero-title-row"><span class="trophy-mini">🏆</span><div><span class="hero-kicker">SMART LEARNING</span><h1>Quiz Challenge</h1><p>Test what you learned and have fun!</p></div></div>
+        <div class="hero-stats">
+          <span>⭐ {{ total_stars }} Stars</span><span>✓ {{ completed_count }}/10 Completed</span><span>🎯 Best {{ best_score }}%</span><span>🎮 {{ attempts_played }} Plays</span>
         </div>
-
-        <nav>
-
-            <a href="{% url 'core:home' %}">
-                🏠 Home
-            </a>
-
-            <a href="{% url 'rhymes:list' %}">
-                🎵 Rhymes
-            </a>
-
-            <a href="{% url 'games:list' %}">
-                🎮 Games
-            </a>
-
-            <a href="{% url 'quiz_challenge:dashboard' %}" class="active">
-                🧩 Quiz
-            </a>
-
-        </nav>
-
-    </aside>
-
-
-    <!-- MAIN CONTENT -->
-    <main class="quiz-main">
-
-
-        <!-- HEADER -->
-        <header class="quiz-header">
-
-            <div>
-                <h1>Quiz Challenge 🎯</h1>
-                <p>Learn, play and unlock new levels!</p>
-            </div>
-
-        </header>
-
-
-        <!-- HERO -->
-        <section class="quiz-hero">
-
-            <div>
-
-                <h2>
-                    Ready for a Challenge? 🚀
-                </h2>
-
-                <p>
-                    Test your knowledge with fun quizzes and
-                    unlock all 50 levels!
-                </p>
-
-            </div>
-
-            <div class="hero-emoji">
-                🏆
-            </div>
-
-        </section>
-
-
-        <!-- PROGRESS -->
-        <section class="progress-section">
-
-            <div class="section-title">
-
-                <h2>Your Progress</h2>
-
-                <span>
-                    {{ completed_levels|default:0 }}/50 Levels
-                </span>
-
-            </div>
-
-
-            <div class="progress-bar">
-
-                <div
-                    class="progress-fill"
-                    style="width: {{ progress_percentage|default:0 }}%;">
-                </div>
-
-            </div>
-
-
-            <p>
-                Keep learning and complete more levels! 🌟
-            </p>
-
-        </section>
-
-
-        <!-- CONTINUE LEARNING -->
-        {% if continue_level %}
-
-        <section class="continue-card">
-
-            <div class="continue-icon">
-                ▶️
-            </div>
-
-
-            <div class="continue-info">
-
-                <span>
-                    CONTINUE LEARNING
-                </span>
-
-                <h2>
-                    Level {{ continue_level.level }}
-                </h2>
-
-                <p>
-                    {{ continue_level.difficulty }}
-                </p>
-
-            </div>
-
-
-            <a
-                href="{% url 'quiz_challenge:level' continue_level.level %}"
-                class="start-btn">
-
-                Continue →
-
-            </a>
-
-        </section>
-
-        {% endif %}
-
-
-        <!-- QUIZ CATEGORIES -->
-        <section class="categories">
-
-            <div class="section-title">
-
-                <div>
-
-                    <h2>Quiz Categories</h2>
-
-                    <p>
-                        Choose a category to explore related quiz levels.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="category-grid">
-
-                {% for category in categories %}
-
-                <button
-                    type="button"
-                    class="category-card"
-                    data-category="{{ category.name|escape }}"
-                    onclick="filterQuizCategory(this.dataset.category)"
-                >
-
-                    <div class="category-icon">
-                        {{ category.icon|default:"🧠" }}
-                    </div>
-
-
-                    <h3>
-                        {{ category.name }}
-                    </h3>
-
-
-                    <p>
-                        {{ category.description|default:"Learn something new!" }}
-                    </p>
-
-
-                    <span class="category-action">
-                        View Levels →
-                    </span>
-
-                </button>
-
-                {% empty %}
-
-                <button
-                    type="button"
-                    class="category-card"
-                    data-category="All"
-                    onclick="showAllQuizLevels()"
-                >
-
-                    <div class="category-icon">
-                        🧠
-                    </div>
-
-                    <h3>
-                        All Categories
-                    </h3>
-
-                    <p>
-                        Explore all available quiz levels.
-                    </p>
-
-                    <span class="category-action">
-                        View Levels →
-                    </span>
-
-                </button>
-
-                {% endfor %}
-
-
-                <!-- SHOW ALL BUTTON -->
-                <button
-                    type="button"
-                    class="category-card all-category-card"
-                    data-category="__all__"
-                    onclick="showAllQuizLevels()"
-                >
-
-                    <div class="category-icon">
-                        🌟
-                    </div>
-
-                    <h3>
-                        All Levels
-                    </h3>
-
-                    <p>
-                        Show all 50 quiz levels.
-                    </p>
-
-                    <span class="category-action">
-                        View All →
-                    </span>
-
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- QUIZ LEVELS -->
-        <section class="levels" id="quiz-levels-section">
-
-            <div class="section-title">
-
-                <div>
-
-                    <h2>
-                        <span id="levels-title">
-                            50 Quiz Levels
-                        </span>
-                    </h2>
-
-                    <p id="levels-description">
-                        Complete each level to unlock the next one.
-                    </p>
-
-                </div>
-
-
-                <!-- RESET FILTER -->
-                <button
-                    type="button"
-                    class="level-filter-reset"
-                    id="clear-category-filter"
-                    onclick="showAllQuizLevels()"
-                    style="display: none;"
-                >
-                    Show All
-                </button>
-
-            </div>
-
-
-            <div class="level-grid" id="quiz-level-grid">
-
-                {% for item in levels %}
-
-                <div
-                    class="
-                        level-card
-                        {% if item.completed %}completed{% endif %}
-                        {% if not item.unlocked %}locked{% endif %}
-                    "
-
-                    data-level-categories="{{ item.category_filter|default:''|escape }}"
-                    data-level="{{ item.level }}"
-                >
-
-
-                    <!-- LEVEL NUMBER -->
-                    <div class="level-number">
-
-                        {% if item.completed %}
-
-                            ✓
-
-                        {% elif not item.unlocked %}
-
-                            🔒
-
-                        {% else %}
-
-                            {{ item.level }}
-
-                        {% endif %}
-
-                    </div>
-
-
-                    <!-- LEVEL INFO -->
-                    <div class="level-info">
-
-                        <h3>
-                            Level {{ item.level }}
-                        </h3>
-
-
-                        <span>
-                            {{ item.difficulty }}
-                        </span>
-
-
-                        <!-- SHOW ALL CATEGORIES AVAILABLE IN THIS LEVEL -->
-                        {% if item.categories_for_filter %}
-
-                        <small class="level-category">
-
-                            {% for cat in item.categories_for_filter %}
-
-                                {{ cat }}{% if not forloop.last %}, {% endif %}
-
-                            {% endfor %}
-
-                        </small>
-
-                        {% endif %}
-
-
-                        {% if item.completed %}
-
-                        <div class="stars">
-
-                            {% if item.stars >= 1 %}
-                                ⭐
-                            {% endif %}
-
-                            {% if item.stars >= 2 %}
-                                ⭐
-                            {% endif %}
-
-                            {% if item.stars >= 3 %}
-                                ⭐
-                            {% endif %}
-
-                        </div>
-
-                        {% endif %}
-
-                    </div>
-
-
-                    <!-- LEVEL ACTION -->
-                    {% if item.unlocked %}
-
-                        <a
-                            href="{% url 'quiz_challenge:level' item.level %}"
-                            class="level-btn"
-                            data-base-url="{% url 'quiz_challenge:level' item.level %}"
-                        >
-
-                            {% if item.completed %}
-
-                                Replay
-
-                            {% else %}
-
-                                Start
-
-                            {% endif %}
-
-                        </a>
-
-                    {% else %}
-
-                        <span class="locked-text">
-                            Locked
-                        </span>
-
-                    {% endif %}
-
-                </div>
-
-
-                {% empty %}
-
-                <div class="no-levels">
-
-                    <p>
-                        No quiz levels available.
-                    </p>
-
-                </div>
-
-                {% endfor %}
-
-            </div>
-
-
-            <!-- NO FILTER RESULTS -->
-            <div
-                id="no-category-results"
-                class="no-category-results"
-                style="display: none;"
-            >
-
-                <div class="no-category-icon">
-                    🔍
-                </div>
-
-                <h3>
-                    No levels found
-                </h3>
-
-                <p>
-                    There are no quiz levels available for this category.
-                </p>
-
-                <button
-                    type="button"
-                    onclick="showAllQuizLevels()"
-                >
-                    Show All Levels
-                </button>
-
-            </div>
-
-        </section>
-
-
-    </main>
-
+      </div>
+      <img class="hero-art" src="{% static 'img/reference/quiz-child.png' %}" alt="Happy child taking a quiz">
+      <div class="hero-spark spark-1">✦</div><div class="hero-spark spark-2">✧</div><div class="hero-spark spark-3">★</div>
+    </section>
+
+    <section class="level-strip">
+      <div><span class="section-kicker">YOUR JOURNEY</span><h2>Choose Your Level</h2><p>Complete a level to unlock the next challenge.</p></div>
+      <div class="journey-progress"><div><strong>{{ completed_count }}/10</strong><span>levels</span></div><div class="journey-track"><span style="width:{{ overall_percentage }}%"></span></div><b>{{ overall_percentage }}%</b></div>
+    </section>
+
+    <section class="continue-card" id="continue-card" hidden>
+      <div class="continue-icon">▶</div>
+      <div><span>CONTINUE QUIZ</span><h3 id="continue-title">Level {{ current_level }}</h3><p id="continue-detail">Pick up where you left off.</p></div>
+      <a id="continue-link" class="primary-btn" href="{% url 'quiz_challenge:level' current_level %}">Continue <span>→</span></a>
+      <button id="restart-continue" class="secondary-btn" type="button">Restart</button>
+    </section>
+
+    <section class="categories-section">
+      <div class="section-heading"><div><span class="section-kicker">EXPLORE</span><h2>Quiz Categories</h2><p>Choose a topic to highlight the levels that include it.</p></div><button class="show-all" id="show-all" type="button">Show All</button></div>
+      <div class="category-grid" id="category-grid">
+        {% for category in categories %}
+        <button class="category-card" type="button" data-category="{{ category.name }}" aria-pressed="false">
+          <span class="category-icon">{{ category.icon }}</span><strong>{{ category.name }}</strong><small>{{ category.description }}</small>
+        </button>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="levels-section" id="quiz-levels-section">
+      <div class="section-heading levels-heading"><div><span class="section-kicker">10 LEVELS</span><h2 id="levels-title">Level 1 — 10</h2><p id="levels-description">Easy → Medium → Hard → Very Hard → Expert</p></div><div class="legend"><span><i class="dot unlocked"></i>Unlocked</span><span><i class="dot locked"></i>Locked</span><span><i class="dot done"></i>Completed</span></div></div>
+      <div class="level-grid" id="quiz-level-grid">
+        {% for item in levels %}
+        <article class="level-card {% if item.completed %}completed{% endif %} {% if not item.unlocked %}locked{% endif %}" data-level="{{ item.level }}" data-categories="|{% for c in item.categories_for_filter %}{{ c }}|{% endfor %}">
+          <div class="level-top"><span class="level-star">{% if item.completed %}✓{% elif item.unlocked %}★{% else %}🔒{% endif %}</span><span class="level-number">Level {{ item.level }}</span><span class="difficulty-pill d-{{ item.difficulty|lower|cut:' ' }}">{{ item.difficulty }}</span></div>
+          <h3>{% if item.level == 1 or item.level == 2 %}Warm Up{% elif item.level == 10 %}Ultimate Challenge{% else %}{{ item.difficulty }} Challenge{% endif %}</h3>
+          <div class="level-meta"><span>📝 {{ item.questions }} Questions</span><span>🏆 {% if item.best_percentage %}{{ item.best_percentage }}% Best{% else %}Not played{% endif %}</span></div>
+          <div class="mini-progress"><span style="width:{% if item.completed %}100{% else %}{{ item.best_percentage }}{% endif %}%"></span></div>
+          {% if item.completed %}<small class="completed-label">✓ Completed · {{ item.stars }} ⭐</small>{% elif item.unlocked %}<small>Ready to play</small>{% else %}<small>Complete Level {{ item.level|add:'-1' }} to unlock</small>{% endif %}
+          {% if item.unlocked %}<a class="level-btn" href="{% url 'quiz_challenge:level' item.level %}{% if item.completed %}?restart=1{% endif %}">{% if item.completed %}Play Again{% else %}Start Quiz{% endif %}<span>→</span></a>{% else %}<button class="level-btn disabled" type="button" disabled>Locked 🔒</button>{% endif %}
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="dashboard-bottom">
+      <div class="info-card"><div class="info-icon">📚</div><div><strong>Real learning, real progress</strong><p>Your score, completed levels and best results are saved automatically.</p></div></div>
+      <div class="info-card"><div class="info-icon">🎯</div><div><strong>Keep your streak going</strong><p>Try to improve your best score on every level.</p></div></div>
+    </section>
+
+    <section class="history-achievements">
+      <div class="history-card">
+        <div class="section-heading compact"><div><span class="section-kicker">RECENT</span><h2>Quiz History</h2></div></div>
+        <div id="quiz-history" class="history-list"><div class="empty-history">Complete a quiz to see your real scores here.</div></div>
+      </div>
+      <div class="achievement-card">
+        <div class="section-heading compact"><div><span class="section-kicker">REWARDS</span><h2>Achievements</h2></div></div>
+        <div id="quiz-achievements" class="achievement-grid"></div>
+      </div>
+    </section>
+    <footer class="quiz-footer"><span>Smart Learning Through Tunes &amp; Cartoons</span><span>Made for curious learners ✨</span></footer>
+  </main>
 </div>
-
-
-<script src="{% static 'js/quiz_challenge.js' %}"></script>
-
-
-<!-- CATEGORY FILTER -->
 <script>
-
-function filterQuizCategory(category) {
-
-    const levelCards =
-        document.querySelectorAll(".level-card");
-
-    const categoryCards =
-        document.querySelectorAll(".category-card");
-
-    const levelButtons =
-        document.querySelectorAll(".level-btn");
-
-    const levelsSection =
-        document.getElementById("quiz-levels-section");
-
-    const levelsTitle =
-        document.getElementById("levels-title");
-
-    const levelsDescription =
-        document.getElementById("levels-description");
-
-    const clearButton =
-        document.getElementById("clear-category-filter");
-
-    const noResults =
-        document.getElementById("no-category-results");
-
-
-    const selectedCategory =
-        (category || "").trim().toLowerCase();
-
-
-    let found = false;
-
-
-    /* ==========================================
-       HIGHLIGHT SELECTED CATEGORY
-       ========================================== */
-
-    categoryCards.forEach(function(card) {
-
-        const cardCategory =
-            (card.dataset.category || "")
-                .trim()
-                .toLowerCase();
-
-
-        if (cardCategory === selectedCategory) {
-
-            card.classList.add("selected");
-
-        } else {
-
-            card.classList.remove("selected");
-
-        }
-
-    });
-
-
-    /* ==========================================
-       FILTER LEVELS
-       ========================================== */
-
-    levelCards.forEach(function(card) {
-
-        const levelCategories =
-            (card.dataset.levelCategories || "")
-                .toLowerCase()
-                .split("|")
-                .map(function(item) {
-                    return item.trim();
-                })
-                .filter(Boolean);
-
-
-        if (
-            levelCategories.includes(selectedCategory)
-        ) {
-
-            card.style.display = "";
-            found = true;
-
-        } else {
-
-            card.style.display = "none";
-
-        }
-
-    });
-
-
-    /* ==========================================
-       IMPORTANT:
-       CATEGORY -> LEVEL URL
-       ========================================== */
-
-    levelButtons.forEach(function(button) {
-
-        const baseUrl =
-            button.dataset.baseUrl;
-
-
-        if (baseUrl) {
-
-            button.href =
-                baseUrl +
-                "?category=" +
-                encodeURIComponent(category);
-
-        }
-
-    });
-
-
-    /* ==========================================
-       UPDATE HEADING
-       ========================================== */
-
-    if (levelsTitle) {
-
-        levelsTitle.textContent =
-            category + " Levels";
-
-    }
-
-
-    if (levelsDescription) {
-
-        levelsDescription.textContent =
-            "Showing quiz levels that contain " +
-            category +
-            " questions.";
-
-    }
-
-
-    /* ==========================================
-       SHOW RESET BUTTON
-       ========================================== */
-
-    if (clearButton) {
-
-        clearButton.style.display =
-            "inline-flex";
-
-    }
-
-
-    /* ==========================================
-       NO RESULTS
-       ========================================== */
-
-    if (noResults) {
-
-        noResults.style.display =
-            found ? "none" : "block";
-
-    }
-
-
-    /* ==========================================
-       SCROLL TO LEVELS
-       ========================================== */
-
-    if (levelsSection) {
-
-        levelsSection.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
-    }
-
-}
-
-
-/* ==================================================
-   SHOW ALL LEVELS
-   ================================================== */
-
-function showAllQuizLevels() {
-
-    const levelCards =
-        document.querySelectorAll(".level-card");
-
-    const categoryCards =
-        document.querySelectorAll(".category-card");
-
-    const levelButtons =
-        document.querySelectorAll(".level-btn");
-
-    const levelsTitle =
-        document.getElementById("levels-title");
-
-    const levelsDescription =
-        document.getElementById("levels-description");
-
-    const clearButton =
-        document.getElementById("clear-category-filter");
-
-    const noResults =
-        document.getElementById("no-category-results");
-
-
-    /* ==========================================
-       SHOW EVERY LEVEL
-       ========================================== */
-
-    levelCards.forEach(function(card) {
-
-        card.style.display = "";
-
-    });
-
-
-    /* ==========================================
-       RESET LEVEL URLs
-       ========================================== */
-
-    levelButtons.forEach(function(button) {
-
-        const baseUrl =
-            button.dataset.baseUrl;
-
-
-        if (baseUrl) {
-
-            button.href = baseUrl;
-
-        }
-
-    });
-
-
-    /* ==========================================
-       REMOVE CATEGORY SELECTION
-       ========================================== */
-
-    categoryCards.forEach(function(card) {
-
-        card.classList.remove("selected");
-
-    });
-
-
-    /* ==========================================
-       RESET HEADING
-       ========================================== */
-
-    if (levelsTitle) {
-
-        levelsTitle.textContent =
-            "50 Quiz Levels";
-
-    }
-
-
-    if (levelsDescription) {
-
-        levelsDescription.textContent =
-            "Complete each level to unlock the next one.";
-
-    }
-
-
-    /* ==========================================
-       HIDE RESET BUTTON
-       ========================================== */
-
-    if (clearButton) {
-
-        clearButton.style.display =
-            "none";
-
-    }
-
-
-    /* ==========================================
-       HIDE NO RESULTS
-       ========================================== */
-
-    if (noResults) {
-
-        noResults.style.display =
-            "none";
-
-    }
-
-}
-
-
-/* ==================================================
-   INITIAL STATE
-   ================================================== */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        showAllQuizLevels();
-
-    }
-);
-
+window.QUIZ_DASHBOARD = {
+  currentLevel: {{ current_level }},
+  completedCount: {{ completed_count }},
+  levelUrlTemplate: "{% url 'quiz_challenge:level' 999 %}",
+  levels: {{ levels|length }}
+};
 </script>
-
-
-</body>
-</html>
+<script src="{% static 'js/quiz_challenge.js' %}"></script>

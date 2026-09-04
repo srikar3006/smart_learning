@@ -1,12 +1,188 @@
-from django.contrib.auth.decorators import login_required
+import json
+from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
+from .level_data import CATEGORIES, LEVELS, get_level, stars_for_percentage
 from accounts.decorators import learner_required
 from rhymes.models import Rhyme
 
-from .models import Choice, Quiz, QuizAnswer, QuizAttempt, Question
+from .models import Choice, Quiz, QuizAnswer, QuizAttempt, Question, QuizLevelProgress
+
+
+# ============================================================
+# QUIZ CHALLENGE — STANDALONE 10-LEVEL SYSTEM
+# ============================================================
+
+
+def _level_is_unlocked(user, level_number):
+    if level_number == 1:
+        return True
+    return QuizLevelProgress.objects.filter(
+        user=user,
+        level=level_number - 1,
+        completed=True,
+    ).exists()
+
+
+@learner_required
+def quiz_dashboard(request):
+    progress_rows = {
+        row.level: row
+        for row in QuizLevelProgress.objects.filter(
+            user=request.user,
+            level__gte=1,
+            level__lte=10,
+        )
+    }
+
+    completed_count = sum(
+        1 for row in progress_rows.values() if row.completed
+    )
+    total_stars = sum(row.stars for row in progress_rows.values())
+    unlocked_level = 1
+    while unlocked_level < 10 and progress_rows.get(unlocked_level, None) and progress_rows[unlocked_level].completed:
+        unlocked_level += 1
+
+    current_level = unlocked_level
+    display_levels = []
+    for level in LEVELS:
+        number = level["level"]
+        row = progress_rows.get(number)
+        categories_for_filter = sorted({q["category"] for q in level["questions_data"]})
+        display_levels.append({
+            **level,
+            "unlocked": number <= unlocked_level,
+            "completed": bool(row and row.completed),
+            "best_percentage": row.best_percentage if row else 0,
+            "stars": row.stars if row else 0,
+            "categories_for_filter": categories_for_filter,
+        })
+
+    attempts_played = sum(row.attempts for row in progress_rows.values())
+    best_score = max((row.best_percentage for row in progress_rows.values()), default=0)
+    category_progress = {category["name"]: completed_count for category in CATEGORIES}
+    current_config = get_level(current_level)
+
+    return render(request, "quizzes/quiz_dashboard.html", {
+        "levels": display_levels,
+        "categories": CATEGORIES,
+        "completed_count": completed_count,
+        "total_stars": total_stars,
+        "overall_percentage": round(completed_count / 10 * 100),
+        "current_level": current_level,
+        "current_config": current_config,
+        "attempts_played": attempts_played,
+        "best_score": best_score,
+        "category_progress": category_progress,
+    })
+
+
+@learner_required
+def quiz_level(request, level):
+    data = get_level(level)
+    if not data or not _level_is_unlocked(request.user, data["level"]):
+        return redirect("quiz_challenge:dashboard")
+
+    row = QuizLevelProgress.objects.filter(
+        user=request.user,
+        level=data["level"],
+    ).first()
+
+    return render(request, "quizzes/quiz_level.html", {
+        "level_data": data,
+        "level_progress": row,
+        "questions_json": json.dumps(data["questions_data"]),
+        "restart": request.GET.get("restart") == "1",
+    })
+
+
+@learner_required
+def quiz_level_result(request, level):
+    data = get_level(level)
+    if not data:
+        return redirect("quiz_challenge:dashboard")
+
+    result = request.session.get(f"quiz_level_result_{data['level']}")
+    if not result:
+        return redirect("quiz_challenge:dashboard")
+
+    return render(request, "quizzes/quiz_level_result.html", {
+        "level_data": data,
+        "result": result,
+    })
+
+
+@learner_required
+@require_POST
+def api_submit_level(request, level):
+    """Validate the complete level server-side and persist real progress."""
+    data = get_level(level)
+    if not data:
+        return JsonResponse({"ok": False, "error": "That quiz level does not exist."}, status=404)
+    if not _level_is_unlocked(request.user, data["level"]):
+        return JsonResponse({"ok": False, "error": "Complete the previous level first."}, status=403)
+
+    try:
+        payload = json.loads(request.body.decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse({"ok": False, "error": "Invalid request body."}, status=400)
+
+    answers = payload.get("answers", {})
+    if not isinstance(answers, dict):
+        return JsonResponse({"ok": False, "error": "Answers must be an object."}, status=400)
+
+    # Category filtering is a presentation/filter feature only. A completed level
+    # is always scored against all questions so the unlock rule cannot be bypassed.
+    correct = 0
+    for question in data["questions_data"]:
+        if str(answers.get(question["id"], "")) == question["correctAnswer"]:
+            correct += 1
+
+    total = len(data["questions_data"])
+    percentage = round(correct / total * 100) if total else 0
+    stars = stars_for_percentage(percentage)
+    passed = percentage >= 60
+
+    with transaction.atomic():
+        row, _ = QuizLevelProgress.objects.select_for_update().get_or_create(
+            user=request.user,
+            level=data["level"],
+            defaults={"difficulty": data["difficulty"]},
+        )
+        row.difficulty = data["difficulty"]
+        row.attempts += 1
+        row.last_score = correct
+        row.last_percentage = percentage
+        row.best_score = max(row.best_score, correct)
+        row.best_percentage = max(row.best_percentage, percentage)
+        row.stars = max(row.stars, stars)
+        if passed:
+            row.completed = True
+        row.save()
+
+    result = {
+        "score": correct,
+        "total": total,
+        "incorrect": total - correct,
+        "percentage": percentage,
+        "stars": stars,
+        "best_stars": row.stars,
+        "passed": passed,
+        "level_completed": row.completed,
+        "next_level": data["level"] + 1 if passed and data["level"] < 10 else None,
+    }
+    request.session[f"quiz_level_result_{data['level']}"] = result
+    request.session.modified = True
+
+    return JsonResponse({
+        "ok": True,
+        **result,
+        "result_url": reverse("quiz_challenge:level_result", kwargs={"level": data["level"]}),
+    })
 
 
 @learner_required

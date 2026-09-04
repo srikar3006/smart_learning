@@ -7,31 +7,49 @@
 <link rel="stylesheet" href="{% static 'css/quiz_challenge.css' %}">
 </head>
 <body class="quiz-page">
-<form id="csrf-form" hidden>{% csrf_token %}</form>
+<form hidden aria-hidden="true">{% csrf_token %}</form>
 <div class="quiz-app quiz-app-question">
-<aside class="quiz-sidebar">
-  <a class="quiz-logo" href="{% url 'quiz_challenge:dashboard' %}"><img src="{% static 'img/reference/logo.png' %}" alt="Smart Learning Through Tunes & Cartoons"></a>
-  <nav class="side-menu" aria-label="Main navigation">
-    <a href="{% url 'core:home' %}"><span>⌂</span>Home</a><a href="{% url 'rhymes:list' %}"><span>♫</span>Rhymes</a><a href="{% url 'core:videos' %}"><span>▣</span><b>Animated<br>Videos &amp; Stories</b></a><a href="{% url 'core:home' %}#games"><span>♢</span>Games</a><a class="active" href="{% url 'quiz_challenge:dashboard' %}"><span>♛</span>Quiz</a><a href="{% url 'core:profile' %}"><span>♙</span>Profile</a><a href="#settings"><span>⚙</span>Settings</a>
-  </nav>
-  <div class="sidebar-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Child learning with a book"></div>
-  <div class="streak-card"><span>⭐</span><strong>Level {{ level_data.level }}</strong><small>{{ level_data.difficulty }} challenge</small></div>
-</aside>
-<main class="quiz-main">
-<header class="quiz-topbar"><button class="mobile-menu" id="mobile-menu" type="button" aria-expanded="false" aria-controls="mobile-nav">☰</button><nav class="top-menu" id="mobile-nav"><a href="{% url 'core:home' %}">⌂ Home</a><a href="{% url 'rhymes:list' %}">♫ Rhymes</a><a href="{% url 'core:videos' %}">▣ Animated Videos &amp; Stories</a><a href="{% url 'core:home' %}#games">♢ Games</a><a class="active" href="{% url 'quiz_challenge:dashboard' %}">♛ Quiz</a></nav><div class="learner-chip"><img src="{% static 'img/reference/avatar.png' %}" alt="Learner avatar"><div><strong>Hi, Learner!</strong><small>Happy Learning! 🎉</small></div></div></header>
+  <aside class="quiz-sidebar">
+    <a class="quiz-logo" href="{% url 'core:home' %}"><img src="{% static 'img/reference/logo.png' %}" alt="Smart Learning Through Tunes & Cartoons"></a>
+    <nav class="side-menu" aria-label="Main navigation">
+      <a href="{% url 'core:home' %}"><span>⌂</span><b>Home</b></a><a href="{% url 'rhymes:list' %}"><span>♫</span><b>Rhymes</b></a><a href="{% url 'core:videos' %}"><span>▣</span><b>Animated<br>Videos &amp; Stories</b></a><a href="{% url 'games:list' %}"><span>♢</span><b>Games</b></a><a class="active" href="{% url 'quiz_challenge:dashboard' %}"><span>♛</span><b>Quiz</b></a><a href="{% url 'core:profile' %}"><span>♙</span><b>Profile</b></a><a href="{% url 'core:settings' %}"><span>⚙</span><b>Settings</b></a>
+    </nav>
+    <div class="sidebar-child"><img src="{% static 'img/reference/sidebar-child.png' %}" alt="Child learning with a book"></div>
+    <div class="streak-card"><span>⭐</span><strong>Watch Streak</strong><b>7 Days</b><small>Amazing! Keep it up!</small></div>
+  </aside>
 
-<section class="question-head"><div><a class="back-quiz" href="{% url 'quiz_challenge:dashboard' %}">← All Levels</a><span class="hero-kicker">⭐ Level {{ level_data.level }} · {{ level_data.difficulty }}</span><h1>Quiz Challenge</h1><p>Take your time — you can do it!</p></div><img src="{% static 'img/reference/quiz-child.png' %}" alt="Child enjoying a quiz"></section>
-<section class="question-panel" id="quiz-question-panel" aria-live="polite">
-  <div class="question-meta"><span>Question <strong id="question-number">1</strong> of <strong>{{ level_data.questions }}</strong></span><span id="score-indicator">⭐ 0 points</span></div>
-  <div class="question-track"><span id="question-progress" style="width:0%"></span></div>
-  <div class="question-stage"><div class="question-illustration" id="question-illustration">{{ level_data.questions_data.0.emoji }}</div><span class="question-category" id="question-category">{{ level_data.questions_data.0.category }}</span><h2 id="question-text">{{ level_data.questions_data.0.question }}</h2><p id="question-help">Choose one answer.</p></div>
-  <div class="answer-grid" id="answer-grid"></div>
-  <div class="answer-feedback" id="answer-feedback" role="status" aria-live="polite"></div>
-  <div class="question-actions"><button class="secondary-btn" id="previous-btn" type="button">← Previous</button><span class="question-tip">✨ Every question helps you learn.</span><button class="primary-btn" id="next-btn" type="button" disabled>Next <span>→</span></button></div>
-</section>
-</main></div>
+  <main class="quiz-main">
+    <header class="quiz-topbar">
+      <button class="mobile-menu" id="mobile-menu" type="button" aria-expanded="false" aria-controls="mobile-nav">☰</button>
+      <nav class="top-menu" id="mobile-nav" aria-label="Quick navigation"><a href="{% url 'core:home' %}">⌂ <span>Home</span></a><a href="{% url 'rhymes:list' %}">♫ <span>Rhymes</span></a><a href="{% url 'core:videos' %}">▣ <span>Animated Videos &amp; Stories</span></a><a href="{% url 'games:list' %}">♢ <span>Games</span></a><a class="active" href="{% url 'quiz_challenge:dashboard' %}">♛ <span>Quiz</span></a></nav>
+      <div class="top-actions"><button class="notification" type="button" aria-label="Notifications"><span>♧</span><i>3</i></button><div class="learner-chip"><img src="{% static 'img/reference/avatar.png' %}" alt="Learner avatar"><div><strong>Hi, Learner!</strong><small>Happy Learning! 🎉</small></div><span>⌄</span></div></div>
+    </header>
+
+    <section class="question-head">
+      <div class="question-head-copy"><a class="back-quiz" href="{% url 'quiz_challenge:dashboard' %}">← All Levels</a><span class="hero-kicker">⭐ Level {{ level_data.level }} · {{ level_data.difficulty }}</span><h1>Quiz Challenge</h1><p>Test what you learned and have fun!</p></div>
+      <img src="{% static 'img/reference/quiz-child.png' %}" alt="Child enjoying a quiz">
+    </section>
+
+    <section class="question-panel" id="quiz-question-panel" aria-live="polite">
+      <div class="question-topline"><div><span class="level-label">Level {{ level_data.level }} - {{ level_data.difficulty }}</span></div><div class="question-pips" id="question-pips" aria-label="Question progress"></div><div class="score-pill">⭐ <span id="score-indicator">0</span></div></div>
+      <div class="question-meta"><span>Question <strong id="question-number">1</strong> of <strong id="question-total">{{ level_data.questions }}</strong></span><span id="timer-wrap" class="timer-wrap" hidden>⏱ <b id="timer">60</b>s</span></div>
+      <div class="question-track"><span id="question-progress" style="width:0%"></span></div>
+      <div class="question-stage"><div class="question-illustration" id="question-illustration">{{ level_data.questions_data.0.emoji }}</div><span class="question-category" id="question-category">{{ level_data.questions_data.0.category }}</span><h2 id="question-text">{{ level_data.questions_data.0.question }}</h2><p id="question-help">Choose one answer.</p></div>
+      <div class="answer-grid" id="answer-grid" role="radiogroup" aria-label="Answer options"></div>
+      <div class="answer-feedback" id="answer-feedback" role="status" aria-live="polite"></div>
+      <div class="question-actions"><button class="secondary-btn" id="previous-btn" type="button">← Previous</button><span class="question-tip">✨ Every question helps you learn.</span><button class="primary-btn" id="next-btn" type="button" disabled>Next <span>→</span></button></div>
+    </section>
+  </main>
+</div>
 <script>
-window.QUIZ_LEVEL_CONFIG = { level: {{ level_data.level }}, submitUrl: "{% url 'quiz_challenge:submit_level' level_data.level %}", questions: {{ questions_json|safe }} };
+window.QUIZ_LEVEL_CONFIG = {
+  level: {{ level_data.level }},
+  restart: {{ restart|yesno:"true,false" }},
+  submitUrl: "{% url 'quiz_challenge:submit_level' level_data.level %}",
+  resultBaseUrl: "{% url 'quiz_challenge:level_result' level_data.level %}",
+  questions: {{ questions_json|safe }}
+};
 </script>
 <script src="{% static 'js/quiz_challenge.js' %}"></script>
-</body></html>
+</body>
+</html>
