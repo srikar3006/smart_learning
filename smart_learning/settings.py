@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     "rhymes",
     "quizzes",
     "progress",
-    "games",
 ]
 
 MIDDLEWARE = [

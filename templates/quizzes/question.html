@@ -1,0 +1,390 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{{ quiz.title }} • Smart Learning</title>
+
+<script src="{% static 'js/settings.js' %}"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, system-ui, sans-serif;
+    background: #f6f7ff;
+    color: #22223b;
+}
+
+.app {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+}
+
+.sidebar {
+    background: #fff;
+    border-right: 1px solid #e6e5f1;
+    padding: 18px 12px;
+}
+
+.side-logo img {
+    width: 100%;
+    max-width: 190px;
+    display: block;
+    margin: auto;
+}
+
+.menu {
+    display: grid;
+    gap: 7px;
+    margin-top: 24px;
+}
+
+.menu a {
+    padding: 12px;
+    border-radius: 13px;
+    text-decoration: none;
+    color: #55556d;
+    font-weight: 800;
+}
+
+.menu a.active,
+.menu a:hover {
+    background: #eeeaff;
+    color: #6046d8;
+}
+
+.mi {
+    display: inline-block;
+    width: 25px;
+}
+
+.main {
+    padding: 20px 30px;
+    max-width: 760px;
+}
+
+.progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.progress-track {
+    flex: 1;
+    height: 12px;
+    border-radius: 999px;
+    background: #e9e6fb;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6754df, #e45a9d);
+    width: {{ progress_percent }}%;
+    transition: width .3s ease;
+}
+
+.progress-label {
+    font-weight: 900;
+    color: #6754df;
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.q-card {
+    background: #fff;
+    border: 1px solid #e6e5f1;
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 8px 24px rgba(45,35,100,.07);
+}
+
+.q-text {
+    font-size: 22px;
+    font-weight: 900;
+    margin: 0 0 8px;
+}
+
+.q-media img {
+    max-width: 100%;
+    border-radius: 16px;
+    margin-bottom: 16px;
+}
+
+.choices {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.choice-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    width: 100%;
+    padding: 16px 18px;
+    border-radius: 16px;
+    border: 2px solid #e6e5f1;
+    background: #fbfaff;
+    font-size: 16px;
+    font-weight: 700;
+    color: #22223b;
+    cursor: pointer;
+    transition: .15s;
+}
+
+.choice-btn:hover {
+    border-color: #b9adf5;
+    background: #f2eeff;
+}
+
+.choice-btn.selected {
+    border-color: #6754df;
+    background: #eee9ff;
+}
+
+.choice-btn.correct {
+    border-color: #23b26d;
+    background: #e7faf1;
+}
+
+.choice-btn.wrong {
+    border-color: #e0455a;
+    background: #fdecee;
+}
+
+.choice-btn img {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.choice-emoji {
+    font-size: 26px;
+}
+
+.q-footer {
+    margin-top: 22px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.next-btn {
+    background: #6754df;
+    color: #fff;
+    border: none;
+    padding: 13px 22px;
+    border-radius: 12px;
+    font-weight: 900;
+    font-size: 15px;
+    cursor: pointer;
+    opacity: .5;
+    pointer-events: none;
+}
+
+.next-btn.ready {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.q-feedback {
+    margin-top: 14px;
+    font-weight: 800;
+    min-height: 22px;
+}
+
+.q-feedback.correct {
+    color: #1a9d5c;
+}
+
+.q-feedback.wrong {
+    color: #d5334a;
+}
+
+@media (max-width: 800px) {
+    .app {
+        display: block;
+    }
+    .main {
+        padding: 12px;
+    }
+    .sidebar {
+        border-right: 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+        <a class="side-logo" href="{% url 'core:home' %}">
+            <img src="{% static 'img/reference/logo.png' %}" alt="Smart Learning">
+        </a>
+        <nav class="menu">
+            <a href="{% url 'core:home' %}"><span class="mi">🏠</span>Home</a>
+            <a href="{% url 'rhymes:list' %}"><span class="mi">🎵</span>Rhymes</a>
+            <a href="{% url 'core:videos' %}"><span class="mi">📺</span>Videos &amp; Stories</a>
+            <a href="{% url 'core:games' %}"><span class="mi">🎮</span>Games</a>
+            <a class="active" href="{% url 'quizzes:list' %}"><span class="mi">🏆</span>Quiz</a>
+            <a href="{% url 'core:profile' %}"><span class="mi">👤</span>Profile</a>
+            <a href="{% url 'core:settings' %}"><span class="mi">⚙️</span>Settings</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+
+        <div class="progress-wrap">
+            <div class="progress-track">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                {{ current_index }} / {{ total_questions }}
+            </div>
+        </div>
+
+        <div class="q-card">
+
+            {% if question.image_prompt %}
+                <div class="q-media">
+                    <img src="{{ question.image_prompt.url }}" alt="">
+                </div>
+            {% endif %}
+
+            {% if question.audio_prompt %}
+                <audio controls style="width:100%;margin-bottom:16px;">
+                    <source src="{{ question.audio_prompt.url }}">
+                </audio>
+            {% endif %}
+
+            <p class="q-text">{{ question.text }}</p>
+
+            <div class="choices" id="choices">
+                {% for choice in question.choices.all %}
+                    <button
+                        type="button"
+                        class="choice-btn"
+                        data-choice-id="{{ choice.id }}"
+                    >
+                        {% if choice.image %}
+                            <img src="{{ choice.image.url }}" alt="">
+                        {% elif choice.emoji %}
+                            <span class="choice-emoji">{{ choice.emoji }}</span>
+                        {% endif %}
+                        <span>{{ choice.text }}</span>
+                    </button>
+                {% endfor %}
+            </div>
+
+            <p class="q-feedback" id="feedback"></p>
+
+            <div class="q-footer">
+                <button class="next-btn" id="nextBtn" type="button">
+                    Next →
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    var choicesWrap = document.getElementById('choices');
+    var feedback = document.getElementById('feedback');
+    var nextBtn = document.getElementById('nextBtn');
+    var questionId = {{ question.id }};
+    var answered = false;
+    var nextUrl = null;
+
+    function getCookie(name) {
+        var value = '; ' + document.cookie;
+        var parts = value.split('; ' + name + '=');
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return '';
+    }
+
+    function submitAnswer(choiceId, btn) {
+        if (answered) return;
+        answered = true;
+
+        var body = new URLSearchParams();
+        body.append('question_id', questionId);
+        body.append('choice_id', choiceId);
+
+        fetch("{% url 'quizzes:api_submit_answer' slug=quiz.rhyme.slug %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: body.toString()
+        })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+            if (!data.success) {
+                feedback.textContent = data.error || 'Something went wrong.';
+                answered = false;
+                return;
+            }
+
+            btn.classList.add(data.is_correct ? 'correct' : 'wrong');
+
+            if (data.is_correct) {
+                feedback.textContent = 'Correct! 🎉';
+                feedback.className = 'q-feedback correct';
+            } else {
+                feedback.textContent = 'Not quite — keep going!';
+                feedback.className = 'q-feedback wrong';
+            }
+
+            Array.prototype.forEach.call(
+                choicesWrap.querySelectorAll('.choice-btn'),
+                function (b) { b.disabled = true; }
+            );
+
+            nextUrl = data.next_url;
+            nextBtn.textContent = data.is_last_question ? 'See Results →' : 'Next →';
+            nextBtn.classList.add('ready');
+        })
+        .catch(function () {
+            feedback.textContent = 'Network error — please try again.';
+            answered = false;
+        });
+    }
+
+    choicesWrap.querySelectorAll('.choice-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            if (answered) return;
+            choicesWrap.querySelectorAll('.choice-btn').forEach(function (b) {
+                b.classList.remove('selected');
+            });
+            btn.classList.add('selected');
+            submitAnswer(btn.dataset.choiceId, btn);
+        });
+    });
+
+    nextBtn.addEventListener('click', function () {
+        if (nextUrl) window.location.href = nextUrl;
+    });
+})();
+</script>
+
+</body>
+</html>

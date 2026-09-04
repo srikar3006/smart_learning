@@ -23,12 +23,6 @@ urlpatterns = [
         include(("progress.urls", "progress"), namespace="progress")
     ),
 
-    # Games
-    path(
-        "games/",
-        include(("games.urls", "games"), namespace="games")
-    ),
-
     # Standalone 10-level Quiz Challenge
     path(
         "quiz/",
